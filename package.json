@@ -1,0 +1,25 @@
+{
+  "name": "node-api-seed",
+  "version": "0.0.0",
+  "description": "The seed for pretty much any api I write in node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eXigentCoder/node-api-seed.git"
+  },
+  "keywords": [
+    "node",
+    "seed",
+    "api",
+    "express"
+  ],
+  "author": "Ryan Kotzen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eXigentCoder/node-api-seed/issues"
+  },
+  "homepage": "https://github.com/eXigentCoder/node-api-seed#readme"
+}
