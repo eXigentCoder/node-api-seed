@@ -6,6 +6,7 @@ var cors = require('cors');
 var config = require('nconf');
 var routes = require('./routes');
 var configureMorgan = require('./logging/configure-morgan');
+var configureRequestId = require('./logging/configure-request-id');
 
 module.exports = function initialise(callback) {
     async.waterfall([
@@ -19,6 +20,7 @@ function createApp(callback) {
     app.use(cors(config.get('corsOptions')));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
+    configureRequestId(app);
     configureMorgan(app);
     app.use(routes);
     //app.use(error.notFoundMiddleware);
