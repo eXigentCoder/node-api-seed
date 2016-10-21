@@ -1,6 +1,10 @@
 # node-api-seed
 The seed for pretty much any api I write in node.js
 
+# Global packages
+
+> npm i pm2 -g
+
 # Scripts
 
 # Todo's

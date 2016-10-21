@@ -1,6 +1,6 @@
 'use strict';
 module.exports = {
-    port: 10010,
+    PORT: 10001,
     logging: {
         console: {
             disabled: false,
