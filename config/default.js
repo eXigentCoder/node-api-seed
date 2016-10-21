@@ -64,7 +64,10 @@ module.exports = {
                 }
             ]
         },
-        requestId: {}
+        requestId: {},
+        objectReplacements: [
+            {key: 'password', value: '****'}
+        ]
     },
     errorHandling: {
         exposeErrors: false //Ensure that this is false on production environments to prevent leaking security vulnerabilities

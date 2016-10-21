@@ -1,5 +1,7 @@
 'use strict';
 var _ = require('lodash');
+var config = require('nconf');
+var replacements = config.get('logging').objectReplacements;
 module.exports = function formatArgs(args) {
     var argumentArray = Array.prototype.slice.call(args);
     argumentArray = argumentArray.map(mapArg);
@@ -14,10 +16,6 @@ function mapArg(arg) {
     }
     return arg;
 }
-
-var replacements = [
-    {key: 'password', value: '****'}
-];
 
 function sanitiseObject(object) {
     deepReplace(object);
