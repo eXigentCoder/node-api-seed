@@ -37,17 +37,23 @@ function skip(req) {
         return;
     }
     morganConfig.skip.headers = morganConfig.skip.headers || [];
-    morganConfig.skip.headers.forEach(function (ignoredHeader) {
+    var shouldSkip = morganConfig.skip.headers.some(function (ignoredHeader) {
         if (req.get(ignoredHeader.key).toLowerCase().indexOf(ignoredHeader.value.toLowerCase()) >= 0) {
             return true;
         }
     });
+    if (shouldSkip) {
+        return true;
+    }
     morganConfig.skip.paths = morganConfig.skip.paths || [];
-    morganConfig.skip.paths.forEach(function (ignoredUrl) {
+    shouldSkip = morganConfig.skip.paths.some(function (ignoredUrl) {
         if (req.originalUrl.toLowerCase().indexOf(ignoredUrl.toLowerCase()) >= 0) {
             return true;
         }
     });
+    if (shouldSkip) {
+        return true;
+    }
 }
 
 function addSupportForBodyToken() {
