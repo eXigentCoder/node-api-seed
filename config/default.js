@@ -51,13 +51,13 @@ module.exports = {
             },
             loggers: [
                 {
-                    format: '[Start] :method ":url" :body :req[x-request-id] ":user-agent"',
+                    format: '[Start] :method ":url" :body RequestId-:req[x-request-id] ":user-agent"',
                     options: {
                         immediate: true
                     }
                 },
                 {
-                    format: '[End] :method ":url" :status :response-time :res[x-request-id] ":user-agent"',
+                    format: '[End] :method ":url" :status :response-time RequestId-:res[x-request-id] ":user-agent"',
                     options: {
                         immediate: false
                     }
@@ -65,6 +65,9 @@ module.exports = {
             ]
         },
         requestId: {}
+    },
+    errorHandling: {
+        exposeErrors: true //Ensure that this is false on production environments to prevent security vulnerabilities
     },
     corsOptions: {
         /*todo If you need CORS to only be enabled for certain origins or routes, set that up here.

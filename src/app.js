@@ -7,6 +7,7 @@ var config = require('nconf');
 var routes = require('./routes');
 var configureMorgan = require('./logging/configure-morgan');
 var configureRequestId = require('./logging/configure-request-id');
+var error = require('./error/index.js');
 
 module.exports = function initialise(callback) {
     async.waterfall([
@@ -23,7 +24,8 @@ function createApp(callback) {
     configureRequestId(app);
     configureMorgan(app);
     app.use(routes);
-    //app.use(error.notFoundMiddleware);
-    //app.use(error.errorHandlerMiddleware);
+    app.use(error.notFound);
+    app.use(error.errorHandler);
+    app.use(error.boomErrorHandler);
     callback(null, app);
 }
