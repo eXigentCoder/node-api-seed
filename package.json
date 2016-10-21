@@ -4,7 +4,13 @@
   "description": "The seed for pretty much any api I write in node.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "start": "nodemon .",
+    "test": "node_modules/.bin/istanbul --include-all-sources cover node_modules/mocha/bin/_mocha",
+    "mocha": "node_modules/.bin/_mocha test/**/*.js",
+    "lint": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js --fix",
+    "lint-ci": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js",
+    "report": "plato -r -d report -e .eslintrc src",
+    "check-dependencies" : "npm-check -Eu"
   },
   "repository": {
     "type": "git",
@@ -40,8 +46,12 @@
   "devDependencies": {
     "chai": "3.5.0",
     "dirty-chai": "1.2.2",
+    "eslint": "3.8.1",
     "istanbul": "0.4.5",
     "mocha": "3.1.2",
+    "nodemon": "1.11.0",
+    "npm-check": "5.4.0",
+    "plato": "1.7.0",
     "supertest": "2.0.1"
   }
 }

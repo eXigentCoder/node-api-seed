@@ -1,12 +1,5 @@
 'use strict';
 var _ = require('lodash');
-/*
-todo rk add tests :
- var err = new Error("testErr");
- err.custom = {bob: true};
- err.password = "asdasdas";
- console.log('test', {asd: true, password:'asd123'}, 'asd3', err, {vare: 1, password:'asd123'});
-* */
 module.exports = function formatArgs(args) {
     var argumentArray = Array.prototype.slice.call(args);
     argumentArray = argumentArray.map(mapArg);

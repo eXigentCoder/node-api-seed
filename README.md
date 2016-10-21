@@ -1,10 +1,6 @@
 # node-api-seed
 The seed for pretty much any api I write in node.js
 
-# Global packages
-
-> npm i -g eslint npm-check plato
-
 # Scripts
 
 # Todo's
