@@ -7,7 +7,7 @@ module.exports = {
             level: 'silly',
             colorize: true,
             timestamp: true,
-            json: true,
+            json: false,
             stringify: false,
             prettyPrint: true,
             depth: 10,
@@ -20,7 +20,7 @@ module.exports = {
             level: 'silly',
             timestamp: true,
             filename: '.log',
-            maxsize: 1048576, //1m. This is per log file, in bytes, will be split if the log file gets to this size.
+            maxsize: 1048576, //bytes
             json: true,
             prettyPrint: true,
             depth: 10,
@@ -42,6 +42,31 @@ module.exports = {
             },
             tags: [],
             handleExceptions: true
+        },
+        morgan: {
+            disabled: false,
+            skip: {
+                paths: ['/public/', '/favicon.ico'],
+                headers: [{key: 'user-agent', value: 'AlwaysOn'}]
+            },
+            loggers: [
+                {
+                    format: '[Start] :method ":url" ":user-agent" :body',
+                    options: {
+                        immediate: true
+                    }
+                },
+                {
+                    format: '[End] :method ":url" :status :response-time ":user-agent"',
+                    options: {
+                        immediate: false
+                    }
+                }
+            ]
         }
+    },
+    corsOptions: {
+        /*todo If you need CORS to only be enabled for certain origins or routes, set that up here.
+         See https://www.npmjs.com/package/cors for info.*/
     }
 };
