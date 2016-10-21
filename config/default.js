@@ -27,7 +27,7 @@ module.exports = {
             showLevel: true,
             zippedArchive: true,
             handleExceptions: true,
-            datePattern: './logs/yyyy-MM-ddTHH',
+            datePattern: './logs/ddd-HH',
             prepend: true
         },
         loggly: {
