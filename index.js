@@ -1,6 +1,7 @@
 'use strict';
 require('./config/init-nconf');
 require('./src/logging/index');
+require("nodejs-dashboard");
 var config = require('nconf');
 var packageJson = require('./package.json');
 var port = config.get('PORT');
