@@ -4,6 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var config = require('nconf');
+var routes = require('./routes');
 
 module.exports = function initialise(callback) {
     async.waterfall([
@@ -19,7 +20,7 @@ function createApp(callback) {
     app.use(bodyParser.urlencoded({extended: true}));
     //morganOptions.initialise();
     //app.use(morgan(morganOptions.format, morganOptions.morganOptions));
-    //app.use(routes);
+    app.use(routes);
     //app.use(error.notFoundMiddleware);
     //app.use(error.errorHandlerMiddleware);
     callback(null, app);

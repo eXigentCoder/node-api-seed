@@ -1,5 +1,6 @@
 'use strict';
 require('./config/init-nconf');
+require('./src/logging/index');
 var config = require('nconf');
 var packageJson = require('./package.json');
 var port = config.get('port');
