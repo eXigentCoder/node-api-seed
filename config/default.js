@@ -67,7 +67,7 @@ module.exports = {
         requestId: {}
     },
     errorHandling: {
-        exposeErrors: true //Ensure that this is false on production environments to prevent security vulnerabilities
+        exposeErrors: false //Ensure that this is false on production environments to prevent leaking security vulnerabilities
     },
     corsOptions: {
         /*todo If you need CORS to only be enabled for certain origins or routes, set that up here.

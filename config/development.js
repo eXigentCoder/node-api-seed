@@ -1,2 +1,6 @@
 'use strict';
-module.exports = {};
+module.exports = {
+    errorHandling: {
+        exposeErrors: true
+    }
+};
