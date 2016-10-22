@@ -1438,6 +1438,7 @@
   width: 200px;
 }
 .swagger-section #explore,
+.swagger-section #redoc,
 .swagger-section #auth_container .authorize__btn {
   display: block;
   text-decoration: none;
