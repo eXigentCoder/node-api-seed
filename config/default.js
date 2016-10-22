@@ -81,7 +81,15 @@ module.exports = {
     swagger: {
         writeFile: false,
         appendPortToHost: false,
-        schemes: ['http']
+        schemes: ['http'],
+        security: [{basicAuth: []}],
+        defaultSecurity: 'basicAuth',
+        securityDefinitions: {
+            basicAuth: {
+                type: "basic",
+                description: "HTTP Basic Authentication. Works over HTTPS"
+            }
+        }
     },
     expressApp: {
         jsonSpaces: 0,

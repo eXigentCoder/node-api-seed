@@ -9,7 +9,7 @@ module.exports = function initialiseSwagger(app, callback) {
     var baseDocument = swaggerConfig.baseDocument || buildBaseDocument();
     var options = {
         document: baseDocument,
-        defaultSecurity: "basicAuth"
+        defaultSecurity: swaggerConfig.defaultSecurity
     };
     try {
         swagger.initialise(app, options);
@@ -46,13 +46,8 @@ function buildBaseDocument() {
         schemes: swaggerConfig.schemes || ['http'],
         consumes: swaggerConfig.consumes || ["application/json"],
         produces: swaggerConfig.produces || ["application/json"],
-        security: [{basicAuth: []}],
-        securityDefinitions: {
-            basicAuth: {
-                type: "basic",
-                description: "HTTP Basic Authentication. Works over HTTPS"
-            }
-        }
+        security: swaggerConfig.security,
+        securityDefinitions: swaggerConfig.securityDefinitions
     };
 }
 
