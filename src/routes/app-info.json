@@ -1,0 +1,39 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "appInfo",
+    "name": "appInfo",
+    "title": "App Info",
+    "description": "Metadata about the application",
+    "type": "object",
+    "properties": {
+        "appName": {
+            "type": "string",
+            "description": "The name of the application."
+        },
+        "version": {
+            "type": "string",
+            "description": "The version number for the application."
+        },
+        "deploymentDate": {
+            "type": "string",
+            "description": "The ISO formatted date on which the application was deployed."
+        },
+        "environment": {
+            "type": "string",
+            "description": "The environment under which the application is running. Determins which settings the app will use."
+        },
+        "swaggerUiUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "The url where you can find the swagger document describing this api."
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "appName",
+        "version",
+        "deploymentDate",
+        "environment",
+        "swaggerUiUrl"
+    ]
+}

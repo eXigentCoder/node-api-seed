@@ -1,0 +1,15 @@
+{
+    "globals": {
+        "expect": true,
+        "describe": true,
+        "it": true,
+        "assert": true,
+        "chai": true,
+        "should": true,
+        "before": true,
+        "after": true
+    },
+    "rules": {
+        "no-invalid-this": "off"
+    }
+}
