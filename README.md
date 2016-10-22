@@ -26,3 +26,8 @@ We use [winston](https://github.com/winstonjs/winston) to route our logs to vari
 - Auth example
 - json-schema-filter required?
 - set deployment date in package.json
+- websocket crud stuff
+- rest crud
+- patch
+- rabbitmq call to worker
+- data generation

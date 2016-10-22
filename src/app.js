@@ -13,6 +13,7 @@ var addCommonSwaggerItems = require('./swagger/add-common-items');
 var generateSwaggerJson = require('./swagger/generate-swagger-json');
 var path = require('path');
 var appSettings = config.get('expressApp');
+var outputMap = require('./output-map');
 
 module.exports = function initialise(callback) {
     async.waterfall([
@@ -34,6 +35,7 @@ function createApp(callback) {
     app.use('/apidocs', express.static(path.join(__dirname, '../public')));
     configureRequestId(app);
     configureMorgan(app);
+    app.use(outputMap.init);
     callback(null, app);
 }
 

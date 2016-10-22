@@ -25,7 +25,7 @@ module.exports = {
 /**
  * Adds schema(s) to the instance.
  * @param {Object|Array} schema schema or array of schemas. If array is passed, `key` and other parameters will be ignored.
- * @param {String} key Optional schema key. Can be passed to `validate` method instead of schema object or id/ref. One schema per instance can have empty `id` and `key`.
+ * @param {String} [key] Optional schema key. Can be passed to `validate` method instead of schema object or id/ref. One schema per instance can have empty `id` and `key`.
  * @returns {void}
  */
 function addSchema(schema, key) {
