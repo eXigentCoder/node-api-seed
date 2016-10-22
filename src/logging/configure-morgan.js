@@ -38,18 +38,14 @@ function skip(req) {
     }
     morganConfig.skip.headers = morganConfig.skip.headers || [];
     var shouldSkip = morganConfig.skip.headers.some(function (ignoredHeader) {
-        if (req.get(ignoredHeader.key).toLowerCase().indexOf(ignoredHeader.value.toLowerCase()) >= 0) {
-            return true;
-        }
+        return req.get(ignoredHeader.key).toLowerCase().indexOf(ignoredHeader.value.toLowerCase()) >= 0;
     });
     if (shouldSkip) {
         return true;
     }
     morganConfig.skip.paths = morganConfig.skip.paths || [];
     shouldSkip = morganConfig.skip.paths.some(function (ignoredUrl) {
-        if (req.originalUrl.toLowerCase().indexOf(ignoredUrl.toLowerCase()) >= 0) {
-            return true;
-        }
+        return req.originalUrl.toLowerCase().indexOf(ignoredUrl.toLowerCase()) >= 0;
     });
     if (shouldSkip) {
         return true;
