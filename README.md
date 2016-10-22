@@ -1,6 +1,8 @@
 # node-api-seed
 The seed for pretty much any api I write in node.js
 
+![Build status](https://travis-ci.org/eXigentCoder/node-api-seed.svg?branch=master)
+
 # Global packages
 
 > npm i pm2 -g
