@@ -8,8 +8,8 @@
   "scripts": {
     "start": "nodejs-dashboard node index.js",
     "watch": "nodemon .",
-    "coverage": "node_modules/.bin/istanbul --include-all-sources cover node_modules/mocha/bin/_mocha",
-    "test": "node_modules/.bin/_mocha test/**/*.js",
+    "test": "node_modules/.bin/istanbul --include-all-sources cover node_modules/mocha/bin/_mocha",
+    "mocha": "node_modules/.bin/_mocha test/**/*.js",
     "lint": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js --fix",
     "lint-ci": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js",
     "report": "plato -r -d report -e .eslintrc src",
