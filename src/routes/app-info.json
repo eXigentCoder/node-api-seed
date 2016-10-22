@@ -22,10 +22,6 @@
             "type": "string",
             "description": "The environment under which the application is running. Determins which settings the app will use."
         },
-        "nodeVersion": {
-            "type": "string",
-            "description": "The version of node.js that is running on the server where the app is deployed."
-        },
         "swaggerUiUrl": {
             "type": "string",
             "format": "uri",

@@ -20,7 +20,6 @@ router.get('/', function (req, res) {
         version: packageJson.version,
         deploymentDate: packageJson.deploymentDate,
         environment: config.get('NODE_ENV'),
-        nodeVersion: process.version,
         swaggerUiUrl: fullUrl + 'apidocs'
     });
 }).describe({
@@ -37,9 +36,8 @@ router.get('/', function (req, res) {
             examples: {
                 "appName": "node-api-seed",
                 "version": "0.0.0",
-                "deploymentDate": "",
+                "deploymentDate": "2016-10-22T14:48:26.240Z",
                 "environment": "development",
-                "nodeVersion": "v6.9.0",
                 "swaggerUiUrl": "http://localhost:10001/apidocs"
             }
         }
