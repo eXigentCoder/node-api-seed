@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "appInfo",
+    "id": "https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/app-info.json",
     "name": "appInfo",
     "title": "App Info",
     "description": "Metadata about the application",
