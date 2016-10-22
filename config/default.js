@@ -82,5 +82,9 @@ module.exports = {
     swagger: {
         writeFile: false,
         appendPortToHost: false
+    },
+    expressApp: {
+        jsonSpaces: 0,
+        xPoweredBy: false
     }
 };

@@ -7,5 +7,8 @@ module.exports = {
     swagger: {
         writeFile: true,
         appendPortToHost: true
+    },
+    expressApp: {
+        jsonSpaces: 4
     }
 };

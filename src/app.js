@@ -11,6 +11,8 @@ var error = require('./error/index.js');
 var initialiseSwagger = require('./swagger/initialise-swagger');
 var addCommonSwaggerItems = require('./swagger/add-common-items');
 var generateSwaggerJson = require('./swagger/generate-swagger-json');
+var path = require('path');
+var appSettings = config.get('expressApp');
 
 module.exports = function initialise(callback) {
     async.waterfall([
@@ -24,9 +26,12 @@ module.exports = function initialise(callback) {
 
 function createApp(callback) {
     var app = express();
+    app.set('json spaces', appSettings.jsonSpaces);
+    app.set('x-powered-by', appSettings.xPoweredBy);
     app.use(cors(config.get('corsOptions')));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
+    app.use('/apidocs', express.static(path.join(__dirname, '../public')));
     configureRequestId(app);
     configureMorgan(app);
     callback(null, app);
