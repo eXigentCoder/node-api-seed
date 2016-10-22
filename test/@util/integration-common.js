@@ -10,9 +10,10 @@ before(function (done) {
     this.timeout(10000);
     async.waterfall([
         createApp,
-        createDataObject
+        createDataObject,
         //clean db
         //setup initial data
+        expect.initialise
     ], waterfallComplete);
 
     function waterfallComplete(err, data) {
