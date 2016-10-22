@@ -2,11 +2,11 @@ module.exports = {
     "env": {
         "browser": false,
         "node": true,
-        "es6": false,
+        "es6": true,
         "mocha": true
     },
     "parserOptions": {
-        "ecmaVersion": 5,
+        "ecmaVersion": 6,
         "sourceType": "script",
         "ecmaFeatures": {
             "globalReturn": true,

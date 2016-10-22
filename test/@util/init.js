@@ -2,8 +2,8 @@
 var chai = require('chai');
 var dirtyChai = require('dirty-chai');
 chai.use(dirtyChai);
-require('../config/init-nconf');
-require('../src/logging/index');
+require('../../config/init-nconf');
+require('../../src/logging/index');
 
 global.chai = chai;
 global.expect = chai.expect;

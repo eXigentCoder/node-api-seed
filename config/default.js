@@ -1,6 +1,8 @@
 'use strict';
 module.exports = {
     PORT: 10001,
+    host: 'localhost',
+    schemes: ['http'],
     logging: {
         console: {
             disabled: false,
@@ -70,10 +72,15 @@ module.exports = {
         ]
     },
     errorHandling: {
-        exposeErrors: false //Ensure that this is false on production environments to prevent leaking security vulnerabilities
+        exposeServerErrorMessages: false, //Ensure that this is false on production environments to prevent leaking security vulnerabilities
+        exposeErrorRoutes: false
     },
     corsOptions: {
         /*todo If you need CORS to only be enabled for certain origins or routes, set that up here.
          See https://www.npmjs.com/package/cors for info.*/
+    },
+    swagger: {
+        writeFile: false,
+        appendPortToHost: false
     }
 };

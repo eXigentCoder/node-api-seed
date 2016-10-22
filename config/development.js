@@ -1,6 +1,11 @@
 'use strict';
 module.exports = {
     errorHandling: {
-        exposeErrors: true
+        exposeServerErrorMessages: true,
+        exposeErrorRoutes: true
+    },
+    swagger: {
+        writeFile: true,
+        appendPortToHost: true
     }
 };

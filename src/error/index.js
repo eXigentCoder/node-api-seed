@@ -29,7 +29,7 @@ module.exports = {
         } else {
             console.warn('RequestId-' + requestId, 'Client Error :', err);
         }
-        if (errorOptions.exposeErrors && err.isServer) {
+        if (errorOptions.exposeServerErrorMessages && err.isServer) {
             var msgToLog = err.output.payload;
             if (err.data) {
                 msgToLog.data = err.data;

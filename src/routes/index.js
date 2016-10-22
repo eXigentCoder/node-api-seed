@@ -2,7 +2,7 @@
 var express = require('express');
 var router = express.Router();
 var packageJson = require('../../package.json');
-var testErrors = require('../test-errors');
+var testErrors = require('../routes/test-errors');
 var config = require('nconf');
 
 router.get('/', function (req, res) {
@@ -14,6 +14,9 @@ router.get('/', function (req, res) {
         nodeVersion: process.version
     });
 });
-router.use('/error', testErrors);
+
+if (config.get('errorHandling').exposeErrorRoutes) {
+    router.use('/error', testErrors);
+}
 
 module.exports = router;

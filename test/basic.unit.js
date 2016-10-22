@@ -1,5 +1,5 @@
 'use strict';
-require('./init.js');
+require('./@util/init.js');
 /* ----========[ end of test file setup ]========---- */
 
 describe('#Basic Unit Test', function () {
