@@ -1,9 +1,10 @@
 'use strict';
 var express = require('express');
-var router = express.Router();
+var config = require('nconf');
+var routerOptions = config.get('expressApp').routerOptions;
+var router = express.Router(routerOptions);
 var packageJson = require('../../package.json');
 var testErrors = require('../routes/test-errors');
-var config = require('nconf');
 var swagger = require('swagger-spec-express');
 swagger.swaggerise(router);
 var appInfoSchema = require('./app-info.json');

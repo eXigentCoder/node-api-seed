@@ -85,6 +85,9 @@ module.exports = {
     },
     expressApp: {
         jsonSpaces: 0,
-        xPoweredBy: false
+        xPoweredBy: false,
+        routerOptions: {
+            mergeParams: true
+        }
     }
 };
