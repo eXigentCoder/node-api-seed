@@ -26,7 +26,7 @@
     "api",
     "express"
   ],
-  "author": "Ryan Kotzen",
+  "author": "Ryan Kotzen <potz666@gmail.com> (http://exigentcoder.com/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/eXigentCoder/node-api-seed/issues"

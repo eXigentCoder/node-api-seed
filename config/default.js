@@ -2,7 +2,6 @@
 module.exports = {
     PORT: 10001,
     host: 'localhost',
-    schemes: ['http'],
     logging: {
         console: {
             disabled: false,
@@ -81,7 +80,8 @@ module.exports = {
     },
     swagger: {
         writeFile: false,
-        appendPortToHost: false
+        appendPortToHost: false,
+        schemes: ['http']
     },
     expressApp: {
         jsonSpaces: 0,
