@@ -12,6 +12,7 @@ var initialiseSwagger = require('./swagger/initialise-swagger');
 var addCommonSwaggerItems = require('./swagger/add-common-items');
 var generateSwaggerJson = require('./swagger/generate-swagger-json');
 var path = require('path');
+var mongo = require('./mongo');
 var appSettings = config.get('expressApp');
 
 module.exports = function initialise(callback) {
@@ -20,7 +21,8 @@ module.exports = function initialise(callback) {
         initialiseSwagger,
         addRoutes,
         addCommonSwaggerItems,
-        generateSwaggerJson
+        generateSwaggerJson,
+        mongo.connect
     ], callback);
 };
 

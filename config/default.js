@@ -97,5 +97,26 @@ module.exports = {
         routerOptions: {
             mergeParams: true
         }
+    },
+    mongodb: {
+        url: "mongodb://localhost:27017/node-api-seed",
+        options: {
+            "server": {
+                "socketOptions": {
+                    "keepAlive": 1
+                },
+                "auto_reconnect": true,
+                "autoReconnect": true,
+                "sslValidate": false
+            },
+            "replSet": {
+                "socketOptions": {
+                    "keepAlive": 1
+                },
+                "auto_reconnect": true,
+                "autoReconnect": true,
+                "sslValidate": false
+            }
+        }
     }
 };
