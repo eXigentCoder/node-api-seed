@@ -10,15 +10,18 @@
         "email": {
             "type": "string",
             "format": "email",
-            "minLength": 1
+            "minLength": 1,
+            "faker": "internet.email"
         },
         "firstName": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "faker": "name.firstName"
         },
         "surname": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "faker": "name.lastName"
         }
     },
     "required": [

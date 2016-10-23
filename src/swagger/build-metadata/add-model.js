@@ -5,7 +5,7 @@ var schemaKeys = Object.keys(require('swagger-spec-express/lib/schemas/schema.js
 schemaKeys.push('definitions');
 
 module.exports = function addModel(schema) {
-    var modelSchema = _.pick(schema, schemaKeys);
+    var modelSchema = _.cloneDeep(_.pick(schema, schemaKeys));
     stripSpecificProperties(modelSchema);
     swagger.common.addModel(modelSchema, {validation: 'warn'});
 };
