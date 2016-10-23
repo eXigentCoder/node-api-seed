@@ -44,6 +44,5 @@ function setAOrAn(metadata) {
 
 function setIdentifierInfo(metadata) {
     metadata.identifierName = metadata.identifierName || 'identifier';
-    metadata.collectionId = 'todo';
-    metadata.identifierPropertyName = 'identifier';
+    metadata.collectionName = metadata.name;
 }
