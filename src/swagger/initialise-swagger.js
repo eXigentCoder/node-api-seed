@@ -65,7 +65,7 @@ function getContactInfoFromPackage() {
             if (parts.length > 2) {
                 throw new Error('package.json.author should be in the format "name <email> (website)" with email and website being optional');
             }
-            authorEmail = parts[0];
+            authorEmail = parts[0].trim();
             authorSite = parts[1].replace(')', '').trim();
         }
     } else {
