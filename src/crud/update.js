@@ -3,8 +3,9 @@ var outputMap = require('../output-map');
 var applyMaps = require('../swagger/router/step-maps');
 var ensureSchemaSet = require('./../swagger/build-metadata/ensure-schema-set');
 var getValidateFunction = require('./@shared/get-validate-function');
-var schemaName = 'update';
+var addModel = require('../swagger/build-metadata/add-model');
 var _ = require('lodash');
+var schemaName = 'update';
 
 module.exports = {
     addRoute: addRoute
@@ -26,6 +27,7 @@ function getSteps(router, options) {
 }
 
 function description(metadata) {
+    addModel(metadata.schemas.output);
     return {
         security: true,
         summary: "Updates a " + metadata.title + " By " + _.startCase(metadata.identifierName),
@@ -40,6 +42,7 @@ function description(metadata) {
             }
         ],
         common: {
+
             responses: ["500", "400", "401", "404"],
             parameters: {
                 header: ["X-Request-Id"]

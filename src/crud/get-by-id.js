@@ -2,6 +2,7 @@
 var outputMap = require('../output-map');
 var applyMaps = require('../swagger/router/step-maps');
 var _ = require('lodash');
+var addModel = require('../swagger/build-metadata/add-model');
 
 module.exports = {
     addRoute: addRoute
@@ -24,6 +25,7 @@ function getSteps(router, options) {
 }
 
 function description(metadata) {
+    addModel(metadata.schemas.output);
     return {
         security: true,
         summary: "Get " + metadata.title + " By " + _.startCase(metadata.identifierName) + ".",

@@ -3,6 +3,7 @@ var boom = require('boom');
 var applyMaps = require('../swagger/router/step-maps');
 var ensureSchemaSet = require('./../swagger/build-metadata/ensure-schema-set');
 var getValidateFunction = require('./@shared/get-validate-function');
+var addModel = require('../swagger/build-metadata/add-model');
 var schemaName = 'creation';
 
 module.exports = {
@@ -29,6 +30,7 @@ function notImplemented(req, res, next) {
 }
 
 function description(metadata) {
+    addModel(metadata.schemas[schemaName]);
     return {
         security: true,
         summary: "Posts Through " + metadata.aOrAn + " " + metadata.title + " To Be Processed.",

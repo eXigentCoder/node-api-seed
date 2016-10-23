@@ -2,7 +2,6 @@
 var swagger = require('swagger-spec-express');
 var express = require('express');
 var buildMetadata = require('../build-metadata');
-var addModels = require('./add-models');
 var addStandardRoutes = require('./add-standard-routes');
 var config = require('nconf');
 var routerOptions = config.get('expressApp').routerOptions;
@@ -11,9 +10,7 @@ var _ = require('lodash');
 module.exports = function Router(options) {
     options = buildMetadata(options);
     setTag(options);
-    var router = createRouter(options);
-    addModels(options);
-    return router;
+    return createRouter(options);
 };
 
 function setTag(options) {
@@ -27,7 +24,6 @@ function setTag(options) {
     options.tag = options.tag || defaultTag;
     swagger.common.addTag(options.tag);
 }
-
 
 function createRouter(options) {
     var router = express.Router(routerOptions);
@@ -45,10 +41,9 @@ function addCommonMiddleware(router) {
     router.use(commonMiddleware);
 
     function commonMiddleware(req, res, next) {
-        //todo rk maybe full metadata object on req?
         req.process = {
             metadata: router.metadata,
-            query : {}
+            query: {}
         };
         next();
     }

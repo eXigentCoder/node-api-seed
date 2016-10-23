@@ -4,18 +4,11 @@ var swagger = require('swagger-spec-express');
 var schemaKeys = Object.keys(require('swagger-spec-express/lib/schemas/schema.json').properties);
 schemaKeys.push('definitions');
 
-module.exports = function addModels(options) {
-    _.valuesIn(options.schemas).forEach(function (schema) {
-        addModel(schema);
-    });
-};
-
-function addModel(schema) {
+module.exports = function addModel(schema) {
     var modelSchema = _.pick(schema, schemaKeys);
     stripSpecificProperties(modelSchema);
     swagger.common.addModel(modelSchema, {validation: 'warn'});
-}
-
+};
 
 const propertiesToStrip = ['faker', 'chance'];
 function stripSpecificProperties(schema) {
