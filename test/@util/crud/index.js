@@ -4,6 +4,7 @@ var _ = require('lodash');
 var async = require('async');
 var loader = require('node-glob-loader');
 var TestTemplate = require('./test-template');
+var uuid = require('node-uuid');
 describe('Crud', discoverAndRunTests);
 function discoverAndRunTests() {
     var definitions = [];
@@ -49,7 +50,7 @@ var cascadingProperties = [
     'statusCode',
     'result',
     'skipSwagger',
-    'skipCorrelation',
+    'skipRequestId',
     'ignore',
     'hasResults'
 ];
@@ -93,8 +94,8 @@ function executeTest(definition, rules, done) {
             test.set(rules.auth);
         }
     }
-    if (!rules.skipCorrelation) {
-        test.set(common.correlationId);
+    if (!rules.skipRequestId) {
+        test.set({"X-Request-Id": uuid.v4()});
     }
     if (rules.urlData) {
         test.use(common.urlTemplate(rules.urlData));

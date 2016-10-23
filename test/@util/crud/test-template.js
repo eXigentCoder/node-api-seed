@@ -27,12 +27,12 @@ function getTemplate() {
                     send: {},
                     statusCode: 400,
                     result: 'error'
-                },
-                "No Auth Header": {
-                    auth: false,
-                    statusCode: 401,
-                    result: 'error'
                 }
+                //, "No Auth Header": {
+                //     auth: false,
+                //     statusCode: 401,
+                //     result: 'error'
+                // }
             },
             "Retrieval": {
                 verb: 'GET',

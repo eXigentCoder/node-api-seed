@@ -50,6 +50,7 @@
     "morgan": "1.7.0",
     "nconf": "0.8.4",
     "node-glob-loader": "0.0.15",
+    "node-uuid": "1.4.7",
     "nodejs-dashboard": "0.1.2",
     "passport": "0.3.2",
     "pluralize": "3.0.0",
