@@ -34,7 +34,6 @@
   "homepage": "https://github.com/eXigentCoder/node-api-seed#readme",
   "dependencies": {
     "ajv": "4.8.2",
-    "api-query-params": "4.1.0",
     "async": "2.1.2",
     "body-parser": "1.15.2",
     "boom": "4.2.0",
@@ -46,7 +45,6 @@
     "json-schema-ref-parser": "3.1.2",
     "lodash": "4.16.4",
     "moment": "2.15.1",
-    "mongodb": "2.2.11",
     "morgan": "1.7.0",
     "nconf": "0.8.4",
     "node-glob-loader": "0.0.15",
