@@ -66,7 +66,7 @@ function updateRoute(router, options) {
         .describe(router.metadata.descriptions.update);
 }
 function updateStatusRoute(router, options) {
-    router.put('/:' + router.metadata.identifierName + '/:statusName', updateStatusSteps(router, options))
+    router.put('/:' + router.metadata.identifierName + '/:newStatusName', updateStatusSteps(router, options))
         .describe(router.metadata.descriptions.updateStatus);
 }
 

@@ -12,6 +12,13 @@ module.exports = function (options) {
                 required: true,
                 in: "path",
                 type: "string"
+            },
+            {
+                name: "statusData",
+                description: "Any data you would like to store, associated with the status update.",
+                required: false,
+                in: "body",
+                schema: {}
             }
         ],
         common: {

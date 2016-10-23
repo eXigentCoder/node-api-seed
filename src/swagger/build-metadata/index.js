@@ -43,6 +43,6 @@ function setAOrAn(metadata) {
 }
 
 function setIdentifierInfo(metadata) {
-    metadata.identifierName = metadata.identifierName || 'identifier';
+    metadata.identifierName = metadata.identifierName || metadata.schemas.core.uniqueIdentifier || 'identifier';
     metadata.collectionName = metadata.name;
 }

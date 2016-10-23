@@ -32,7 +32,7 @@ function query(metadata) {
 function findByIdentifier(metadata) {
     var collection = db[metadata.collectionName];
     return function (req, res, next) {
-        var identifier = req.body[metadata.identifierName];
+        var identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
@@ -141,12 +141,13 @@ function loadFileFromDisk(metadata) {
 }
 
 function saveCollectionToDisk(metadata, callback) {
+    var content = JSON.stringify(db[metadata.collectionName], null, 4);
     if (_.isNil(callback)) {
         //eslint-disable-next-line no-sync
-        fs.writeFileSync(metadata.collectionFilePath, db[metadata.collectionName], fileOptions);
+        fs.writeFileSync(metadata.collectionFilePath, content, fileOptions);
     }
     if (!_.isFunction(callback)) {
         throw new Error("Callback must be a function");
     }
-    return fs.writeFile(metadata.collectionFilePath, db[metadata.collectionName], fileOptions, callback);
+    return fs.writeFile(metadata.collectionFilePath, content, fileOptions, callback);
 }
