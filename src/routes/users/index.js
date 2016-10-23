@@ -5,7 +5,8 @@ var router = require('../../swagger/router')({
 });
 
 var crudMiddleware = require('../../json-file-db/index')(router.metadata);
-router.add.query({crudMiddleware: crudMiddleware});
+var mongoCrudMiddleware = require('../../mongo/crud')(router.metadata);
+router.add.query({crudMiddleware: mongoCrudMiddleware});
 router.add.getById({crudMiddleware: crudMiddleware});
 router.add.create({crudMiddleware: crudMiddleware});
 router.add.update({crudMiddleware: crudMiddleware});
