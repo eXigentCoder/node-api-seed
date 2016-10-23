@@ -1,24 +1,18 @@
 'use strict';
-var util = require('util');
-var boom = require('boom');
-var validator = require('../validate/validator');
 var outputMap = require('../output-map');
 var applyMaps = require('../swagger/router/step-maps');
 
 module.exports = {
-    addRoute: addRoute,
-    getSteps: getSteps,
-    validate: validate
+    addRoute: addRoute
 };
 
 function addRoute(router, options) {
     router.get('/', getSteps(router, options))
-        .describe(router.metadata.descriptions.query);
+        .describe(router.metadata.queryDescription || description(router.metadata));
 }
 
 function getSteps(router, options) {
     var steps = {
-        newQuery: outputMap.newQuery,
         addQueryStringToQuery: outputMap.addQueryStringToQuery,
         query: options.crudMiddleware.query,
         setOutput: outputMap.setOutput(router.metadata.namePlural),
@@ -29,6 +23,24 @@ function getSteps(router, options) {
     return applyMaps(options.maps, steps);
 }
 
-function validate(req, res, next) {
-    return next();
+function description(metadata) {
+    return {
+        security: true,
+        summary: "Search for " + metadata.titlePlural,
+        tags: [metadata.tag.name],
+        common: {
+            responses: ["500", "400", "401"],
+            parameters: {
+                header: ["X-Request-Id"],
+                query: ["select", "skip", "limit", "sort", "rawQuery"]
+            }
+        },
+        responses: {
+            200: {
+                description: 'Returns the list of ' + metadata.titlePlural + ' matching the supplied parameters.',
+                arrayOfModel: metadata.schemas.output.name,
+                commonHeaders: ["X-Request-Id"]
+            }
+        }
+    };
 }

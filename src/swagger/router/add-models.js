@@ -5,11 +5,7 @@ var schemaKeys = Object.keys(require('swagger-spec-express/lib/schemas/schema.js
 schemaKeys.push('definitions');
 
 module.exports = function addModels(options) {
-    var schemas = {};
-    schemas[options.schemas.creation.name] = options.schemas.creation;
-    schemas[options.schemas.update.name] = options.schemas.update;
-    schemas[options.schemas.output.name] = options.schemas.output;
-    _.valuesIn(schemas).forEach(function (schema) {
+    _.valuesIn(options.schemas).forEach(function (schema) {
         addModel(schema);
     });
 };

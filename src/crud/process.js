@@ -1,5 +1,5 @@
 'use strict';
-var outputMap = require('../output-map');
+var boom = require('boom');
 var applyMaps = require('../swagger/router/step-maps');
 var ensureSchemaSet = require('./../swagger/build-metadata/ensure-schema-set');
 var getValidateFunction = require('./@shared/get-validate-function');
@@ -18,18 +18,21 @@ function addRoute(router, options) {
 function getSteps(router, options) {
     var steps = {
         validate: getValidateFunction(schemaName),
-        create: options.crudMiddleware.create,
-        filterOutput: outputMap.filterOutput,
-        sendCreateResult: options.crudMiddleware.sendCreateResult
+        process: notImplemented,
+        sendProcessResult: notImplemented
     };
     return applyMaps(options.maps, steps);
+}
+
+function notImplemented(req, res, next) {
+    return next(boom.notImplemented());
 }
 
 function description(metadata) {
     return {
         security: true,
-        summary: "Posts Through " + metadata.aOrAn + " " + metadata.title + " To Be Created.",
-        tags: [metadata.tag.name],
+        summary: "Posts Through " + metadata.aOrAn + " " + metadata.title + " To Be Processed.",
+        tags: [metadata.title],
         common: {
             responses: ["500", "400", "401"],
             parameters: {
@@ -39,17 +42,17 @@ function description(metadata) {
         parameters: [
             {
                 name: metadata.name,
-                description: "The " + metadata.title.toLowerCase() + " to be created.",
+                description: "The " + metadata.title.toLowerCase() + " to be processed.",
                 required: true,
                 in: "body",
                 model: metadata.schemas[schemaName].name
             }
         ],
         responses: {
-            "201": {
-                description: 'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
-                commonHeaders: ["X-Request-Id"],
-                model: metadata.schemas.output.name
+            "202": {
+                description: 'Informs the caller that the ' + metadata.title.toLowerCase()
+                + ' was successfully submitted to the server in order to be processed asynchronously.',
+                commonHeaders: ["X-Request-Id"]
             }
         }
     };

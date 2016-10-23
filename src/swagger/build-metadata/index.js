@@ -1,14 +1,14 @@
 'use strict';
 var inferNames = require('./infer-names');
-var setSchemas = require('./set-schemas');
 const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
 var _ = require('lodash');
+var ensureSchemaSet = require('./ensure-schema-set');
 
 module.exports = function Metadata(metadata) {
     validate(metadata);
+    ensureSchemaSet(metadata, 'output', 'Output');
     inferNames(metadata);
     setAOrAn(metadata);
-    setSchemas(metadata);
     setIdentifierInfo(metadata);
     return metadata;
 };
@@ -16,12 +16,18 @@ module.exports = function Metadata(metadata) {
 function validate(metadata) {
     metadata = metadata || {};
     metadata.schemas = metadata.schemas || {};
+    if (_.isArray(metadata.schemas)) {
+        throw new Error("metadata.schemas should not be an array.");
+    }
+    if (!_.isObject(metadata.schemas)) {
+        throw new Error("metadata.schemas should be an object.");
+    }
     if (metadata.schema) {
         metadata.schemas.core = metadata.schema;
         delete metadata.schema;
     }
     if (!metadata.schemas.core) {
-        throw new Error("metadata.schemas.core is required");
+        throw new Error("metadata.schemas.core is required, you can either set it directly or use the metadata.schema property.");
     }
     if (!_.isObject(metadata.schemas.core)) {
         throw new Error("metadata.schemas.core must be an object");
@@ -43,6 +49,9 @@ function setAOrAn(metadata) {
 }
 
 function setIdentifierInfo(metadata) {
-    metadata.identifierName = metadata.identifierName || metadata.schemas.core.uniqueIdentifier || 'identifier';
+    metadata.identifierName = metadata.identifierName || metadata.schemas.core.uniqueIdentifier;
+    if (!metadata.identifierName) {
+        throw new Error("metadata.identifierName must be set");
+    }
     metadata.collectionName = metadata.name;
 }

@@ -13,7 +13,6 @@ module.exports = function addStandardRoutes(router) {
     if (!_.isObject(router.metadata)) {
         throw new Error("Router.metadata must be set!");
     }
-    router.use(outputMap.setSchemas(router.metadata.schemas));
     router.add = {
         query: function (options) {
             query.addRoute(router, options);
