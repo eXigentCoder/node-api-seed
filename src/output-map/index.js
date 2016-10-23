@@ -9,8 +9,6 @@ var boom = require('boom');
 module.exports = {
     init: init,
     setSchemas: setSchemas,
-    validateCreation: validateCreation,
-    validateUpdate: validateUpdate,
     filterOutput: filterOutput,
     mapOutput: mapOutput,
     set: set,
@@ -47,40 +45,6 @@ function setSchemas(schemas) {
         req.process.schemas = schemas;
         next();
     }
-}
-
-function validateCreation(req, res, next) {
-    if (!req.process.schemas) {
-        return next(new Error("req.process.schemas must be set"));
-    }
-    if (!req.process.schemas.creation) {
-        return next(new Error("req.process.schemas.creation must be set"));
-    }
-    if (!req.process.schemas.creation.id) {
-        return next(new Error(util.format("req.process.schemas.creation.id was null. Schema was %j ", req.process.schemas.creation)));
-    }
-    var result = validator.validate(req.process.schemas.creation.id, req.body);
-    if (!result.valid) {
-        return next(boom.badRequest(result.message, result.errors));
-    }
-    return next();
-}
-
-function validateUpdate(req, res, next) {
-    if (!req.process.schemas) {
-        return next(new Error("req.process.schemas must be set"));
-    }
-    if (!req.process.schemas.update) {
-        return next(new Error("req.process.schemas.update must be set"));
-    }
-    if (!req.process.schemas.update.id) {
-        return next(new Error(util.format("req.process.schemas.update.id was null. Schema was %j ", req.process.schemas.update)));
-    }
-    var result = validator.validate(req.process.schemas.update.id, req.body);
-    if (!result.valid) {
-        return next(boom.badRequest(result.message, result.errors));
-    }
-    return next();
 }
 
 function filterOutput(req, res, next) {

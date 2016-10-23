@@ -1,6 +1,6 @@
 'use strict';
 require('../../../@util/init.js');
-var applyMaps = require('../../../../src/swagger/router/apply-maps');
+var applyMaps = require('../../../../src/swagger/router/step-maps');
 var applyReplace = applyMaps._applyReplace;
 var Steps = require('./fake-steps');
 var doWork = Steps.doWork;
