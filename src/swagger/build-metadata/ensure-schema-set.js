@@ -1,19 +1,16 @@
 'use strict';
 var _ = require('lodash');
-module.exports = function setSchemas(metadata) {
-    ensureSchemaSet(metadata, 'creation', 'Input');
-    ensureSchemaSet(metadata, 'update', 'Input');
-    ensureSchemaSet(metadata, 'output', 'Output');
-};
+var validator = require('../../validate/validator');
 
-function ensureSchemaSet(metadata, operation, direction) {
+module.exports = function ensureSchemaSet(metadata, operation, direction) {
     if (!metadata.schemas[operation]) {
         metadata.schemas[operation] = _.cloneDeep(metadata.schemas.core);
     } else {
         ensureNotCoreId(metadata.schemas[operation], metadata.schemas.core, operation);
         ensureNotCoreName(metadata.schemas[operation], metadata.schemas.core, operation, direction);
     }
-}
+    validator.addSchema(metadata.schemas[operation]);
+};
 
 function ensureNotCoreId(schema, coreSchema, operation) {
     if (schema.id !== coreSchema.id) {
@@ -25,7 +22,6 @@ function ensureNotCoreId(schema, coreSchema, operation) {
         schema.id += "#" + operation;
     }
 }
-
 
 function ensureNotCoreName(schema, coreSchema, operation, direction) {
     if (schema.name !== coreSchema.name) {

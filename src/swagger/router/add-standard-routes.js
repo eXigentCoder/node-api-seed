@@ -1,29 +1,33 @@
 'use strict';
 var _ = require('lodash');
-var applyMaps = require('./apply-maps');
+var applyMaps = require('./step-maps');
 var outputMap = require('../../output-map');
 var util = require('util');
+var create = require('../../crud/create');
+var getById = require('../../crud/get-by-id');
+var query = require('../../crud/query');
+var update = require('../../crud/update');
+var updateStatus = require('../../crud/update-status');
 
 module.exports = function addStandardRoutes(router) {
     if (!_.isObject(router.metadata)) {
         throw new Error("Router.metadata must be set!");
     }
-    router.use(outputMap.setSchemas(router.metadata.schemas));
     router.add = {
         query: function (options) {
-            queryRoute(router, options);
+            query.addRoute(router, options);
         },
         getById: function (options) {
-            getByIdRoute(router, options);
+            getById.addRoute(router, options);
         },
         create: function (options) {
-            createRoute(router, options);
+            create.addRoute(router, options);
         },
         update: function (options) {
-            updateRoute(router, options);
+            update.addRoute(router, options);
         },
         updateStatus: function (options) {
-            updateStatusRoute(router, options);
+            updateStatus.addRoute(router, options);
         }
     };
     router.getByIdAndUse = function (path, routerOrMiddleware, options) {
@@ -46,30 +50,6 @@ module.exports = function addStandardRoutes(router) {
     };
 };
 
-function queryRoute(router, options) {
-    router.get('/', queryMiddleware(router, options))
-        .describe(router.metadata.descriptions.query);
-}
-
-function getByIdRoute(router, options) {
-    router.get('/:' + router.metadata.identifierName, getByIdSteps(router, options))
-        .describe(router.metadata.descriptions.getById);
-}
-
-function createRoute(router, options) {
-    router.post('/', createSteps(router, options))
-        .describe(router.metadata.descriptions.post);
-}
-
-function updateRoute(router, options) {
-    router.put('/:' + router.metadata.identifierName, updateSteps(router, options))
-        .describe(router.metadata.descriptions.update);
-}
-function updateStatusRoute(router, options) {
-    router.put('/:' + router.metadata.identifierName + '/:newStatusName', updateStatusSteps(router, options))
-        .describe(router.metadata.descriptions.updateStatus);
-}
-
 function getByIdAndUseSteps(router, routerOrMiddleware, options) {
     var steps = {
         findByIdentifier: options.crudMiddleware.findByIdentifier,
@@ -82,57 +62,5 @@ function getByIdAndUseSteps(router, routerOrMiddleware, options) {
     } else if (_.isFunction(routerOrMiddleware)) {
         steps.routeOrMW = routerOrMiddleware;
     }
-    return applyMaps(options.maps, steps);
-}
-
-function queryMiddleware(router, options) {
-    var steps = {
-        newQuery: outputMap.newQuery,
-        addQueryStringToQuery: outputMap.addQueryStringToQuery,
-        query: options.crudMiddleware.query,
-        setOutput: outputMap.setOutput(router.metadata.namePlural),
-        ensureOutput: outputMap.ensureOutput({default: []}),
-        filterOutput: outputMap.filterOutput,
-        sendOutput: outputMap.sendOutput
-    };
-    return applyMaps(options.maps, steps);
-}
-
-function getByIdSteps(router, options) {
-    var steps = {
-        findByIdentifier: options.crudMiddleware.findByIdentifier,
-        setOutput: outputMap.setOutput(router.metadata.name),
-        ensureOutput: outputMap.ensureOutput({metadata: router.metadata}),
-        filterOutput: outputMap.filterOutput,
-        sendOutput: outputMap.sendOutput
-    };
-    return applyMaps(options.maps, steps);
-}
-
-function createSteps(router, options) {
-    var steps = {
-        validate: outputMap.validateCreation,
-        create: options.crudMiddleware.create,
-        filterOutput: outputMap.filterOutput,
-        sendCreateResult: options.crudMiddleware.sendCreateResult
-    };
-    return applyMaps(options.maps, steps);
-}
-
-function updateSteps(router, options) {
-    var steps = {
-        validate: outputMap.validateUpdate,
-        update: options.crudMiddleware.update,
-        sendOutput: outputMap.sendNoContent
-    };
-    return applyMaps(options.maps, steps);
-}
-
-function updateStatusSteps(router, options) {
-    var steps = {
-        validate: outputMap.validateUpdate,
-        updateStatus: options.crudMiddleware.updateStatus,
-        sendOutput: outputMap.sendNoContent
-    };
     return applyMaps(options.maps, steps);
 }

@@ -9,14 +9,13 @@ var _ = require('lodash');
 var boom = require('boom');
 
 module.exports = function (metadata) {
-    loadFileFromDisk(metadata);
+    _loadFileFromDisk(metadata);
     return {
         query: query(metadata),
         findByIdentifier: findByIdentifier(metadata),
         create: create(metadata),
         update: update,
-        updateStatus: updateStatus,
-        sendCreateResult: sendCreateResult(metadata)
+        updateStatus: updateStatus
     };
 };
 
@@ -49,7 +48,7 @@ function create(metadata) {
             return next(new Error("Object has no identifier"));
         }
         collection[identifier] = req.body;
-        saveCollectionToDisk(metadata, function (err) {
+        _saveCollectionToDisk(metadata, function (err) {
             if (err) {
                 return next(err);
             }
@@ -76,7 +75,7 @@ function updateStatus(metadata) {
             data: req.body,
             date: new Date().toISOString()
         });
-        saveCollectionToDisk(metadata, function (err) {
+        _saveCollectionToDisk(metadata, function (err) {
             if (err) {
                 return next(err);
             }
@@ -85,6 +84,7 @@ function updateStatus(metadata) {
         });
     };
 }
+
 function update(metadata) {
     var collection = db[metadata.collectionName];
     return function (req, res, next) {
@@ -96,7 +96,7 @@ function update(metadata) {
             return next(boom.notFound(util.format("%s %s with %s of %s was not found.", metadata.aOrAn, metadata.title, metadata.identifierName, identifier)));
         }
         collection[identifier] = req.body;
-        saveCollectionToDisk(metadata, function (err) {
+        _saveCollectionToDisk(metadata, function (err) {
             if (err) {
                 return next(err);
             }
@@ -106,23 +106,7 @@ function update(metadata) {
     };
 }
 
-function sendCreateResult(metadata) {
-    return function (req, res) {
-        var fullUrl;
-        var id = req.process.output[metadata.identifierName];
-        if (metadata.createdItemLocationHeader) {
-            fullUrl = metadata.createdItemLocationHeader;
-        } else {
-            fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-        }
-        fullUrl += '/' + id;
-        return res.status(201)
-            .location(fullUrl)
-            .json(req.process.output);
-    };
-}
-
-function loadFileFromDisk(metadata) {
+function _loadFileFromDisk(metadata) {
     metadata.collectionFilePath = path.join(collectionsPath, metadata.collectionName + '.json');
     //eslint-disable-next-line no-sync
     if (fs.existsSync(metadata.collectionFilePath)) {
@@ -137,10 +121,10 @@ function loadFileFromDisk(metadata) {
         return;
     }
     db[metadata.collectionName] = {};
-    saveCollectionToDisk(metadata);
+    _saveCollectionToDisk(metadata);
 }
 
-function saveCollectionToDisk(metadata, callback) {
+function _saveCollectionToDisk(metadata, callback) {
     var content = JSON.stringify(db[metadata.collectionName], null, 4);
     if (_.isNil(callback)) {
         //eslint-disable-next-line no-sync

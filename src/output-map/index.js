@@ -1,16 +1,9 @@
 'use strict';
-var validator = require('../validate/validator');
 var jsonSchemaFilter = require('json-schema-filter');
 var _ = require('lodash');
 var ensureExistsOnReq = require('./ensure-exists-on-req');
-var util = require('util');
-var boom = require('boom');
 
 module.exports = {
-    init: init,
-    setSchemas: setSchemas,
-    validateCreation: validateCreation,
-    validateUpdate: validateUpdate,
     filterOutput: filterOutput,
     mapOutput: mapOutput,
     set: set,
@@ -20,71 +13,14 @@ module.exports = {
     sendOutput: function sendOutput(req, res) {
         return res.status(200).json(req.process.output);
     },
-    newQuery: newQuery,
     addQueryStringToQuery: addQueryStringToQuery,
     sendNoContent: function (req, res) {
         res.status(204).send();
     }
 };
 
-function init(req, res, next) {
-    req.process = {};
-    next();
-}
-
-function setSchemas(schemas) {
-    if (!_.isObject(schemas)) {
-        throw new Error("Schemas must be an object when calling setSchemas");
-    }
-    if (schemas.creation.id === schemas.update.id) {
-        validator.addSchema(schemas.creation);
-    } else {
-        validator.addSchema(schemas.creation);
-        validator.addSchema(schemas.update);
-    }
-    return setSchemaMiddleware;
-    function setSchemaMiddleware(req, res, next) {
-        req.process.schemas = schemas;
-        next();
-    }
-}
-
-function validateCreation(req, res, next) {
-    if (!req.process.schemas) {
-        return next(new Error("req.process.schemas must be set"));
-    }
-    if (!req.process.schemas.creation) {
-        return next(new Error("req.process.schemas.creation must be set"));
-    }
-    if (!req.process.schemas.creation.id) {
-        return next(new Error(util.format("req.process.schemas.creation.id was null. Schema was %j ", req.process.schemas.creation)));
-    }
-    var result = validator.validate(req.process.schemas.creation.id, req.body);
-    if (!result.valid) {
-        return next(boom.badRequest(result.message, result.errors));
-    }
-    return next();
-}
-
-function validateUpdate(req, res, next) {
-    if (!req.process.schemas) {
-        return next(new Error("req.process.schemas must be set"));
-    }
-    if (!req.process.schemas.update) {
-        return next(new Error("req.process.schemas.update must be set"));
-    }
-    if (!req.process.schemas.update.id) {
-        return next(new Error(util.format("req.process.schemas.update.id was null. Schema was %j ", req.process.schemas.update)));
-    }
-    var result = validator.validate(req.process.schemas.update.id, req.body);
-    if (!result.valid) {
-        return next(boom.badRequest(result.message, result.errors));
-    }
-    return next();
-}
-
 function filterOutput(req, res, next) {
-    if (!req.process.schemas.output) {
+    if (!req.process.metadata.schemas.output) {
         return next(new Error("Schema must be set before you can call mapOutput"));
     }
     if (!req.process.output) {
@@ -92,10 +28,10 @@ function filterOutput(req, res, next) {
     }
     if (_.isArray(req.process.output)) {
         req.process.output.forEach(function (item, index) {
-            req.process.output[index] = jsonSchemaFilter(req.process.schemas.output, item);
+            req.process.output[index] = jsonSchemaFilter(req.process.metadata.schemas.output, item);
         });
     } else {
-        req.process.output = jsonSchemaFilter(req.process.schemas.output, req.process.output);
+        req.process.output = jsonSchemaFilter(req.process.metadata.schemas.output, req.process.output);
     }
     return next();
 }
@@ -166,11 +102,6 @@ function set(destinationPath, sourcePath) {
 
 function ensureOutput(options) {
     return ensureExistsOnReq('process.output', options);
-}
-
-function newQuery(req, res, next) {
-    req.process.query = {};
-    next();
 }
 
 function addQueryStringToQuery(req, res, next) {
