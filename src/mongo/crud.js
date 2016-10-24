@@ -2,6 +2,8 @@
 var mongo = require('./index');
 var aqp = require('api-query-params').default;
 var boom = require('boom');
+var _ = require('lodash');
+var util = require('util');
 
 module.exports = function (metadata) {
     return {
@@ -21,6 +23,7 @@ function query(metadata) {
             .skip(parsedQuery.skip)
             .limit(parsedQuery.limit)
             .sort(parsedQuery.sort)
+            .project(parsedQuery.projection)
             .toArray(dataRetrieved);
 
         function dataRetrieved(err, docs) {
@@ -28,6 +31,7 @@ function query(metadata) {
                 return next(err);
             }
             req.process[metadata.namePlural] = docs;
+            return next();
         }
     };
 }
@@ -42,15 +46,35 @@ function parseQueryWithDefaults(queryString) {
 }
 
 function findByIdentifier(metadata) {
-    //var collection = db[metadata.collectionName];
     return function (req, res, next) {
-        // var identifier = req.params[metadata.identifierName];
-        // if (_.isNil(identifier)) {
-        //     return next(new Error("Object has no identifier"));
-        // }
-        // req.process[metadata.name] = collection[identifier];
-        return next();
+        var identifier = req.params[metadata.identifierName];
+        if (_.isNil(identifier)) {
+            return next(new Error("Object has no identifier"));
+        }
+        var query = getIdentifierQuery(identifier, metadata);
+        mongo.db.collection(metadata.collectionName)
+            .findOne(query, dataRetrieved);
+
+        function dataRetrieved(err, doc) {
+            if (err) {
+                return next(err);
+            }
+            if (!doc) {
+                return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, identifier)));
+            }
+            req.process[metadata.name] = doc;
+            return next();
+        }
     };
+}
+
+function getIdentifierQuery(identifier, metadata) {
+    if (mongo.isValidObjectId(identifier)) {
+        return {_id: identifier};
+    }
+    var query = {};
+    query[metadata.identifierName] = identifier;
+    return query;
 }
 
 function create(metadata) {
