@@ -51,9 +51,8 @@ function findByIdentifier(metadata) {
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var query = getIdentifierQuery(identifier, metadata);
         mongo.db.collection(metadata.collectionName)
-            .findOne(query, dataRetrieved);
+            .findOne(getIdentifierQuery(identifier, metadata), dataRetrieved);
 
         function dataRetrieved(err, doc) {
             if (err) {
