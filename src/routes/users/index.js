@@ -9,6 +9,6 @@ var mongoCrudMiddleware = require('../../mongo/crud')(router.metadata);
 router.add.query({crudMiddleware: mongoCrudMiddleware});
 router.add.getById({crudMiddleware: mongoCrudMiddleware});
 router.add.create({crudMiddleware: mongoCrudMiddleware});
-router.add.update({crudMiddleware: crudMiddleware});
+router.add.update({crudMiddleware: mongoCrudMiddleware});
 router.add.updateStatus({crudMiddleware: crudMiddleware});
 module.exports = router;

@@ -71,9 +71,9 @@ function getIdentifierQuery(identifier, metadata) {
     if (mongo.isValidObjectId(identifier)) {
         return {_id: identifier};
     }
-    var query = {};
-    query[metadata.identifierName] = identifier;
-    return query;
+    var identifierQuery = {};
+    identifierQuery[metadata.identifierName] = identifier;
+    return identifierQuery;
 }
 
 function create(metadata) {
@@ -114,22 +114,20 @@ function updateStatus(metadata) {
 }
 
 function update(metadata) {
-    // var collection = db[metadata.collectionName];
     return function (req, res, next) {
-        //     var identifier = req.body[metadata.identifierName];
-        //     if (_.isNil(identifier)) {
-        //         return next(new Error("Object has no identifier"));
-        //     }
-        //     if (_.isNil(collection[identifier])) {
-        //         return next(boom.notFound(util.format("%s %s with %s of %s was not found.", metadata.aOrAn, metadata.title, metadata.identifierName, identifier)));
-        //     }
-        //     collection[identifier] = req.body;
-        //     _saveCollectionToDisk(metadata, function (err) {
-        //         if (err) {
-        //             return next(err);
-        //         }
-        //         req.process.output = req.body;
-        return next();
-        //});
+        var identifier = req.params[metadata.identifierName];
+        if (_.isNil(identifier)) {
+            return next(new Error("Object has no identifier"));
+        }
+        var filter = getIdentifierQuery(identifier, metadata);
+        var replacement = req.body;
+        var options = {
+            returnOriginal: false
+        };
+        mongo.db.collection(metadata.collectionName).findOneAndReplace(filter, replacement, options, updateComplete);
+        function updateComplete(err, r) {
+            req.process.output = req.body;
+            return next();
+        }
     };
 }
