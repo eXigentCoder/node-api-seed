@@ -87,29 +87,37 @@ function create(metadata) {
 }
 
 function updateStatus(metadata) {
-    //var collection = db[metadata.collectionName];
     return function (req, res, next) {
-        // var identifier = req.body[metadata.identifierName];
-        // if (_.isNil(identifier)) {
-        //     return next(new Error("Object has no identifier"));
-        // }
-        // if (_.isNil(collection[identifier])) {
-        //     return next(boom.notFound(util.format("%s %s with %s of %s was not found.", metadata.aOrAn, metadata.title, metadata.identifierName, identifier)));
-        // }
-        // collection[identifier].status = req.params.newStatus;
-        // collection[identifier].statusLog = collection[identifier].statusLog || [];
-        // collection[identifier].statusLog.push({
-        //     status: req.params.newStatus,
-        //     data: req.body,
-        //     date: new Date().toISOString()
-        // });
-        // _saveCollectionToDisk(metadata, function (err) {
-        //     if (err) {
-        //         return next(err);
-        //     }
-        //     req.process.output = req.body;
-        return next();
-        //});
+        var identifier = req.params[metadata.identifierName];
+        if (_.isNil(identifier)) {
+            return next(new Error("Object has no identifier"));
+        }
+        var filter = getIdentifierQuery(identifier, metadata);
+        var updateStatement = {
+            $set: {
+                status: req.params.newStatus,
+                statusDate: new Date()
+            },
+            $push: {
+                statusLog: {
+                    status: req.params.newStatus,
+                    data: req.body,
+                    statusDate: new Date().toISOString()
+                }
+            }
+        };
+        var options = {
+            returnOriginal: false
+        };
+        mongo.db.collection(metadata.collectionName)
+            .findOneAndUpdate(filter, updateStatement, options, updateComplete);
+        function updateComplete(err, result) {
+            if (err) {
+                return next();
+            }
+            req.process.output = result.value;
+            return next();
+        }
     };
 }
 
@@ -124,9 +132,13 @@ function update(metadata) {
         var options = {
             returnOriginal: false
         };
-        mongo.db.collection(metadata.collectionName).findOneAndReplace(filter, replacement, options, updateComplete);
-        function updateComplete(err, r) {
-            req.process.output = req.body;
+        mongo.db.collection(metadata.collectionName)
+            .findOneAndReplace(filter, replacement, options, updateComplete);
+        function updateComplete(err, result) {
+            if (err) {
+                return next();
+            }
+            req.process.output = result.value;
             return next();
         }
     };
