@@ -54,20 +54,12 @@ function findByIdentifier(metadata) {
 }
 
 function create(metadata) {
-    //var collection = db[metadata.collectionName];
     return function (req, res, next) {
-        // var identifier = req.body[metadata.identifierName];
-        // if (_.isNil(identifier)) {
-        //     return next(new Error("Object has no identifier"));
-        // }
-        // collection[identifier] = req.body;
-        // _saveCollectionToDisk(metadata, function (err) {
-        //     if (err) {
-        //         return next(err);
-        //     }
-        //     req.process.output = req.body;
-        return next();
-        //});
+        mongo.db.collection(metadata.collectionName).insertOne(req.body, inserted);
+        function inserted(err) {
+            req.process.output = req.body;
+            return next(err);
+        }
     };
 }
 
