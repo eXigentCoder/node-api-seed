@@ -1,18 +1,35 @@
 'use strict';
 var _ = require('lodash');
 var jsf = require('json-schema-faker');
+var util = require('util');
+
 module.exports = function (definition) {
     var template = getTemplate();
     if (definition.metadata) {
-        if (_.get('definition.cases.Creation.Happy.send')) {
-            delete template.cases.Creation.Happy.send;
-        } else {
-            template.cases.Creation.Happy.send = jsf(definition.metadata.schemas.creation);
-        }
+
+        generateDataWhereRequired(definition.cases);
         template.title = definition.baseUrl + ' - ' + definition.metadata.schemas.core.title;
     }
     return _.merge({}, template, definition);
 };
+
+function generateDataWhereRequired(cases, definition) {
+    Object.keys(cases).forEach(function (key) {
+        var value = cases[key];
+        if (_.isObject(value)) {
+            generateDataWhereRequired(cases, definition);
+            return;
+        }
+        if (key.toLowerCase() === 'send' && value.toLowerCase().indexOf('generate-') === 0) {
+            var schemaName = value.split('-')[0];
+            var schema = definition.metadata.schemas[schemaName];
+            if (!schema) {
+                throw new Error(util.format("Schema with name %s was not found.", schemaName, Object.keys(definition.metadata.schemas)));
+            }
+            cases[key] = jsf(schema);
+        }
+    });
+}
 
 function getTemplate() {
     return {
@@ -20,6 +37,7 @@ function getTemplate() {
             "Creation": {
                 verb: 'POST',
                 "Happy": {
+                    send: 'generate',
                     statusCode: 201,
                     result: 'success'
                 },
@@ -43,7 +61,15 @@ function getTemplate() {
                         hasResults: true
                     }
                 }
-            }
+            },
+            "Update": {
+                verb: 'PUT',
+                "Replace": {
+                    statusCode: 200,
+                    result: 'success'
+                }
+            },
+            "UpdateStatus": {}
         }
     };
 }
