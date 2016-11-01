@@ -6,8 +6,7 @@ describe('Root', function () {
     this.timeout(common.defaultTimeout);
     it('Get', function (done) {
         common.request.get('/')
-            .expect(200)
-            .expect(common.success)
+            .expect(common.success(200))
             .expect(common.matchesSwaggerSchema)
             .end(done);
     });
