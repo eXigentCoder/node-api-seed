@@ -24,6 +24,7 @@
             "faker": "name.lastName"
         }
     },
+    "additionalProperties": false,
     "required": [
         "email",
         "firstName",
