@@ -8,13 +8,17 @@
   "scripts": {
     "start": "nodejs-dashboard node index.js",
     "watch": "nodemon .",
-    "test": "node_modules/.bin/istanbul --include-all-sources cover node_modules/mocha/bin/_mocha test/**/*.js",
+    "test": "snyk test && node_modules/.bin/istanbul --include-all-sources cover node_modules/mocha/bin/_mocha test/**/*.js",
     "mocha": "node_modules/.bin/_mocha test/**/*.js",
     "lint": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js --fix",
     "lint-ci": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js",
     "report": "plato -r -d report -e .eslintrc src",
-    "check-dependencies": "npm-check -Eu",
-    "setDeploymentDate": "node ./utilities/set-deployment-date/index.js"
+    "update": "node_modules/.bin/npm-check -Eu",
+    "audit": "node_modules/.bin/nsp check",
+    "secure": "node_modules/.bin/snyk wizard",
+    "setDeploymentDate": "node ./utilities/set-deployment-date/index.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -48,7 +52,7 @@
     "json-schema-filter": "0.1.5",
     "json-schema-ref-parser": "3.1.2",
     "lodash": "4.16.4",
-    "moment": "2.15.1",
+    "moment": "2.15.2",
     "mongodb": "2.2.11",
     "morgan": "1.7.0",
     "nconf": "0.8.4",
@@ -61,7 +65,8 @@
     "swagger-spec-express": "1.0.7",
     "winston": "2.2.0",
     "winston-daily-rotate-file": "1.3.1",
-    "winston-loggly": "1.3.1"
+    "winston-loggly": "1.3.1",
+    "snyk": "1.19.1"
   },
   "devDependencies": {
     "chai": "3.5.0",
@@ -71,8 +76,10 @@
     "mocha": "3.1.2",
     "nodemon": "1.11.0",
     "npm-check": "5.4.0",
+    "nsp": "2.4.0",
     "plato": "1.7.0",
     "supertest": "2.0.1",
     "swagger-ui": "2.2.6"
-  }
+  },
+  "snyk": true
 }
