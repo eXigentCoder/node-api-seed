@@ -33,7 +33,7 @@ module.exports = {
             datePattern: './logs/ddd-HH',
             prepend: true
         },
-        loggly: {
+        loggly: { //todo, configure or remove
             disabled: true,
             level: 'silly',
             json: true,
@@ -78,7 +78,7 @@ module.exports = {
     },
     corsOptions: {
         origin: [host + ':' + port],// todo If you need CORS for other origins, set that up here. See https://www.npmjs.com/package/cors for info.
-        preflightContinue: false //don't call next() for the preflight OPTIONS verb.
+        preflightContinue: false // don't call next() for the preflight OPTIONS verb.
     },
     swagger: {
         writeFile: false,
@@ -94,6 +94,7 @@ module.exports = {
         }
     },
     expressApp: {
+        trustProxy: false,// todo Used for if you're behind a reverse proxy (Heroku, Bluemix, AWS if you use an ELB, custom Nginx setup, etc). See https://expressjs.com/en/guide/behind-proxies.html
         jsonSpaces: 0,
         routerOptions: {
             mergeParams: true
@@ -101,20 +102,20 @@ module.exports = {
         helmetOptions: { //todo setup security options, see https://www.npmjs.com/package/helmet
             contentSecurityPolicy: {//loading resources
                 directives: {
-                    defaultSrc: ["'self'"],//only allow resources (css, js, html, etc) from our api.
+                    defaultSrc: ["'self'"],//todo only allow resources (css, js, html, etc) from our api.
                     styleSrc: ["'unsafe-inline'"],//inline css and css sections in headers.
                     reportUri: '/report-violation' //CSP violations will be posted here (server) from the browser.
                 }
             },
             frameguard: { //iframe related security
-                action: 'sameorigin' //only iframes from the same domain
+                action: 'sameorigin' //todo only iframes from the same domain
             },
-            // hpkp: { // pins the public key of your https cert to prevent man-in-the-middle attacks
+            // hpkp: { // todo pins the public key of your https cert to prevent man-in-the-middle attacks
             //     maxAge: 7776000, // ninetyDaysInSeconds
             //     sha256s: ['AbCdEf123=', 'ZyXwVu456='], set keys here
             //     includeSubdomains: true // only set to true if you are using subdomains
             // },
-            // hsts: { //tells the browser to stick to  https, set this once you have https setup
+            // hsts: { //todo tells the browser to stick to  https, set this once you have https setup
             //     maxAge: 5184000 // sixtyDaysInSeconds
             // },
             noCache: false//set to true to ensure the browser doesn't cache things, can prevent old stale code from not refreshing on deploy

@@ -8,5 +8,6 @@ var users = require('./users');
 module.exports = router;
 
 router.use('/', base);
+
 router.use('/users', users);
 
