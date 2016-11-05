@@ -5,6 +5,7 @@ var routerOptions = config.get('expressApp').routerOptions;
 var router = express.Router(routerOptions);
 var packageJson = require('../../package.json');
 var testErrors = require('../routes/test-errors');
+var path = require('path');
 var swagger = require('swagger-spec-express');
 swagger.swaggerise(router);
 var appInfoSchema = require('./app-info.json');
@@ -43,6 +44,17 @@ router.get('/', function (req, res) {
             }
         }
     }
+});
+
+router.use('/apidocs', express.static(path.join(__dirname, '../../public')));
+
+router.post('/report-violation', function logCspViolation(req, res) {
+    if (req.body) {
+        console.error('CSP Violation from browser: ', req.body);
+    } else {
+        console.error('CSP Violation from browser: No data received!');
+    }
+    res.status(204).end();
 });
 
 router.get("/apidocs.json", function getApiDocument(req, res) {

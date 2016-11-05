@@ -47,7 +47,7 @@ module.exports = {
         morgan: {
             disabled: false,
             skip: {
-                paths: ['/public/', '/favicon.ico'],
+                paths: ['/public/', '/favicon.ico', '/apidocs/'],
                 headers: [{key: 'user-agent', value: 'AlwaysOn'}]
             },
             loggers: [
@@ -93,9 +93,29 @@ module.exports = {
     },
     expressApp: {
         jsonSpaces: 0,
-        xPoweredBy: false,
         routerOptions: {
             mergeParams: true
+        },
+        helmetOptions: { //todo setup security options, see https://www.npmjs.com/package/helmet
+            contentSecurityPolicy: {//loading resources
+                directives: {
+                    defaultSrc: ["'self'"],//only allow resources (css, js, html, etc) from our api.
+                    styleSrc: ["'unsafe-inline'"],//inline css and css sections in headers.
+                    reportUri: '/report-violation' //CSP violations will be posted here (server) from the browser.
+                }
+            },
+            frameguard: { //iframe related security
+                action: 'sameorigin' //only iframes from the same domain
+            },
+            // hpkp: { // pins the public key of your https cert to prevent man-in-the-middle attacks
+            //     maxAge: 7776000, // ninetyDaysInSeconds
+            //     sha256s: ['AbCdEf123=', 'ZyXwVu456='], set keys here
+            //     includeSubdomains: true // only set to true if you are using subdomains
+            // },
+            // hsts: { //tells the browser to stick to  https, set this once you have https setup
+            //     maxAge: 5184000 // sixtyDaysInSeconds
+            // },
+            noCache: false//set to true to ensure the browser doesn't cache things, can prevent old stale code from not refreshing on deploy
         }
     },
     mongodb: {
