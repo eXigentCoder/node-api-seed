@@ -119,6 +119,13 @@ module.exports = {
             //     maxAge: 5184000 // sixtyDaysInSeconds
             // },
             noCache: false//set to true to ensure the browser doesn't cache things, can prevent old stale code from not refreshing on deploy
+        },
+        apiRateLimitOptions: {
+            freeRetries: 1000, //The number of retires the user has before they need to start waiting (default: 2)
+            minWait: 60 * 1000, //The initial wait time (in milliseconds) after the user runs out of retries (default: 500 milliseconds)
+            maxWait: 60 * 1000 //The maximum amount of time (in milliseconds) between requests the user needs to wait (default: 15 minutes). The wait for a given request is determined by adding the time the user needed to wait for the previous two requests.
+            //lifetime: 60, //The length of time (in seconds since the last request) to remember the number of requests that have been made by an IP. By default it will be set to maxWait * the number of attempts before you hit maxWait to discourage simply waiting for the lifetime to expire before resuming an attack. With default values this is about 6 hours.
+
         }
     },
     mongodb: {
