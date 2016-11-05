@@ -1,7 +1,9 @@
 'use strict';
+var host = 'localhost';
+var port = 10001;
 module.exports = {
-    PORT: 10001,
-    host: 'localhost',
+    PORT: port,
+    host: host,
     logging: {
         console: {
             disabled: false,
@@ -75,8 +77,8 @@ module.exports = {
         exposeErrorRoutes: false
     },
     corsOptions: {
-        /*todo If you need CORS to only be enabled for certain origins or routes, set that up here.
-         See https://www.npmjs.com/package/cors for info.*/
+        origin: [host + ':' + port],// todo If you need CORS for other origins, set that up here. See https://www.npmjs.com/package/cors for info.
+        preflightContinue: false //don't call next() for the preflight OPTIONS verb.
     },
     swagger: {
         writeFile: false,
