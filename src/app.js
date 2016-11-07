@@ -15,6 +15,8 @@ var mongo = require('./mongo');
 var appSettings = config.get('expressApp');
 var helmet = require('helmet');
 var rateLimit = require('./rate-limit');
+var authentication = require('./authentication');
+
 module.exports = function initialise(callback) {
     async.waterfall([
         createApp,
@@ -23,7 +25,8 @@ module.exports = function initialise(callback) {
         addCommonSwaggerItems,
         generateSwaggerJson,
         mongo.connect,
-        rateLimit.initialise
+        rateLimit.initialise,
+        authentication.initialise
     ], callback);
 };
 
