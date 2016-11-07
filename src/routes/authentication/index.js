@@ -24,6 +24,8 @@ function login(req, res, next) {
         if (!token) {
             return next(boom.unauthorized());
         }
-        res.json({token: token});
+        req.brute.reset(function () {
+            res.json({token: token});
+        });
     }
 }
