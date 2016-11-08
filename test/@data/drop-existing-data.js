@@ -1,31 +1,26 @@
 'use strict';
-var MongoClient = require('mongodb').MongoClient;
 var config = require('nconf');
 var async = require('async');
-var mongoOptions = config.get("mongodb");
+var mongo = require("../../src/mongo/index");
 
 module.exports = function dropExistingData(data, callback) {
+    var mongoOptions = config.get("mongodb");
     if (!mongoOptions.allowDropData) {
         return callback(new Error("Configuration is setup to not allow dropping of data. Make sure you are not on live"));
     }
-    MongoClient.connect(mongoOptions.url, mongoOptions.options, function (connectionError, db) {
-        if (connectionError) {
-            return callback(connectionError);
-        }
-        async.each(data.collections, removeDataInCollection, allDone);
-        function allDone(err) {
-            db.close();
-            return callback(err, data);
-        }
+    async.each(data.collections, dropCollection, allDone);
 
-        function removeDataInCollection(collection, done) {
-            db.dropCollection(collection.name, function (dropCollectionError) {
-                if (dropCollectionError && dropCollectionError.message && dropCollectionError.message === 'ns not found') {
-                    console.log('Collection ' + collection.name + ' did not exist');
-                    return done();
-                }
-                return done(dropCollectionError);
-            });
-        }
-    });
+    function allDone(err) {
+        return callback(err, data);
+    }
 };
+
+function dropCollection(collection, callback) {
+    mongo.db.dropCollection(collection.name, function (dropCollectionError) {
+        if (dropCollectionError && dropCollectionError.message && dropCollectionError.message === 'ns not found') {
+            console.log('Collection ' + collection.name + ' did not exist');
+            return callback();
+        }
+        return callback(dropCollectionError);
+    });
+}

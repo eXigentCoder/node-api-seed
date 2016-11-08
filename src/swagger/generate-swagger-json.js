@@ -1,7 +1,6 @@
 'use strict';
 var swagger = require('swagger-spec-express');
 var config = require('nconf');
-var swaggerConfig = config.get('swagger');
 var os = require('os');
 var fs = require('fs');
 var util = require('util');
@@ -11,6 +10,7 @@ module.exports = function generateSwaggerJson(app, callback) {
     if (!result.valid) {
         console.warn(util.format("Compiled Swagger document does not pass validation:%s%s%s", os.EOL, result.message, JSON.stringify(result.errors, null, 4)));
     }
+    var swaggerConfig = config.get('swagger');
     if (swaggerConfig.writeFile) {
         return writeSwaggerFileToDisk(app, callback);
     }

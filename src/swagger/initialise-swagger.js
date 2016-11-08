@@ -2,11 +2,11 @@
 var config = require('nconf');
 var packageJson = require('../../package.json');
 var swagger = require('swagger-spec-express');
-var swaggerConfig = config.get('swagger');
 var _ = require('lodash');
 
 module.exports = function initialiseSwagger(app, callback) {
-    var baseDocument = swaggerConfig.baseDocument || buildBaseDocument();
+    var swaggerConfig = config.get('swagger');
+    var baseDocument = swaggerConfig.baseDocument || buildBaseDocument(swaggerConfig);
     var options = {
         document: baseDocument,
         defaultSecurity: swaggerConfig.defaultSecurity
@@ -20,7 +20,7 @@ module.exports = function initialiseSwagger(app, callback) {
     return callback(null, app);
 };
 
-function buildBaseDocument() {
+function buildBaseDocument(swaggerConfig) {
     var host = config.get('host');
     if (swaggerConfig.appendPortToHost) {
         host += ":" + config.get('PORT');

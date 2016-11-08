@@ -3,7 +3,6 @@ var mongo = require('../mongo');
 var MongoStore = require('express-brute-mongo');
 var ExpressBrute = require('express-brute');
 var config = require('nconf');
-var rateLimits = config.get('expressApp').rateLimits;
 var instances = {};
 var moment = require('moment');
 var util = require('util');
@@ -55,6 +54,7 @@ function initialise(instanceName) {
             storeReady(mongo.db.collection('rate-limit-' + instanceName));
             callback();
         });
+        var rateLimits = config.get('expressApp').rateLimits;
         var defaultRateLimits = rateLimits.default;
         var options = _.merge(defaultRateLimits, rateLimits[instanceName]);
         options.failCallback = options.failCallback || apiRateLimited;
