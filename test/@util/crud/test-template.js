@@ -68,7 +68,7 @@ function getTemplate() {
                     result: 'success'
                 }
             },
-            "UpdateStatus": {}
+            "UpdateStatus": {ignore: true}
         }
     };
 }
