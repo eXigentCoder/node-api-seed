@@ -49,19 +49,37 @@ function findDataForCollection(collection, callback) {
             return callback(err);
         }
         collection.files = [];
-        results.forEach(function (result) {
-            var requirePath = './' + path.relative(__dirname, result).replace(/\\/g, '/');
-            var fileData = require(requirePath);
-            if (_.isFunction(fileData)) {
-                fileData = fileData();
-            }
-            var file = {
-                filename: path.basename(result),
-                globPath: result,
-                data: fileData
-            };
-            collection.files.push(file);
-        });
-        return callback();
+        async.each(results, async.apply(getFileData, collection), callback);
     }
+}
+
+function getFileData(collection, result, callback) {
+    var requirePath = './' + path.relative(__dirname, result).replace(/\\/g, '/');
+    var fileData = require(requirePath);
+    if (_.isFunction(fileData)) {
+        if (fileData.length === 1) {
+            return loadFileDataAsync(collection, fileData, result, callback);
+        }
+        fileData = fileData();
+    }
+    push(collection, fileData, result);
+    return callback();
+}
+function loadFileDataAsync(collection, loadFunction, result, callback) {
+    loadFunction(function (err, data) {
+        if (err) {
+            return callback(err);
+        }
+        push(collection, data, result);
+        return callback();
+    });
+}
+
+function push(collection, fileData, result) {
+    var file = {
+        filename: path.basename(result),
+        globPath: result,
+        data: fileData
+    };
+    collection.files.push(file);
 }
