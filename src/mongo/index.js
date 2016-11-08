@@ -3,7 +3,6 @@ var mongo = require('mongodb');
 var ObjectId = mongo.ObjectId;
 var config = require('nconf');
 var MongoClient = mongo.MongoClient;
-var mongodbConfig = config.get('mongodb');
 var util = require('util');
 
 var state = {
@@ -46,6 +45,7 @@ function closeConnection(callback) {
 }
 
 function connectToDb(app, callback) {
+    var mongodbConfig = config.get('mongodb');
     MongoClient.connect(mongodbConfig.url, mongodbConfig.options, connected);
     function connected(err, db) {
         if (err) {

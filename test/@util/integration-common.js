@@ -5,14 +5,14 @@ var async = require('async');
 var request = require('supertest');
 var expect = require('./expect');
 var set = require('./set');
+var dropAndRecreate = require('../@data/drop-and-recreate');
 
 before(function (done) {
     this.timeout(10000);
     async.waterfall([
         createApp,
         createDataObject,
-        //clean db
-        //setup initial data
+        dropAndRecreate,
         expect.initialise
     ], waterfallComplete);
 

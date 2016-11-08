@@ -6,8 +6,7 @@ var util = require('util');
 module.exports = function (definition) {
     var template = getTemplate();
     if (definition.metadata) {
-
-        generateDataWhereRequired(definition.cases);
+        generateDataWhereRequired(definition.cases, definition);
         template.title = definition.baseUrl + ' - ' + definition.metadata.schemas.core.title;
     }
     return _.merge({}, template, definition);
@@ -17,7 +16,7 @@ function generateDataWhereRequired(cases, definition) {
     Object.keys(cases).forEach(function (key) {
         var value = cases[key];
         if (_.isObject(value)) {
-            generateDataWhereRequired(cases, definition);
+            generateDataWhereRequired(value, definition);
             return;
         }
         if (key.toLowerCase() === 'send' && value.toLowerCase().indexOf('generate-') === 0) {

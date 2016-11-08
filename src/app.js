@@ -12,7 +12,6 @@ var initialiseSwagger = require('./swagger/initialise-swagger');
 var addCommonSwaggerItems = require('./swagger/add-common-items');
 var generateSwaggerJson = require('./swagger/generate-swagger-json');
 var mongo = require('./mongo');
-var appSettings = config.get('expressApp');
 var helmet = require('helmet');
 var rateLimit = require('./rate-limit');
 var authentication = require('./authentication');
@@ -31,6 +30,7 @@ module.exports = function initialise(callback) {
 };
 
 function createApp(callback) {
+    var appSettings = config.get('expressApp');
     var app = express();
     app.set('json spaces', appSettings.jsonSpaces);
     app.set('trust proxy', appSettings.trustProxy);

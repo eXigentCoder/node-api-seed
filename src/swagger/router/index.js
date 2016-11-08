@@ -4,7 +4,6 @@ var express = require('express');
 var buildMetadata = require('../build-metadata');
 var addStandardRoutes = require('./add-standard-routes');
 var config = require('nconf');
-var routerOptions = config.get('expressApp').routerOptions;
 var _ = require('lodash');
 
 module.exports = function Router(options) {
@@ -26,6 +25,7 @@ function setTag(options) {
 }
 
 function createRouter(options) {
+    var routerOptions = config.get('expressApp').routerOptions;
     var router = express.Router(routerOptions);
     swagger.swaggerize(router);
     router.metadata = options;

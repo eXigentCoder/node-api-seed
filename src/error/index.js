@@ -3,7 +3,6 @@ var packageJson = require('../../package.json');
 var boom = require('boom');
 var _ = require('lodash');
 var config = require('nconf');
-var errorOptions = config.get('errorHandling');
 var getRequestIdOptions = require('../logging/configure-request-id').getRequestIdOptions;
 
 module.exports = {
@@ -29,6 +28,7 @@ module.exports = {
         } else {
             console.warn('RequestId-' + requestId, 'Client Error :', err);
         }
+        var errorOptions = config.get('errorHandling');
         if (errorOptions.exposeServerErrorMessages && err.isServer) {
             var msgToLog = err.output.payload;
             if (err.data) {
