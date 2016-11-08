@@ -97,7 +97,7 @@ module.exports = {
                 // name: "Authorization",
                 // in: 'header',
                 flow: 'password',
-                tokenUrl: '/authentication/login',
+                tokenUrl: '/authentication/application',
                 scopes: {
                     "write:users": "modify users in the system",
                     "read:pets": "read users in the system"
