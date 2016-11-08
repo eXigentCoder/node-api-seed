@@ -14,7 +14,7 @@ function insertDataForCollection(collection, callback) {
     async.each(collection.files, async.apply(insertFile, dbCollection), callback);
 }
 
-function insertFile(dbCollection, file, callback) {
+    function insertFile(dbCollection, file, callback) {
     dbCollection.insertOne(file.data, inserted);
     function inserted(err) {
         if (err) {

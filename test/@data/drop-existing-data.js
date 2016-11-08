@@ -1,26 +1,31 @@
 'use strict';
-var config = require('nconf');
+var mongo = require('../../src/mongo/index');
 var async = require('async');
-var mongo = require("../../src/mongo/index");
-
-module.exports = function dropExistingData(data, callback) {
-    var mongoOptions = config.get("mongodb");
-    if (!mongoOptions.allowDropData) {
-        return callback(new Error("Configuration is setup to not allow dropping of data. Make sure you are not on live"));
-    }
-    async.each(data.collections, dropCollection, allDone);
-
-    function allDone(err) {
-        return callback(err, data);
+var util = require('util');
+module.exports = function findCollections(callback) {
+    console.log("Loading collections...");
+    mongo.db.collections(collectionsRetrieved);
+    function collectionsRetrieved(err, collections) {
+        if (err) {
+            return callback(err);
+        }
+        console.log("\tDone.");
+        console.log("Clearing items in collections...");
+        return async.each(collections, clearItemsInCollection, callback);
     }
 };
+var collectionsToSkipWhenClearing = ['system.indexes'];
 
-function dropCollection(collection, callback) {
-    mongo.db.dropCollection(collection.name, function (dropCollectionError) {
-        if (dropCollectionError && dropCollectionError.message && dropCollectionError.message === 'ns not found') {
-            console.log('Collection ' + collection.name + ' did not exist');
+function clearItemsInCollection(item, callback) {
+    var name = item.s.name;
+    if (collectionsToSkipWhenClearing.indexOf(name) >= 0) {
+        return callback();
+    }
+    mongo.db.dropCollection(name, function (err) {
+        if (err && err.message && err.message === 'ns not found') {
+            console.log(util.format('Collection %s did not exist', name));
             return callback();
         }
-        return callback(dropCollectionError);
+        return callback(err);
     });
 }
