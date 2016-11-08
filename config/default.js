@@ -76,10 +76,6 @@ module.exports = {
         exposeServerErrorMessages: false, //Ensure that this is false on production environments to prevent leaking security vulnerabilities
         exposeErrorRoutes: false
     },
-    corsOptions: {
-        origin: [host + ':' + port],// todo If you need CORS for other origins, set that up here. See https://www.npmjs.com/package/cors for info.
-        preflightContinue: false // don't call next() for the preflight OPTIONS verb.
-    },
     swagger: {
         writeFile: false,
         appendPortToHost: false,
@@ -98,6 +94,10 @@ module.exports = {
         jsonSpaces: 0,
         routerOptions: {
             mergeParams: true
+        },
+        corsOptions: {
+            origin: [host + ':' + port],// todo If you need CORS for other origins, set that up here. See https://www.npmjs.com/package/cors for info.
+            preflightContinue: false // don't call next() for the preflight OPTIONS verb.
         },
         helmetOptions: { //todo setup security options, see https://www.npmjs.com/package/helmet
             contentSecurityPolicy: {//loading resources
@@ -156,5 +156,8 @@ module.exports = {
             }
         },
         allowDropData: false
+    },
+    passwordOptions: {
+        saltRounds: 10
     }
 };

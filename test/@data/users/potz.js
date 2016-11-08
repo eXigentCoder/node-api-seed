@@ -1,11 +1,10 @@
 'use strict';
-var ObjectId = require('../../../src/mongo/index').ObjectId;
+var ObjectId = require('mongodb').ObjectId;
 var bcrypt = require('bcrypt');
-var password = '12345678';
-var saltRounds = 10;
+var config = require('nconf');
 
 module.exports = function (callback) {
-    bcrypt.hash(password, saltRounds, hashCalculated);
+    bcrypt.hash('12345678', config.get('passwordOptions').saltRounds, hashCalculated);
 
     function hashCalculated(err, hash) {
         if (err) {

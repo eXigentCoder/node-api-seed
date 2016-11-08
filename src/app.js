@@ -35,7 +35,7 @@ function createApp(callback) {
     app.set('json spaces', appSettings.jsonSpaces);
     app.set('trust proxy', appSettings.trustProxy);
     app.use(helmet(appSettings.helmetOptions));
-    app.use(cors(config.get('corsOptions')));
+    app.use(cors(appSettings.corsOptions));
     app.use(bodyParser.json({
         type: ['json', 'application/csp-report']
     }));
