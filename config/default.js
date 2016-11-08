@@ -154,6 +154,7 @@ module.exports = {
                 "autoReconnect": true,
                 "sslValidate": false
             }
-        }
+        },
+        allowDropData: false
     }
 };
