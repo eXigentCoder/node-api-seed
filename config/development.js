@@ -8,6 +8,9 @@ module.exports = {
         writeFile: true,
         appendPortToHost: true
     },
+    mongodb: {
+        allowDropData: true
+    },
     expressApp: {
         jsonSpaces: 4
     }
