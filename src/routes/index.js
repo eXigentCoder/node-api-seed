@@ -13,6 +13,7 @@ module.exports = router;
 router.use('/', base);
 router.use('/authentication', authentication);
 router.use(rateLimit.api);
+
 router.use(passport.authenticate('jwt', {session: false}));
 router.use('/users', users);
 
