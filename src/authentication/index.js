@@ -6,6 +6,8 @@ var boom = require('boom');
 var util = require('util');
 var config = require('nconf');
 var jwt = require('jsonwebtoken');
+var moment = require('moment');
+var _ = require('lodash');
 
 module.exports = {
     initialise: initialise,
@@ -15,7 +17,7 @@ module.exports = {
 };
 
 function initialise(app, callback) {
-    var strategy = new passportJWT.Strategy(config.get('authenticationOptions').jwt, findUserById);
+    var strategy = new passportJWT.Strategy(_.omit(config.get('authenticationOptions').jwt, 'sign'), findUserById);
     passport.use(strategy);
     callback(null, app);
 }
@@ -43,11 +45,14 @@ function findUserById(req, payload, callback) {
 }
 
 function buildJwtPayload(user) {
-    return {id: user._id}; // todo authorisation?
+    return {
+        id: user._id
+    };
 }
 
 function sign(payload) {
-    return jwt.sign(payload, config.get('authenticationOptions').jwt.secretOrKey);
+    var jwtOptions = config.get('authenticationOptions').jwt;
+    return jwt.sign(payload, jwtOptions.secretOrKey, jwtOptions.sign);
 }
 
 function getUserToken(user) {
