@@ -145,6 +145,7 @@ function update(metadata) {
         }
     };
 }
+
 function getExistingVersionInfo(metadata) {
     return function (req, res, next) {
         var identifier = req.params[metadata.identifierName];
@@ -154,7 +155,8 @@ function getExistingVersionInfo(metadata) {
         var filter = getIdentifierQuery(identifier, metadata);
         var options = {
             fields: {
-                'versionInfo': 1
+                'versionInfo': 1,
+                'passwordHash': 1
             }
         };
         mongo.db.collection(metadata.collectionName)
@@ -168,6 +170,9 @@ function getExistingVersionInfo(metadata) {
             }
             req.params[metadata.identifierName] = document._id;
             req.body.versionInfo = document.versionInfo;
+            if (document.passwordHash) {
+                req.body.passwordHash = document.passwordHash;
+            }
             return next();
         }
     };
