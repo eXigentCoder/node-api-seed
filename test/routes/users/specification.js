@@ -1,5 +1,7 @@
 'use strict';
 var metadata = require('../../../src/routes/users').metadata;
+var config = require('nconf');
+
 var specification = {
     baseUrl: '/users',
     metadata: metadata,
@@ -15,5 +17,5 @@ var specification = {
         }
     }
 };
-specification.cases.Retrieval["By Id"].Happy.urlData[metadata.identifierName] = "potz666@gmail.com";
+specification.cases.Retrieval["By Id"].Happy.urlData[metadata.identifierName] = config.get('tests').defaultUser.email;
 module.exports = specification;
