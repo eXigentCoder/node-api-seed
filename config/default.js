@@ -186,10 +186,15 @@ module.exports = {
         jwt: {
             jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
             secretOrKey: "GBfwT74YaHUYyfqH",
-            //issuer: host, //todo
-            //algorithms: ["HS384"], //todo
-            //ignoreExpiration: false, //todo
-            passReqToCallback: true
+            issuer: host,
+            algorithms: ["HS384"],
+            ignoreExpiration: false,
+            passReqToCallback: true,
+            sign: {
+                algorithm: 'HS384',
+                expiresIn: '12h',
+                issuer: host
+            }
         }
     },
     tests: {
