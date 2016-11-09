@@ -42,6 +42,10 @@ function createApp(callback) {
     app.use(bodyParser.urlencoded({extended: true}));
     configureRequestId(app);
     configureMorgan(app);
+    app.use(function (req, res, next) {
+        req.process = {};
+        next();
+    });
     callback(null, app);
 }
 

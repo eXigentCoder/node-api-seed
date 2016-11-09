@@ -41,10 +41,11 @@ function addCommonMiddleware(router) {
     router.use(commonMiddleware);
 
     function commonMiddleware(req, res, next) {
-        req.process = {
-            metadata: router.metadata,
-            query: {}
-        };
+        if (!req.process) {
+            req.process = {};
+        }
+        req.process.metadata = req.process.metadata || router.metadata;
+        req.process.query = req.process.query || {};
         next();
     }
 }

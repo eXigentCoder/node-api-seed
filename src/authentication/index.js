@@ -1,31 +1,26 @@
 'use strict';
-var _ = require("lodash");
-var jwt = require('jsonwebtoken');
 var passport = require("passport");
 var passportJWT = require("passport-jwt");
-var ExtractJwt = passportJWT.ExtractJwt;
-var JwtStrategy = passportJWT.Strategy;
 var mongo = require('../mongo');
 var boom = require('boom');
 var util = require('util');
-
-var jwtOptions = {
-    jwtFromRequest: ExtractJwt.fromAuthHeader(),
-    secretOrKey: 'tasmanianDevil'
-};
+var config = require('nconf');
+var jwt = require('jsonwebtoken');
 
 module.exports = {
     initialise: initialise,
-    login: login
+    buildJwtPayload: buildJwtPayload,
+    sign: sign,
+    getUserToken: getUserToken
 };
 
 function initialise(app, callback) {
-    var strategy = new JwtStrategy(jwtOptions, findUserById);
+    var strategy = new passportJWT.Strategy(config.get('authenticationOptions').jwt, findUserById);
     passport.use(strategy);
     callback(null, app);
 }
 
-function findUserById(payload, callback) {
+function findUserById(req, payload, callback) {
     var parsedId;
     try {
         parsedId = mongo.parseId(payload.id);
@@ -43,20 +38,19 @@ function findUserById(payload, callback) {
         if (!user) {
             return callback(boom.notFound(util.format('A user with the _id field of "%s" was not found.', parsedId)));
         }
+        req.process.currentUser = user;
         callback(null, user);
     }
 }
 
-function login(username, password, callback) {
-    // todo db call will happen here
-    var user = users[_.findIndex(users, {name: username})];
-    if (!user) {
-        return callback();
-    }
-    if (user.password === password) {
-        var payload = {id: user.id};
-        var token = jwt.sign(payload, jwtOptions.secretOrKey);
-        return callback(null, token);
-    }
-    return callback();
+function buildJwtPayload(user) {
+    return {id: user._id}; // todo authorisation?
+}
+
+function sign(payload) {
+    return jwt.sign(payload, config.get('authenticationOptions').jwt.secretOrKey);
+}
+
+function getUserToken(user) {
+    return sign(buildJwtPayload(user));
 }

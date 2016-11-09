@@ -1,4 +1,7 @@
 'use strict';
+var passportJWT = require("passport-jwt");
+var ExtractJwt = passportJWT.ExtractJwt;
+
 var host = 'localhost';
 var port = 10001;
 module.exports = {
@@ -176,7 +179,23 @@ module.exports = {
         },
         allowDropData: false
     },
-    passwordOptions: {
-        saltRounds: 10 // controls how many rounds to use when generating a salt value to hash a password with. See https://www.npmjs.com/package/bcrypt
+    authenticationOptions: {
+        password: {
+            saltRounds: 10 // controls how many rounds to use when generating a salt value to hash a password with. See https://www.npmjs.com/package/bcrypt
+        },
+        jwt: {
+            jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
+            secretOrKey: "GBfwT74YaHUYyfqH",
+            //issuer: host,
+            //algorithms: ["HS384"],
+            //ignoreExpiration: false,
+            passReqToCallback: true
+        }
+    },
+    tests: {
+        defaultUser: {
+            email: 'default@gmail.com',
+            password: '12345678'
+        }
     }
 };
