@@ -5,7 +5,7 @@
     "title": "Users",
     "description": "A user of the site",
     "type": "object",
-    "uniqueIdentifier": "email",
+    "identifierName": "email",
     "properties": {
         "email": {
             "type": "string",
