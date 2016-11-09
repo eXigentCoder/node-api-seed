@@ -45,12 +45,12 @@ function getTemplate() {
                     send: {},
                     statusCode: 400,
                     result: 'error'
+                },
+                "No Auth Header": {
+                    auth: false,
+                    statusCode: 401,
+                    result: 'error'
                 }
-                //, "No Auth Header": {
-                //     auth: false,
-                //     statusCode: 401,
-                //     result: 'error'
-                // }
             },
             "Retrieval": {
                 verb: 'GET',
@@ -61,15 +61,7 @@ function getTemplate() {
                         hasResults: true
                     }
                 }
-            },
-            "Update": {
-                verb: 'PUT',
-                "Replace": {
-                    statusCode: 200,
-                    result: 'success'
-                }
-            },
-            "UpdateStatus": {ignore: true}
+            }
         }
     };
 }

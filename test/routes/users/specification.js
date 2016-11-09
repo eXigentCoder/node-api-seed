@@ -14,8 +14,21 @@ var specification = {
                     urlData: {}
                 }
             }
+        },
+        "Update": {
+            verb: 'PUT',
+            "Replace": {
+                urlTemplate: '/:' + metadata.identifierName,
+                "Happy": {
+                    statusCode: 204,
+                    urlData: {},
+                    send: 'generate-update',
+                    result: 'success'
+                }
+            }
         }
     }
 };
 specification.cases.Retrieval["By Id"].Happy.urlData[metadata.identifierName] = config.get('tests').defaultUser.email;
+specification.cases.Update.Replace.Happy.urlData[metadata.identifierName] = config.get('tests').defaultUser.email;
 module.exports = specification;

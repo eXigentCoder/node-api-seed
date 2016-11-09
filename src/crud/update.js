@@ -49,9 +49,8 @@ function description(metadata) {
             }
         },
         responses: {
-            "200": {
-                description: "Returns the single, updated " + metadata.title + " matching the parameters.",
-                model: metadata.schemas.output.name,
+            "204": {
+                description: "Shows that the update request was successfully carried out",
                 commonHeaders: ["X-Request-Id"]
             }
         }

@@ -186,9 +186,9 @@ module.exports = {
         jwt: {
             jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
             secretOrKey: "GBfwT74YaHUYyfqH",
-            //issuer: host,
-            //algorithms: ["HS384"],
-            //ignoreExpiration: false,
+            //issuer: host, //todo
+            //algorithms: ["HS384"], //todo
+            //ignoreExpiration: false, //todo
             passReqToCallback: true
         }
     },
