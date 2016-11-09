@@ -38,7 +38,6 @@ function findUserById(req, payload, callback) {
         if (!user) {
             return callback(boom.notFound(util.format('A user with the _id field of "%s" was not found.', parsedId)));
         }
-        req.process.currentUser = user;
         callback(null, user);
     }
 }

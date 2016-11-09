@@ -3,6 +3,9 @@ var ObjectId = require('mongodb').ObjectId;
 var bcrypt = require('bcrypt');
 var config = require('nconf');
 var authentication = require('../../../src/authentication');
+var moment = require('moment');
+var uuid = require("node-uuid");
+
 module.exports = function (callback) {
     var defaultUser = config.get('tests').defaultUser;
     bcrypt.hash(defaultUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
@@ -16,7 +19,14 @@ module.exports = function (callback) {
             email: defaultUser.email,
             firstName: 'Ryan',
             surname: 'Kotzen',
-            passwordHash: hash
+            passwordHash: hash,
+            versionInfo: {
+                dateCreated: moment.utc(),
+                versionTag: uuid.v4(),
+                dateUpdated: moment.utc(),
+                createdBy: ObjectId("580d9f45622d510b044fb6a8"),
+                lastUpdatedBy: ObjectId("580d9f45622d510b044fb6a8")
+            }
         };
         config.set('defaultUserAuthToken', authentication.getUserToken(user));
         return callback(null, user);
