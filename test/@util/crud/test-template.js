@@ -6,10 +6,11 @@ var util = require('util');
 module.exports = function (definition) {
     var template = getTemplate();
     if (definition.metadata) {
-        generateDataWhereRequired(definition.cases, definition);
         template.title = definition.baseUrl + ' - ' + definition.metadata.schemas.core.title;
     }
-    return _.merge({}, template, definition);
+    var merged = _.merge({}, template, definition);
+    generateDataWhereRequired(merged.cases, definition);
+    return merged;
 };
 
 function generateDataWhereRequired(cases, definition) {
@@ -20,7 +21,7 @@ function generateDataWhereRequired(cases, definition) {
             return;
         }
         if (key.toLowerCase() === 'send' && value.toLowerCase().indexOf('generate-') === 0) {
-            var schemaName = value.split('-')[0];
+            var schemaName = value.split('-')[1];
             var schema = definition.metadata.schemas[schemaName];
             if (!schema) {
                 throw new Error(util.format("Schema with name %s was not found.", schemaName, Object.keys(definition.metadata.schemas)));
@@ -36,7 +37,7 @@ function getTemplate() {
             "Creation": {
                 verb: 'POST',
                 "Happy": {
-                    send: 'generate',
+                    send: 'generate-creation',
                     statusCode: 201,
                     result: 'success'
                 },
