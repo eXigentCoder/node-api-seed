@@ -21,9 +21,9 @@ module.exports = function (callback) {
             surname: 'Kotzen',
             passwordHash: hash,
             versionInfo: {
-                dateCreated: moment.utc(),
+                dateCreated: moment.utc().toDate(),
                 versionTag: uuid.v4(),
-                dateUpdated: moment.utc(),
+                dateUpdated: moment.utc().toDate(),
                 createdBy: ObjectId("580d9f45622d510b044fb6a8"),
                 lastUpdatedBy: ObjectId("580d9f45622d510b044fb6a8")
             }
