@@ -53,5 +53,5 @@ function setIdentifierInfo(metadata) {
     if (!metadata.identifierName) {
         throw new Error("metadata.identifierName must be set");
     }
-    metadata.collectionName = metadata.name;
+    metadata.collectionName = metadata.namePlural;
 }
