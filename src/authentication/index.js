@@ -6,7 +6,6 @@ var boom = require('boom');
 var util = require('util');
 var config = require('nconf');
 var jwt = require('jsonwebtoken');
-var moment = require('moment');
 var _ = require('lodash');
 
 module.exports = {
