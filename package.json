@@ -2,7 +2,7 @@
   "name": "node-api-seed",
   "title": "Node Api Seed",
   "version": "0.0.0",
-  "deploymentDate": "2016-10-22T14:48:26.240Z",
+  "deploymentDate": "2016-11-09T19:15:04.309Z",
   "description": "The seed for pretty much any api I write in node.js",
   "main": "index.js",
   "scripts": {
