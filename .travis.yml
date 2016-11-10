@@ -1,16 +1,26 @@
 language: node_js
 node_js:
 - 6
-
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
+services:
+  - mongodb
+env:
+  - CXX=g++-4.8
 branches:
   only:
   - master
   - develop
-
 cache:
   directories:
     - node_modules
-
+before_script:
+  - sleep 15
 script:
   - npm run lint-ci
   - npm run mocha
