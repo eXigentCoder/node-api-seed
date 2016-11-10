@@ -13,7 +13,7 @@ module.exports = function configureRequestId(app) {
 };
 
 function getRequestIdOptions() {
-    var requestIdOptions = config.get('logging').requestId || {};
+    var requestIdOptions = config.get('logging').correlationId || {};
     requestIdOptions = getOptionsWithDefaults(requestIdOptions);
     return requestIdOptions;
 }

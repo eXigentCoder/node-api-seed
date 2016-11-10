@@ -38,3 +38,4 @@ jspm_packages
 .idea
 report
 src/swagger/swagger.json
+yarn.lock

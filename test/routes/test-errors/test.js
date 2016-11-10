@@ -7,13 +7,13 @@ describe('Test errors', function () {
     this.timeout(common.defaultTimeout);
     it('server', function (done) {
         common.request.get('/error/server')
-            .set(common.requestHeaders)
+            .set(common.requestHeaders())
             .expect(common.error(500))
             .end(done);
     });
     it('client', function (done) {
         common.request.get('/error/client')
-            .set(common.requestHeaders)
+            .set(common.requestHeaders())
             .expect(common.error(400))
             .end(done);
     });
@@ -29,7 +29,7 @@ describe('Test errors', function () {
             done();
         });
         common.request.get('/error/process')
-            .set(common.requestHeaders)
+            .set(common.requestHeaders())
             .expect(common.error)
             .end(function () {
                 done(new Error('Should not have got here'));

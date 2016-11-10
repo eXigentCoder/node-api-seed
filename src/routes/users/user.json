@@ -1,0 +1,42 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/user.json",
+    "name": "user",
+    "title": "User",
+    "description": "A user of the site",
+    "type": "object",
+    "identifierName": "email",
+    "properties": {
+        "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1,
+            "faker": "internet.email"
+        },
+        "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "faker": "name.firstName"
+        },
+        "surname": {
+            "type": "string",
+            "minLength": 1,
+            "faker": "name.lastName"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "email",
+        "firstName",
+        "surname"
+    ],
+    "indexes": [
+        {
+            "name": "email",
+            "unique": true,
+            "fields": {
+                "email": 1
+            }
+        }
+    ]
+}

@@ -11,8 +11,10 @@ var error = require('./error/index.js');
 var initialiseSwagger = require('./swagger/initialise-swagger');
 var addCommonSwaggerItems = require('./swagger/add-common-items');
 var generateSwaggerJson = require('./swagger/generate-swagger-json');
-var path = require('path');
-var appSettings = config.get('expressApp');
+var mongo = require('./mongo');
+var helmet = require('helmet');
+var rateLimit = require('./rate-limit');
+var authentication = require('./authentication');
 
 module.exports = function initialise(callback) {
     async.waterfall([
@@ -20,20 +22,30 @@ module.exports = function initialise(callback) {
         initialiseSwagger,
         addRoutes,
         addCommonSwaggerItems,
-        generateSwaggerJson
+        generateSwaggerJson,
+        mongo.connect,
+        rateLimit.initialise,
+        authentication.initialise
     ], callback);
 };
 
 function createApp(callback) {
+    var appSettings = config.get('expressApp');
     var app = express();
     app.set('json spaces', appSettings.jsonSpaces);
-    app.set('x-powered-by', appSettings.xPoweredBy);
-    app.use(cors(config.get('corsOptions')));
-    app.use(bodyParser.json());
+    app.set('trust proxy', appSettings.trustProxy);
+    app.use(helmet(appSettings.helmetOptions));
+    app.use(cors(appSettings.corsOptions));
+    app.use(bodyParser.json({
+        type: ['json', 'application/csp-report']
+    }));
     app.use(bodyParser.urlencoded({extended: true}));
-    app.use('/apidocs', express.static(path.join(__dirname, '../public')));
     configureRequestId(app);
     configureMorgan(app);
+    app.use(function (req, res, next) {
+        req.process = {};
+        next();
+    });
     callback(null, app);
 }
 

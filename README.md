@@ -18,11 +18,3 @@ The seed for pretty much any api I write in node.js
 
 # Logging
 We use [winston](https://github.com/winstonjs/winston) to route our logs to various places as required, and override console.x as per [this article here](http://seanmonstar.com/post/56448644049/consolelog-all-the-things) to allow us to see what's happening with dependencies we may be using.
-
-# To Do
-
-- Sys admin auth for kill process route to verify it's working on live
-- ES6 upgrade (Use strict, export, import, var => const,let etc.
-- Auth example
-- json-schema-filter required?
-- set deployment date in package.json
