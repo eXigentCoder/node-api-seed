@@ -3,7 +3,7 @@ var mongo = require('mongodb');
 var ObjectId = mongo.ObjectId;
 var config = require('nconf');
 var MongoClient = mongo.MongoClient;
-var mongodbConfig = config.get('mongodb');
+var util = require('util');
 
 var state = {
     connect: connectToDb,
@@ -31,10 +31,10 @@ function isValidObjectId(id) {
 }
 
 function parseId(id) {
-    if (state.isValidObjectId(id)) {
-        return new ObjectId(id.toString());
+    if (!state.isValidObjectId(id)) {
+        throw new Error(util.format('Id %s is not a valid mongo id', id));
     }
-    return null;
+    return new ObjectId(id.toString());
 }
 
 function closeConnection(callback) {
@@ -45,6 +45,7 @@ function closeConnection(callback) {
 }
 
 function connectToDb(app, callback) {
+    var mongodbConfig = config.get('mongodb');
     MongoClient.connect(mongodbConfig.url, mongodbConfig.options, connected);
     function connected(err, db) {
         if (err) {

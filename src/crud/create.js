@@ -4,6 +4,7 @@ var applyMaps = require('../swagger/router/step-maps');
 var ensureSchemaSet = require('./../swagger/build-metadata/ensure-schema-set');
 var getValidateFunction = require('./@shared/get-validate-function');
 var addModel = require('../swagger/build-metadata/add-model');
+var versionInfo = require('../version-info');
 var schemaName = 'creation';
 
 module.exports = {
@@ -19,6 +20,7 @@ function addRoute(router, options) {
 function getSteps(router, options) {
     var steps = {
         validate: getValidateFunction(schemaName),
+        addVersionInfo: versionInfo.add,
         create: options.crudMiddleware.create,
         filterOutput: outputMap.filterOutput,
         sendCreateResult: sendCreateResult(router.metadata)

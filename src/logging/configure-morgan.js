@@ -1,10 +1,10 @@
 'use strict';
 var morgan = require('morgan');
 var config = require('nconf');
-var morganConfig = config.get('logging').morgan;
 var _ = require('lodash');
 
 module.exports = function configureMorgan(app) {
+    var morganConfig = config.get('logging').morgan;
     if (morganConfig.disabled) {
         return;
     }
@@ -15,7 +15,7 @@ module.exports = function configureMorgan(app) {
     }
     morganConfig.loggers.forEach(function (logger) {
         logger.options = logger.options || {};
-        logger.options.skip = skip;
+        logger.options.skip = skip(morganConfig);
         logger.options.stream = consoleStream(logger.level);
         app.use(morgan(logger.format, logger.options));
     });
@@ -32,24 +32,26 @@ function consoleStream(level) {
     };
 }
 
-function skip(req) {
-    if (!morganConfig.skip) {
-        return;
-    }
-    morganConfig.skip.headers = morganConfig.skip.headers || [];
-    var shouldSkip = morganConfig.skip.headers.some(function (ignoredHeader) {
-        return req.get(ignoredHeader.key).toLowerCase().indexOf(ignoredHeader.value.toLowerCase()) >= 0;
-    });
-    if (shouldSkip) {
-        return true;
-    }
-    morganConfig.skip.paths = morganConfig.skip.paths || [];
-    shouldSkip = morganConfig.skip.paths.some(function (ignoredUrl) {
-        return req.originalUrl.toLowerCase().indexOf(ignoredUrl.toLowerCase()) >= 0;
-    });
-    if (shouldSkip) {
-        return true;
-    }
+function skip(morganConfig) {
+    return function _skip(req) {
+        if (!morganConfig.skip) {
+            return;
+        }
+        morganConfig.skip.headers = morganConfig.skip.headers || [];
+        var shouldSkip = morganConfig.skip.headers.some(function (ignoredHeader) {
+            return req.get(ignoredHeader.key).toLowerCase().indexOf(ignoredHeader.value.toLowerCase()) >= 0;
+        });
+        if (shouldSkip) {
+            return true;
+        }
+        morganConfig.skip.paths = morganConfig.skip.paths || [];
+        shouldSkip = morganConfig.skip.paths.some(function (ignoredUrl) {
+            return req.originalUrl.toLowerCase().indexOf(ignoredUrl.toLowerCase()) >= 0;
+        });
+        if (shouldSkip) {
+            return true;
+        }
+    };
 }
 
 function addSupportForBodyToken() {

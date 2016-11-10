@@ -6,6 +6,7 @@ var getValidateFunction = require('./@shared/get-validate-function');
 var addModel = require('../swagger/build-metadata/add-model');
 var _ = require('lodash');
 var schemaName = 'update';
+var versionInfo = require('../version-info');
 
 module.exports = {
     addRoute: addRoute
@@ -20,6 +21,8 @@ function addRoute(router, options) {
 function getSteps(router, options) {
     var steps = {
         validate: getValidateFunction(schemaName),
+        getExistingVersionInfo: options.crudMiddleware.getExistingVersionInfo,
+        updateVersionInfo: versionInfo.update,
         update: options.crudMiddleware.update,
         sendOutput: outputMap.sendNoContent
     };
@@ -49,9 +52,8 @@ function description(metadata) {
             }
         },
         responses: {
-            "200": {
-                description: "Returns the single, updated " + metadata.title + " matching the parameters.",
-                model: metadata.schemas.output.name,
+            "204": {
+                description: "Shows that the update request was successfully carried out",
                 commonHeaders: ["X-Request-Id"]
             }
         }

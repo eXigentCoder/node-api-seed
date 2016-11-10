@@ -1,15 +1,22 @@
 'use strict';
 var _ = require('lodash');
 var url = require('url');
+var config = require('nconf');
 
 module.exports = {
-    basicAuth: basicAuth(),
-    requestHeaders: _.merge(basicAuth()), //other headers that may be required, like requestId go here
+    authentication: authentication,
+    requestHeaders: function () {
+        return _.merge(authentication());// other headers that may be required, like requestId go here
+    },
     urlTemplate: urlTemplate
 };
 
-function basicAuth() {
-    return {"Authorization": "Basic todo"};
+function authentication() {
+    var token = config.get('defaultUserAuthToken');
+    if (!token) {
+        throw new Error("Token not yet set.");
+    }
+    return {"Authorization": "Bearer " + token};
 }
 
 function urlTemplate(pathParameters) {

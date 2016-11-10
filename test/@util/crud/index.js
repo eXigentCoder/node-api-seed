@@ -88,7 +88,7 @@ function executeTest(definition, rules, done) {
     }
     var test = common.request[rules.verb.toLowerCase()](url);
     if (_.isNil(rules.auth)) {
-        test.set(common.basicAuth);
+        test.set(common.authentication());
     } else {
         if (rules.auth !== false) {
             test.set(rules.auth);

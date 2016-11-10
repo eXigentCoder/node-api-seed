@@ -2,10 +2,10 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "id": "https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/user.json",
     "name": "user",
-    "title": "Users",
+    "title": "User",
     "description": "A user of the site",
     "type": "object",
-    "uniqueIdentifier": "email",
+    "identifierName": "email",
     "properties": {
         "email": {
             "type": "string",
@@ -29,5 +29,14 @@
         "email",
         "firstName",
         "surname"
+    ],
+    "indexes": [
+        {
+            "name": "email",
+            "unique": true,
+            "fields": {
+                "email": 1
+            }
+        }
     ]
 }

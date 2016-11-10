@@ -4,6 +4,7 @@ var aqp = require('api-query-params').default;
 var boom = require('boom');
 var _ = require('lodash');
 var util = require('util');
+var moment = require('moment');
 
 module.exports = function (metadata) {
     return {
@@ -11,7 +12,8 @@ module.exports = function (metadata) {
         findByIdentifier: findByIdentifier(metadata),
         create: create(metadata),
         update: update(metadata),
-        updateStatus: updateStatus(metadata)
+        updateStatus: updateStatus(metadata),
+        getExistingVersionInfo: getExistingVersionInfo(metadata)
     };
 };
 
@@ -54,14 +56,14 @@ function findByIdentifier(metadata) {
         mongo.db.collection(metadata.collectionName)
             .findOne(getIdentifierQuery(identifier, metadata), dataRetrieved);
 
-        function dataRetrieved(err, doc) {
+        function dataRetrieved(err, document) {
             if (err) {
                 return next(err);
             }
-            if (!doc) {
+            if (!document) {
                 return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, identifier)));
             }
-            req.process[metadata.name] = doc;
+            req.process[metadata.name] = document;
             return next();
         }
     };
@@ -96,13 +98,13 @@ function updateStatus(metadata) {
         var updateStatement = {
             $set: {
                 status: req.params.newStatus,
-                statusDate: new Date()
+                statusDate: moment.utc().toDate()
             },
             $push: {
                 statusLog: {
                     status: req.params.newStatus,
                     data: req.body,
-                    statusDate: new Date().toISOString()
+                    statusDate: moment.utc().toDate()
                 }
             }
         };
@@ -139,6 +141,38 @@ function update(metadata) {
                 return next();
             }
             req.process.output = result.value;
+            return next();
+        }
+    };
+}
+
+function getExistingVersionInfo(metadata) {
+    return function (req, res, next) {
+        var identifier = req.params[metadata.identifierName];
+        if (_.isNil(identifier)) {
+            return next(new Error("Object has no identifier"));
+        }
+        var filter = getIdentifierQuery(identifier, metadata);
+        var options = {
+            fields: {
+                'versionInfo': 1,
+                'passwordHash': 1
+            }
+        };
+        mongo.db.collection(metadata.collectionName)
+            .findOne(filter, options, dataRetrieved);
+        function dataRetrieved(err, document) {
+            if (err) {
+                return next(err);
+            }
+            if (!document) {
+                return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, identifier)));
+            }
+            req.params[metadata.identifierName] = document._id;
+            req.body.versionInfo = document.versionInfo;
+            if (document.passwordHash) {
+                req.body.passwordHash = document.passwordHash;
+            }
             return next();
         }
     };

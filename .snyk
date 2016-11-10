@@ -3,7 +3,7 @@ ignore: {}
 patch:
   'npm:moment:20161019':
     - express-brute-mongo > moment:
-        patched: '2016-11-05T15:19:21.588Z'
+        patched: '2016-11-08T10:51:51.390Z'
   'npm:request:20160119':
     - nodejs-dashboard > blessed-contrib > picture-tube > request:
-        patched: '2016-11-05T15:19:21.588Z'
+        patched: '2016-11-08T10:51:51.390Z'

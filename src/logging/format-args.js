@@ -1,7 +1,6 @@
 'use strict';
 var _ = require('lodash');
 var config = require('nconf');
-var replacements = config.get('logging').objectReplacements;
 module.exports = function formatArgs(args) {
     var argumentArray = Array.prototype.slice.call(args);
     argumentArray = argumentArray.map(mapArg);
@@ -31,6 +30,7 @@ function deepReplace(object) {
         });
         return;
     }
+    var replacements = config.get('logging').objectReplacements;
     _.forIn(object, function (value, key) {
         replacements.forEach(function (replacement) {
             if (key.toLowerCase() !== replacement.key.toLowerCase()) {

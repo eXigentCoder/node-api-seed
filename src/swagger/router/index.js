@@ -4,7 +4,6 @@ var express = require('express');
 var buildMetadata = require('../build-metadata');
 var addStandardRoutes = require('./add-standard-routes');
 var config = require('nconf');
-var routerOptions = config.get('expressApp').routerOptions;
 var _ = require('lodash');
 
 module.exports = function Router(options) {
@@ -26,6 +25,7 @@ function setTag(options) {
 }
 
 function createRouter(options) {
+    var routerOptions = config.get('expressApp').routerOptions;
     var router = express.Router(routerOptions);
     swagger.swaggerize(router);
     router.metadata = options;
@@ -41,10 +41,11 @@ function addCommonMiddleware(router) {
     router.use(commonMiddleware);
 
     function commonMiddleware(req, res, next) {
-        req.process = {
-            metadata: router.metadata,
-            query: {}
-        };
+        if (!req.process) {
+            req.process = {};
+        }
+        req.process.metadata = req.process.metadata || router.metadata;
+        req.process.query = req.process.query || {};
         next();
     }
 }

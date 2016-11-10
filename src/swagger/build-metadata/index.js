@@ -49,9 +49,9 @@ function setAOrAn(metadata) {
 }
 
 function setIdentifierInfo(metadata) {
-    metadata.identifierName = metadata.identifierName || metadata.schemas.core.uniqueIdentifier;
+    metadata.identifierName = metadata.identifierName || metadata.schemas.core.identifierName;
     if (!metadata.identifierName) {
         throw new Error("metadata.identifierName must be set");
     }
-    metadata.collectionName = metadata.name;
+    metadata.collectionName = metadata.namePlural;
 }
