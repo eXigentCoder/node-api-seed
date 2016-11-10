@@ -4,6 +4,7 @@ var async = require("async");
 var user = require('../../src/routes/users/user.json');
 var mongo = require('../../src/mongo');
 var pluralize = require('pluralize');
+var _ = require('lodash');
 
 async.waterfall([
     connectToDb,
@@ -54,10 +55,12 @@ function ensureCollectionExists(item, callback) {
 }
 
 function processIndex(item, indexToCreate, callback) {
-    //todo rk, compare index before trying to create a new one.
-    var indexOptions = {
-        background: true
-    };
+    var indexOptions = {};
+    if (!_.isNil(indexToCreate.background)) {
+        indexOptions.background = indexToCreate.background;
+    } else {
+        indexOptions.background = true;
+    }
     if (indexToCreate.name) {
         indexOptions.name = indexToCreate.name;
     }
@@ -67,6 +70,59 @@ function processIndex(item, indexToCreate, callback) {
     if (indexToCreate.expireAfterSeconds) {
         indexOptions.expireAfterSeconds = indexToCreate.expireAfterSeconds;
     }
-    mongo.db.collection(item.collectionName)
-        .createIndex(indexToCreate.fields, indexOptions, callback);
+    if (indexToCreate.sparse) {
+        indexOptions.sparse = indexToCreate.sparse;
+    }
+    if (indexToCreate.dropDups) {
+        indexOptions.dropDups = indexToCreate.dropDups;
+    }
+    var existingIndex = findExistingIndex(indexToCreate, item.existingIndexes);
+    if (!existingIndex) {
+        return mongo.db.collection(item.collectionName)
+            .createIndex(indexToCreate.fields, indexOptions, callback);
+    }
+    if (!shouldDropAndCreate(indexToCreate, item.existingIndexes)) {
+        return callback();
+    }
+    mongo.db.collection(item.collectionName).dropIndex(existingIndex.name, function (err) {
+        if (err) {
+            return callback(err);
+        }
+        return mongo.db.collection(item.collectionName)
+            .createIndex(indexToCreate.fields, indexOptions, callback);
+    });
+}
+
+function findExistingIndex(indexToCreate, existingIndexes) {
+    var foundIndex = null;
+    existingIndexes.some(function (existingIndex) {
+        if (_.isEqual(existingIndex.key, indexToCreate.fields)) {
+            foundIndex = existingIndex;
+            return true;
+        }
+        return false;
+    });
+    return foundIndex;
+}
+
+function shouldDropAndCreate(indexToCreate, foundIndex) {
+    if (foundIndex.unique !== indexToCreate.unique) {
+        return true;
+    }
+    if (foundIndex.name !== indexToCreate.name) {
+        return true;
+    }
+    if (foundIndex.background !== indexToCreate.background) {
+        return true;
+    }
+    if (foundIndex.expireAfterSeconds !== indexToCreate.expireAfterSeconds) {
+        return true;
+    }
+    if (foundIndex.sparse !== indexToCreate.sparse) {
+        return true;
+    }
+    if (foundIndex.dropDups !== indexToCreate.dropDups) {
+        return true;
+    }
+    return false;
 }
