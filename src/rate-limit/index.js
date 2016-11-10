@@ -15,7 +15,7 @@ module.exports = {
         async.parallel([
             initialise('api'),
             initialise('loginUsername'),
-            initialise('loginIp'),
+            initialise('loginIp')
         ], function (err) {
             return callback(err, app);
         });

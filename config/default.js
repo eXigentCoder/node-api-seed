@@ -152,7 +152,7 @@ module.exports = {
             // ,api: {
             //     Override defaults for api here
             // }
-            // ,api: {
+            // ,authenticate: {
             //     Override defaults for authenticate here
             // }
         }
