@@ -7,7 +7,7 @@ module.exports = function configureRequestId(app) {
     var requestIdOptions = getRequestIdOptions();
     app.use(requestId(requestIdOptions));
     app.use(function (req, res, next) {
-        req.headers[requestIdOptions.reqHeader.toLowerCase()] = req.headers[requestIdOptions.reqHeader] || req[requestIdOptions.paramName];
+        req.headers[requestIdOptions.reqHeader.toLowerCase()] = req[requestIdOptions.paramName];
         return next();
     });
 };

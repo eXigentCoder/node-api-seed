@@ -76,6 +76,9 @@ module.exports = {
         },
         correlationId: {
             // Sets up the rules for applying a correlation id to each request for tracking across async jobs in logs. See https://www.npmjs.com/package/request-id.
+            reqHeader: 'X-Request-ID', // The incoming request header to look at for the correlation id.
+            resHeader: 'X-Request-ID', // The response header to set for the correlation id.
+            paramName: 'requestId' // The parameter in the query string to use to find the correlation id as well as the parameter on req to set to the correlation id.
         },
         objectReplacements: [
             // replaces values in objects to be logged. key must be a string, value can either be a value to replace with or a function that takes in the existing value as its only argument.
