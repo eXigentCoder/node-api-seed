@@ -53,7 +53,7 @@ function exitProcess() {
 }
 
 process.on('uncaughtException', function (err) {
-    console.error('Unhandled Error on process : ', err, err.stack);
+    console.error('Unhandled Error on process : ', err);
     exitProcess();
 });
 

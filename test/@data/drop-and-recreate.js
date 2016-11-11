@@ -11,12 +11,9 @@ module.exports = function dropAndRecreate(app, callback) {
         insertData
     ], waterfallComplete);
 
-    function waterfallComplete(err, result) {
+    function waterfallComplete(err) {
         if (err) {
             return callback(err);
-        }
-        if (result) {
-            console.log(JSON.stringify(result));
         }
         return callback(null, app);
     }

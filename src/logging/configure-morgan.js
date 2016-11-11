@@ -1,6 +1,7 @@
 'use strict';
 var morgan = require('morgan');
 var config = require('nconf');
+var util = require('util');
 var _ = require('lodash');
 
 module.exports = function configureMorgan(app) {
@@ -59,6 +60,6 @@ function addSupportForBodyToken() {
         if (!req.body) {
             return '';
         }
-        return JSON.stringify(req.body);
+        return util.inspect(req.body, config.get('logging').utilInspectOptions);
     });
 }

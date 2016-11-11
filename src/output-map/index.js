@@ -2,6 +2,7 @@
 var jsonSchemaFilter = require('json-schema-filter');
 var _ = require('lodash');
 var ensureExistsOnReq = require('./ensure-exists-on-req');
+var util = require('util');
 
 module.exports = {
     filterOutput: filterOutput,
@@ -69,9 +70,9 @@ function mapOutput(map) {
                     req.process.output[key] = _.get(req.process.output, mapping);
                     return;
                 }
-                throw new Error("req.process.output was not an array or object, unsure how to map, req.process.output : " + JSON.stringify(req.process.output) + ". Mapping : " + JSON.stringify(mapping));
+                throw new Error(util.format("req.process.output was not an array or object, unsure how to map, req.process.output : %j. Mapping : %j", req.process.output, mapping));
             }
-            throw new Error("Unknown mapping option : " + JSON.stringify(mapping));
+            throw new Error(util.format("Unknown mapping option : %j", mapping));
         }
     }
 }

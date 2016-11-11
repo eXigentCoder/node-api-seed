@@ -20,7 +20,7 @@ module.exports = {
             depth: 10,
             humanReadableUnhandledException: true,
             showLevel: true,
-            handleExceptions: true
+            handleExceptions: false
         },
         file: {
             // Logs to the local files system
@@ -110,7 +110,7 @@ module.exports = {
     },
     expressApp: {
         trustProxy: false,// todo Used for if you're behind a reverse proxy (Heroku, Bluemix, AWS if you use an ELB, custom Nginx setup, etc). See https://expressjs.com/en/guide/behind-proxies.html
-        jsonSpaces: 0, // when you do res.json({...}) this value controls how to JSON.stringify it.
+        jsonSpaces: 0, // when you do res.json({...}) this value controls the spacing when stringifying.
         routerOptions: {
             mergeParams: true // Allows routers to inherit parameters from their ancestor routes.
         },
