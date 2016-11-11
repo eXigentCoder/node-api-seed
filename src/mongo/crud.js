@@ -149,7 +149,7 @@ function update(metadata) {
 
 function writeHistoryItem(metadata) {
     return function _writeHistoryItem(req, res, next) {
-        if (metadata.schemas.core.keepHistory !== true) {
+        if (metadata.schemas.core.trackHistory !== true) {
             return next();
         }
         req.process.originalItem.historyId = req.process.originalItem._id;
