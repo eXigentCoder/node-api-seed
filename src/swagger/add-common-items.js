@@ -1,5 +1,6 @@
 'use strict';
 var swagger = require('swagger-spec-express');
+var config = require('nconf');
 
 module.exports = function (app, callback) {
     swagger.common.parameters.addPath({
@@ -73,9 +74,9 @@ module.exports = function (app, callback) {
         "name": "412",
         "description": "Precondition failed"
     });
-
+    var correlationIdOptions = config.get('logging').correlationId;
     swagger.common.addResponseHeader({
-        name: "X-Request-Id",
+        name: correlationIdOptions.resHeader,
         description: "A unique identifier that is used to track the request through the logs. Should be passed through in the request, but will be generated if one is not provided.",
         type: "string"
     });
@@ -113,7 +114,7 @@ module.exports = function (app, callback) {
         "type": "string"
     });
     swagger.common.parameters.addHeader({
-        name: "X-Request-Id",
+        name: correlationIdOptions.reqHeader,
         description: "A unique identifier that is used to track the request through the logs. Should be passed through in the request, but will be generated if one is not provided.",
         required: false,
         type: "string"

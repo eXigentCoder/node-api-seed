@@ -5,6 +5,8 @@ var async = require('async');
 var loader = require('node-glob-loader');
 var TestTemplate = require('./test-template');
 var uuid = require('node-uuid');
+var config = require('nconf');
+
 describe('Crud', discoverAndRunTests);
 function discoverAndRunTests() {
     var definitions = [];
@@ -95,7 +97,10 @@ function executeTest(definition, rules, done) {
         }
     }
     if (!rules.skipRequestId) {
-        test.set({"X-Request-Id": uuid.v4()});
+        var correlationIdOptions = config.get('logging').correlationId;
+        var header = {};
+        header[correlationIdOptions.reqHeader] = uuid.v4();
+        test.set(header);
     }
     if (rules.urlData) {
         test.use(common.urlTemplate(rules.urlData));
