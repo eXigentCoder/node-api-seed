@@ -4,6 +4,7 @@ require('../@util/init.js');
 var httpMocks = require('node-mocks-http');
 var uuid = require('node-uuid');
 var versionMiddleware = require('../../src/version-info');
+var config = require('nconf');
 
 describe('when setting the version info of requests', function () {
     var request;
@@ -16,17 +17,18 @@ describe('when setting the version info of requests', function () {
 
     describe('when processing an add request', function () {
         beforeEach(function () {
-            request = httpMocks.createRequest({
+            var correlationIdOptions = config.get('logging').correlationId;
+            var reqOptions = {
                 method: 'POST',
                 url: '/user',
-                headers: {
-                    "X-Request-Id": "uniquerequestid"
-                },
+                headers: {},
                 user: {
                     _id: '333'
                 },
                 body: {}
-            });
+            };
+            reqOptions.headers[correlationIdOptions.reqHeader] = "uniquerequestid";
+            request = httpMocks.createRequest(reqOptions);
 
             versionMiddleware.add(request, response, function () {
                 return null;
@@ -57,12 +59,11 @@ describe('when setting the version info of requests', function () {
         var existingUpdatedDate = new Date(2016, 11, 5);
 
         beforeEach(function () {
-            request = httpMocks.createRequest({
+            var correlationIdOptions = config.get('logging').correlationId;
+            var reqOptions = {
                 method: 'POST',
                 url: '/user',
-                headers: {
-                    "X-Request-Id": "uniquerequestid"
-                },
+                headers: {},
                 user: {
                     _id: '256'
                 },
@@ -74,7 +75,9 @@ describe('when setting the version info of requests', function () {
                         dateUpdated: existingUpdatedDate
                     }
                 }
-            });
+            };
+            reqOptions.headers[correlationIdOptions.reqHeader] = "uniquerequestid";
+            request = httpMocks.createRequest(reqOptions);
 
             versionMiddleware.update(request, response, function () {
                 return null;

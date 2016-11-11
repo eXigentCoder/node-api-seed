@@ -6,6 +6,7 @@ var getValidateFunction = require('./@shared/get-validate-function');
 var addModel = require('../swagger/build-metadata/add-model');
 var versionInfo = require('../version-info');
 var schemaName = 'creation';
+var config = require('nconf');
 
 module.exports = {
     addRoute: addRoute
@@ -47,6 +48,7 @@ function sendCreateResult(metadata) {
 function description(metadata) {
     addModel(metadata.schemas.output);
     addModel(metadata.schemas[schemaName]);
+    var correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
         summary: "Posts Through " + metadata.aOrAn + " " + metadata.title + " To Be Created.",
@@ -54,7 +56,7 @@ function description(metadata) {
         common: {
             responses: ["500", "400", "401"],
             parameters: {
-                header: ["X-Request-Id"]
+                header: [correlationIdOptions.reqHeader]
             }
         },
         parameters: [
@@ -69,7 +71,7 @@ function description(metadata) {
         responses: {
             "201": {
                 description: 'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
-                commonHeaders: ["X-Request-Id"],
+                commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }
         }

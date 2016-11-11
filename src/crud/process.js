@@ -5,6 +5,7 @@ var ensureSchemaSet = require('./../swagger/build-metadata/ensure-schema-set');
 var getValidateFunction = require('./@shared/get-validate-function');
 var addModel = require('../swagger/build-metadata/add-model');
 var schemaName = 'creation';
+var config = require('nconf');
 
 module.exports = {
     addRoute: addRoute
@@ -31,6 +32,7 @@ function notImplemented(req, res, next) {
 
 function description(metadata) {
     addModel(metadata.schemas[schemaName]);
+    var correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
         summary: "Posts Through " + metadata.aOrAn + " " + metadata.title + " To Be Processed.",
@@ -38,7 +40,7 @@ function description(metadata) {
         common: {
             responses: ["500", "400", "401"],
             parameters: {
-                header: ["X-Request-Id"]
+                header: [correlationIdOptions.reqHeader]
             }
         },
         parameters: [
@@ -54,7 +56,7 @@ function description(metadata) {
             "202": {
                 description: 'Informs the caller that the ' + metadata.title.toLowerCase()
                 + ' was successfully submitted to the server in order to be processed asynchronously.',
-                commonHeaders: ["X-Request-Id"]
+                commonHeaders: [correlationIdOptions.resHeader]
             }
         }
     };
