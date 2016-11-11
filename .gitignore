@@ -39,3 +39,6 @@ jspm_packages
 report
 src/swagger/swagger.json
 yarn.lock
+
+# VS Code Editor files
+.vscode
