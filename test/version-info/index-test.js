@@ -1,10 +1,12 @@
+'use strict';
+
 require('../@util/init.js');
 var httpMocks = require('node-mocks-http');
 var uuid = require('node-uuid');
 var versionMiddleware = require('../../src/version-info');
 
 describe('when setting the version info of requests', function() {
-    var request
+    var request;
     var response;
     var validUUIDRegexPattern = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/, 'i');
 
@@ -26,7 +28,7 @@ describe('when setting the version info of requests', function() {
                 body: {}
             });
 
-            versionMiddleware.add(request, response, function () {});
+            versionMiddleware.add(request, response, function () { return null; });
         });
 
         it('should set the request id in the body', function () {
@@ -72,7 +74,7 @@ describe('when setting the version info of requests', function() {
                 }
             });
 
-            versionMiddleware.update(request, response, function () {});
+            versionMiddleware.update(request, response, function () { return null; });
         });
 
         it('should set the request id in the body', function () {
