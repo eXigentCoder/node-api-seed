@@ -19,6 +19,7 @@ function getSteps(router, options) {
     var steps = {
         validate: getValidateFunction(schemaName),
         updateStatus: options.crudMiddleware.updateStatus,
+        writeHistoryItem: options.crudMiddleware.writeHistoryItem,
         sendOutput: outputMap.sendNoContent
     };
     return applyMaps(options.maps, steps);

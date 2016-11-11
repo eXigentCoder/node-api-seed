@@ -25,6 +25,7 @@
         }
     },
     "additionalProperties": false,
+    "skipAudit": false,
     "required": [
         "email",
         "firstName",

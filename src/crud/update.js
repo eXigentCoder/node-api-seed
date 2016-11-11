@@ -25,6 +25,7 @@ function getSteps(router, options) {
         getExistingVersionInfo: options.crudMiddleware.getExistingVersionInfo,
         updateVersionInfo: versionInfo.update,
         update: options.crudMiddleware.update,
+        writeHistoryItem: options.crudMiddleware.writeHistoryItem,
         sendOutput: outputMap.sendNoContent
     };
     return applyMaps(options.maps, steps);
