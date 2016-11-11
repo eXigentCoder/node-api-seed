@@ -1,7 +1,7 @@
 'use strict';
 var passportJWT = require("passport-jwt");
 var ExtractJwt = passportJWT.ExtractJwt;
-
+var config = require('nconf');
 var host = 'localhost';
 var port = 10001;
 module.exports = {
@@ -80,7 +80,18 @@ module.exports = {
         objectReplacements: [
             // replaces values in objects to be logged. key must be a string, value can either be a value to replace with or a function that takes in the existing value as its only argument.
             {key: 'password', value: '****'}
-        ]
+        ],
+        graylog: {
+            name: "web-endpoint",
+            level: 'silly',
+            handleExceptions: true,
+            graylog: {
+                servers: [{host: 'localhost', port: 5555},{host: 'localhost', port: 12201}],
+                facility: 'Node.js',
+                bufferSize: 1400
+            },
+            staticMeta: {env: config.get('NODE_ENV')}
+        }
     },
     errorHandling: {
         exposeServerErrorMessages: false, // Ensure that this is false on production environments to prevent leaking security vulnerabilities and stack information.
