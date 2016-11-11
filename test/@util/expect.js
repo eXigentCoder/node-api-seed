@@ -6,6 +6,8 @@ var os = require('os');
 const eol = os.EOL;
 var validator = require('../../src/validate/validator');
 var $RefParser = require('json-schema-ref-parser');
+var util = require('util');
+
 var swaggerSpec;
 module.exports = {
     initialise: initialise,
@@ -49,12 +51,12 @@ function endMessageBody(res) {
 }
 
 function messageBody(res) {
-    return "Body : " + JSON.stringify(res.body, null, 4) + eol;
+    return util.format("Body : " + res.body, eol);
 }
 
 function checkSuccessfulResponse(res) {
     expect(res.statusType, "Expected a status code in the 2xx range. " + messageBody(res)).to.equal(2);
-    expect(res.error, 'The response body contained an error : ' + JSON.stringify(res.error)).to.not.be.ok();
+    expect(res.error, util.format('The response body contained an error : %j', res.error)).to.not.be.ok();
 }
 
 function error(code) {

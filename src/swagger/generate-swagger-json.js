@@ -4,11 +4,12 @@ var config = require('nconf');
 var os = require('os');
 var fs = require('fs');
 var util = require('util');
+
 module.exports = function generateSwaggerJson(app, callback) {
     swagger.compile();
     var result = swagger.validate();
     if (!result.valid) {
-        console.warn(util.format("Compiled Swagger document does not pass validation:%s%s%s", os.EOL, result.message, JSON.stringify(result.errors, null, 4)));
+        console.warn(util.format("Compiled Swagger document does not pass validation:%s%s%s", os.EOL, result.message, result.errors));
     }
     var swaggerConfig = config.get('swagger');
     if (swaggerConfig.writeFile) {
