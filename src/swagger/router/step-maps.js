@@ -34,6 +34,7 @@ function convertStepsToArray(stepObject) {
 module.exports._applySkip = applySkip;
 module.exports._applySkipIfExists = applySkipIfExists;
 module.exports._applyAfter = applyAfter;
+module.exports._applyBefore = applyBefore;
 module.exports._applyReplace = applyReplace;
 module.exports._applyStart = applyStart;
 module.exports._applyEnd = applyEnd;
