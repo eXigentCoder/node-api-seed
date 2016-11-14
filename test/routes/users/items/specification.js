@@ -1,11 +1,17 @@
 'use strict';
+var usersMetadata = require('../../../../src/routes/users').metadata;
 var itemsMetadata = require('../../../../src/routes/users/items').metadata;
 
 var specification = {
     title: "User Items",
-    baseUrl: '/users/580d9f45622d510b044fb6a8/items',
+    baseUrl: '/users/:' + usersMetadata.identifierName + '/items',
     metadata: itemsMetadata,
     cases: {
+        "Creation": {
+            "Happy": {},
+            'Fails if empty': {},
+            'No Auth Header': {}
+        },
         "Retrieval": {
             verb: 'GET',
             "By Id": {
@@ -13,10 +19,10 @@ var specification = {
                 "Happy": {
                     urlData: {}
                 }
-            }
+            },
+            "Query": {}
         },
         "Update": {
-            ignore: true,
             verb: 'PUT',
             "Replace": {
                 urlTemplate: '/:' + itemsMetadata.identifierName,
@@ -30,7 +36,26 @@ var specification = {
         }
     }
 };
-var getByIdHappy = specification.cases.Retrieval["By Id"].Happy;
-getByIdHappy.urlData[itemsMetadata.identifierName] = 'item1';
-//specification.cases.Update.Replace.Happy.urlData[itemsMetadata.identifierName] = config.get('tests').defaultUser.email;
+var updateHappy = specification.cases.Update.Replace.Happy;
+var getByIdHappy = specification.cases.Retrieval['By Id'].Happy;
+setUserId(getByIdHappy);
+setUserId(updateHappy);
+setUserId(specification.cases.Creation.Happy);
+setUserId(specification.cases.Creation['Fails if empty']);
+setUserId(specification.cases.Creation['No Auth Header']);
+setUserId(specification.cases.Retrieval.Query);
+setUserId(specification.cases.Update.Replace);
+//setting itemId
+setItemId(getByIdHappy, 'item1');
+setItemId(updateHappy, 'item1');
 module.exports = specification;
+
+function setUserId(testCaseSpec) {
+    testCaseSpec.urlData = testCaseSpec.urlData || {};
+    testCaseSpec.urlData[usersMetadata.identifierName] = '580d9f45622d510b044fb6a8';
+}
+
+function setItemId(testCaseSpec, itemId) {
+    testCaseSpec.urlData = testCaseSpec.urlData || {};
+    testCaseSpec.urlData[itemsMetadata.identifierName] = itemId;
+}
