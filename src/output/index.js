@@ -4,10 +4,10 @@ var _ = require('lodash');
 var ensureExistsOnReq = require('./ensure-exists-on-req');
 
 module.exports = {
-    filterOutput: filterOutput,
-    setOutput: setOutput,
-    ensureOutputExists: ensureOutputExists,
-    sendOutput: function sendOutput(req, res) {
+    filter: filterOutput,
+    setFrom: setOutput,
+    ensureExists: ensureOutputExists,
+    send: function sendOutput(req, res) {
         return res.status(200).json(req.process.output);
     },
     sendNoContent: function (req, res) {

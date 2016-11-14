@@ -1,5 +1,5 @@
 'use strict';
-var outputMap = require('../output');
+var output = require('../output');
 var applyMaps = require('../swagger/router/step-maps');
 var addModel = require('../swagger/build-metadata/add-model');
 var config = require('nconf');
@@ -16,10 +16,10 @@ function addRoute(router, options) {
 function getSteps(router, options) {
     var steps = {
         query: options.crudMiddleware.query,
-        setOutput: outputMap.setOutput(router.metadata.namePlural),
-        ensureOutput: outputMap.ensureOutputExists({default: []}),
-        filterOutput: outputMap.filterOutput,
-        sendOutput: outputMap.sendOutput
+        setOutput: output.setFrom(router.metadata.namePlural),
+        ensureOutput: output.ensureExists({default: []}),
+        filterOutput: output.filter,
+        sendOutput: output.send
     };
     return applyMaps(options.maps, steps);
 }
