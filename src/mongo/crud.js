@@ -13,7 +13,8 @@ module.exports = function (metadata) {
         create: create(metadata),
         update: update(metadata),
         updateStatus: updateStatus(metadata),
-        getExistingVersionInfo: getExistingVersionInfo(metadata)
+        getExistingVersionInfo: getExistingVersionInfo(metadata),
+        writeHistoryItem: writeHistoryItem(metadata)
     };
 };
 
@@ -109,7 +110,7 @@ function updateStatus(metadata) {
             }
         };
         var options = {
-            returnOriginal: false
+            returnOriginal: true
         };
         mongo.db.collection(metadata.collectionName)
             .findOneAndUpdate(filter, updateStatement, options, updateComplete);
@@ -117,7 +118,7 @@ function updateStatus(metadata) {
             if (err) {
                 return next();
             }
-            req.process.output = result.value;
+            req.process.originalItem = result.value;
             return next();
         }
     };
@@ -132,7 +133,7 @@ function update(metadata) {
         var filter = getIdentifierQuery(identifier, metadata);
         var replacement = req.body;
         var options = {
-            returnOriginal: false
+            returnOriginal: true
         };
         mongo.db.collection(metadata.collectionName)
             .findOneAndReplace(filter, replacement, options, updateComplete);
@@ -140,9 +141,20 @@ function update(metadata) {
             if (err) {
                 return next();
             }
-            req.process.output = result.value;
+            req.process.originalItem = result.value;
             return next();
         }
+    };
+}
+
+function writeHistoryItem(metadata) {
+    return function _writeHistoryItem(req, res, next) {
+        if (metadata.schemas.core.trackHistory !== true) {
+            return next();
+        }
+        req.process.originalItem.historyId = req.process.originalItem._id;
+        delete req.process.originalItem._id;
+        mongo.db.collection(metadata.collectionName + '-history').insertOne(req.process.originalItem, next);
     };
 }
 

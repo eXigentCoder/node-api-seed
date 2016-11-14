@@ -1,14 +1,13 @@
 'use strict';
 var _ = require('lodash');
 var applyMaps = require('./step-maps');
-var outputMap = require('../../output-map');
 var util = require('util');
 var create = require('../../crud/create');
 var getById = require('../../crud/get-by-id');
 var query = require('../../crud/query');
 var update = require('../../crud/update');
 var updateStatus = require('../../crud/update-status');
-
+var ensureExistsOnReq = require('../../output/ensure-exists-on-req');
 module.exports = function addStandardRoutes(router) {
     if (!_.isObject(router.metadata)) {
         throw new Error("Router.metadata must be set!");
@@ -53,7 +52,7 @@ module.exports = function addStandardRoutes(router) {
 function getByIdAndUseSteps(router, routerOrMiddleware, options) {
     var steps = {
         findByIdentifier: options.crudMiddleware.findByIdentifier,
-        ensureExistsOnReq: outputMap.ensureExistsOnReq('process.' + router.metadata.name, {metadata: router.metadata})
+        ensureExistsOnReq: ensureExistsOnReq('process.' + router.metadata.name, {metadata: router.metadata})
     };
     if (_.isArray(routerOrMiddleware)) {
         routerOrMiddleware.forEach(function (item, index) {

@@ -25,6 +25,7 @@
         }
     },
     "additionalProperties": false,
+    "trackHistory": true,
     "required": [
         "email",
         "firstName",
@@ -35,6 +36,7 @@
             "name": "email",
             "unique": true,
             "background": false,
+            "includeInHistory": true,
             "fields": {
                 "email": 1
             }

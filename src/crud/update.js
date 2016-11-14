@@ -1,5 +1,5 @@
 'use strict';
-var outputMap = require('../output-map');
+var output = require('../output');
 var applyMaps = require('../swagger/router/step-maps');
 var ensureSchemaSet = require('./../swagger/build-metadata/ensure-schema-set');
 var getValidateFunction = require('./@shared/get-validate-function');
@@ -25,7 +25,8 @@ function getSteps(router, options) {
         getExistingVersionInfo: options.crudMiddleware.getExistingVersionInfo,
         updateVersionInfo: versionInfo.update,
         update: options.crudMiddleware.update,
-        sendOutput: outputMap.sendNoContent
+        writeHistoryItem: options.crudMiddleware.writeHistoryItem,
+        sendOutput: output.sendNoContent
     };
     return applyMaps(options.maps, steps);
 }
