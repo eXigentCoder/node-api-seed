@@ -3,10 +3,18 @@ var _ = require('lodash');
 var schema = require('./item.json');
 var output = require('./item-output.json');
 output = _.merge({}, schema, output);
+var input = _.cloneDeep(schema);
+delete input.properties.ownerId;
+var index = input.required.indexOf('ownerId');
+if (index >= 0) {
+    input.required.splice(index, 1);
+}
 var router = require('../../../swagger/router')({
     schemas: {
         core: schema,
-        output: output
+        output: output,
+        creation: input,
+        update: input
     }
 });
 var crudMiddleware = require('../../../mongo/crud')(router.metadata);
