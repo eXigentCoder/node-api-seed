@@ -2,24 +2,26 @@
 var jsonSchemaFilter = require('json-schema-filter');
 var _ = require('lodash');
 var ensureExistsOnReq = require('./ensure-exists-on-req');
-var util = require('util');
 
 module.exports = {
     filterOutput: filterOutput,
-    mapOutput: mapOutput,
-    set: set,
     setOutput: setOutput,
-    ensureOutput: ensureOutput,
-    ensureExistsOnReq: ensureExistsOnReq,
+    ensureOutputExists: ensureOutputExists,
     sendOutput: function sendOutput(req, res) {
         return res.status(200).json(req.process.output);
     },
-    addQueryStringToQuery: addQueryStringToQuery,
     sendNoContent: function (req, res) {
         res.status(204).send();
     }
 };
 
+/**
+ * Uses the output schema (metadata.schemas.output) to filter the req.process.output object to that schema.
+ * @param {object} req Express req object
+ * @param {object} res Express res object
+ * @param {function} next Express next function
+ * @return {*} Nothing
+ */
 function filterOutput(req, res, next) {
     if (!req.process.metadata.schemas.output) {
         return next(new Error("Schema must be set before you can call mapOutput"));
@@ -37,46 +39,11 @@ function filterOutput(req, res, next) {
     return next();
 }
 
-function mapOutput(map) {
-    if (!map) {
-        throw new Error('Map is required');
-    }
-    if (!_.isObject(map)) {
-        throw new Error('Map must be an object');
-    }
-    return mappingMiddleware;
-    function mappingMiddleware(req, res, next) {
-        try {
-            Object.keys(map).forEach(performMapping);
-        }
-        catch (err) {
-            return next(err);
-        }
-        return next();
-        function performMapping(key) {
-            var mapping = map[key];
-            if (_.isFunction(mapping)) {
-                mapping(req, res, next);
-                return;
-            }
-            if (_.isString(mapping)) {
-                if (_.isArray(req.process.output)) {
-                    req.process.output.forEach(function (outputItem) {
-                        outputItem[key] = _.get(outputItem, mapping);
-                    });
-                    return;
-                }
-                if (_.isObject(req.process.output)) {
-                    req.process.output[key] = _.get(req.process.output, mapping);
-                    return;
-                }
-                throw new Error(util.format("req.process.output was not an array or object, unsure how to map, req.process.output : %j. Mapping : %j", req.process.output, mapping));
-            }
-            throw new Error(util.format("Unknown mapping option : %j", mapping));
-        }
-    }
-}
-
+/**
+ * Uses the provided lodash path to find a value on req.process and set req.process.output to that.
+ * @param {string} path the lodash path to the req.process.* value
+ * @return {*} Void
+ */
 function setOutput(path) {
     if (_.isNil(path)) {
         throw new Error("Path must be set when calling setOutput");
@@ -87,7 +54,14 @@ function setOutput(path) {
     return set('process.output', 'process.' + path);
 }
 
-function set(destinationPath, sourcePath) {
+/**
+ * Takes in the two provided lodash paths and will set something on the destinationObject at the destinationPath from the sourcePath
+ * @param {string} destinationPath - The lodash path to the destination value
+ * @param {string} sourcePath - The lodash path to the source value
+ * @param {object?} destinationObject - The destination object, if not set, will use the req from the express middleware
+ * @return {function} setMiddleware - The middleware that will perform the set operation.
+ */
+function set(destinationPath, sourcePath, destinationObject) {
     if (!destinationPath || !_.isString(destinationPath)) {
         throw new Error("destinationPath must be a non empty string");
     }
@@ -96,16 +70,20 @@ function set(destinationPath, sourcePath) {
     }
     return setMiddleware;
     function setMiddleware(req, res, next) {
-        _.set(req, destinationPath, _.get(req, sourcePath));
+        destinationObject = destinationObject || req;
+        _.set(destinationObject, destinationPath, _.get(req, sourcePath));
         next();
     }
 }
 
-function ensureOutput(options) {
+/**
+ * Ensures that req.process.output has a value that is not nil or null
+ * @param {object} options the options to use when ensuring the value exists
+ * @param {*} options.default - The default value to use if the value at the path was nil (Prevents options.message from being used).
+ * @param {string} options.message - The message to show if the value was nil (Prevents options.metadata from being used).
+ * @param {object} options.metadata - The metadata object to use to generate the error message.
+ * @return {Function} - The middleware function that will ensure the value exists on the path
+ */
+function ensureOutputExists(options) {
     return ensureExistsOnReq('process.output', options);
-}
-
-function addQueryStringToQuery(req, res, next) {
-    req.process.query = _.merge({}, req.query, req.process.query);
-    next();
 }

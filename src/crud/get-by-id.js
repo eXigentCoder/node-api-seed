@@ -18,7 +18,7 @@ function getSteps(router, options) {
     var steps = {
         findByIdentifier: options.crudMiddleware.findByIdentifier,
         setOutput: outputMap.setOutput(router.metadata.name),
-        ensureOutput: outputMap.ensureOutput({metadata: router.metadata}),
+        ensureOutput: outputMap.ensureOutputExists({metadata: router.metadata}),
         filterOutput: outputMap.filterOutput,
         sendOutput: outputMap.sendOutput
     };

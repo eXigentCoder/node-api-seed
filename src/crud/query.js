@@ -15,10 +15,9 @@ function addRoute(router, options) {
 
 function getSteps(router, options) {
     var steps = {
-        addQueryStringToQuery: outputMap.addQueryStringToQuery,
         query: options.crudMiddleware.query,
         setOutput: outputMap.setOutput(router.metadata.namePlural),
-        ensureOutput: outputMap.ensureOutput({default: []}),
+        ensureOutput: outputMap.ensureOutputExists({default: []}),
         filterOutput: outputMap.filterOutput,
         sendOutput: outputMap.sendOutput
     };
