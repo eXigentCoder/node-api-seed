@@ -2,7 +2,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "id": "https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/user.json",
     "name": "user",
-    "title": "User",
     "description": "A user of the site",
     "type": "object",
     "identifierName": "email",
@@ -35,7 +34,7 @@
         {
             "name": "email",
             "unique": true,
-            "background": false,
+            "background": true,
             "includeInHistory": true,
             "fields": {
                 "email": 1

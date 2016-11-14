@@ -17,6 +17,9 @@ function discoverAndRunTests() {
         if (!_.isObject(definition)) {
             throw new Error('Definition was not an object');
         }
+        if (Object.keys(definition).length === 0) {
+            return;
+        }
         definitions.push(definition);
     }
 

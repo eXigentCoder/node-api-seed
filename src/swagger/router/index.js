@@ -26,7 +26,7 @@ function setTag(options) {
 
 function createRouter(options) {
     var routerOptions = config.get('expressApp').routerOptions;
-    var router = express.Router(routerOptions);
+    var router = new express.Router(routerOptions);
     swagger.swaggerize(router);
     router.metadata = options;
     addStandardRoutes(router);
@@ -44,7 +44,7 @@ function addCommonMiddleware(router) {
         if (!req.process) {
             req.process = {};
         }
-        req.process.metadata = req.process.metadata || router.metadata;
+        req.process.metadata = router.metadata;
         req.process.query = req.process.query || {};
         next();
     }

@@ -22,7 +22,7 @@ module.exports = {
             depth: 10,
             humanReadableUnhandledException: true,
             showLevel: true,
-            handleExceptions: false
+            handleExceptions: true
         },
         file: {
             // Logs to the local files system

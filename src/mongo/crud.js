@@ -54,15 +54,16 @@ function findByIdentifier(metadata) {
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
+        var mongoQuery = getIdentifierQuery(identifier, metadata);
         mongo.db.collection(metadata.collectionName)
-            .findOne(getIdentifierQuery(identifier, metadata), dataRetrieved);
+            .findOne(mongoQuery, dataRetrieved);
 
         function dataRetrieved(err, document) {
             if (err) {
                 return next(err);
             }
             if (!document) {
-                return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, identifier)));
+                return next(boom.notFound(util.format('A %s matching query %j was not found.', metadata.name, mongoQuery)));
             }
             req.process[metadata.name] = document;
             return next();
@@ -72,7 +73,7 @@ function findByIdentifier(metadata) {
 
 function getIdentifierQuery(identifier, metadata) {
     if (mongo.isValidObjectId(identifier)) {
-        return {_id: identifier};
+        return {_id: mongo.ObjectId(identifier)};
     }
     var identifierQuery = {};
     identifierQuery[metadata.identifierName] = identifier;

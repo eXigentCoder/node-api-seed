@@ -1,0 +1,41 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/items/item.json",
+    "name": "item",
+    "description": "An item belonging to a user",
+    "type": "object",
+    "identifierName": "name",
+    "properties": {
+        "ownerId": {
+            "type": "string",
+            "format": "mongoId"
+        },
+        "name": {
+            "type": "string",
+            "minLength": 1,
+            "faker": "lorem.word"
+        },
+        "description": {
+            "type": "string",
+            "minLength": 1,
+            "faker": "lorem.sentence"
+        }
+    },
+    "additionalProperties": true,
+    "trackHistory": true,
+    "required": [
+        "ownerId",
+        "name"
+    ],
+    "indexes": [
+        {
+            "name": "name",
+            "unique": true,
+            "background": true,
+            "includeInHistory": true,
+            "fields": {
+                "name": 1
+            }
+        }
+    ]
+}
