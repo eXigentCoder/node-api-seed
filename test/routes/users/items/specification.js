@@ -46,16 +46,22 @@ setUserId(specification.cases.Creation['No Auth Header']);
 setUserId(specification.cases.Retrieval.Query);
 setUserId(specification.cases.Update.Replace);
 //setting itemId
-setItemId(getByIdHappy, 'item1');
-setItemId(updateHappy, 'item1');
+setItemId(getByIdHappy);
+setItemId(updateHappy);
 module.exports = specification;
 
-function setUserId(testCaseSpec) {
+function setUserId(testCaseSpec, userId) {
+    if (userId === undefined) {
+        userId = '580d9f45622d510b044fb6a8';
+    }
     testCaseSpec.urlData = testCaseSpec.urlData || {};
-    testCaseSpec.urlData[usersMetadata.identifierName] = '580d9f45622d510b044fb6a8';
+    testCaseSpec.urlData[usersMetadata.identifierName] = userId;
 }
 
 function setItemId(testCaseSpec, itemId) {
+    if (itemId === undefined) {
+        itemId = 'item1';
+    }
     testCaseSpec.urlData = testCaseSpec.urlData || {};
     testCaseSpec.urlData[itemsMetadata.identifierName] = itemId;
 }
