@@ -2,7 +2,7 @@
 var output = require('../output');
 var applyMaps = require('../swagger/router/step-maps');
 var getValidateFunction = require('./@shared/get-validate-function');
-var schemaName = 'update';
+var schemaName = 'updateStatus';
 var _ = require('lodash');
 var config = require('nconf');
 
