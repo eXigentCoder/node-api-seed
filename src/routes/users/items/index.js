@@ -1,8 +1,13 @@
 'use strict';
-
+var _ = require('lodash');
 var schema = require('./item.json');
+var output = require('./item-output.json');
+output = _.merge({}, schema, output);
 var router = require('../../../swagger/router')({
-    schema: schema
+    schemas: {
+        core: schema,
+        output: output
+    }
 });
 var crudMiddleware = require('../../../mongo/crud')(router.metadata);
 module.exports = router;
