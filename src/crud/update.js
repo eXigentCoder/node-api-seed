@@ -1,8 +1,8 @@
 'use strict';
 var output = require('../output');
-var applyMaps = require('./step-maps');
+var applyMaps = require('./shared/apply-maps');
 var ensureSchemaSet = require('./../metadata/ensure-schema-set');
-var getValidateFunction = require('./@shared/get-validate-function');
+var getValidateFunction = require('./shared/get-validate-function');
 var addModel = require('../swagger/add-model');
 var _ = require('lodash');
 var schemaName = 'update';

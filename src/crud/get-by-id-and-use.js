@@ -1,6 +1,6 @@
 'use strict';
 var ensureExistsOnReq = require('../output/ensure-exists-on-req');
-var applyMaps = require('./step-maps');
+var applyMaps = require('./shared/apply-maps');
 var util = require('util');
 var _ = require('lodash');
 

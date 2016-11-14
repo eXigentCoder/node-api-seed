@@ -1,6 +1,6 @@
 'use strict';
 var output = require('../output');
-var applyMaps = require('./step-maps');
+var applyMaps = require('./shared/apply-maps');
 var _ = require('lodash');
 var addModel = require('../swagger/add-model');
 var config = require('nconf');

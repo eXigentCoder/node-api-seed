@@ -1,8 +1,8 @@
 'use strict';
 var output = require('../output');
-var applyMaps = require('./step-maps');
+var applyMaps = require('./shared/apply-maps');
 var ensureSchemaSet = require('./../metadata/ensure-schema-set');
-var getValidateFunction = require('./@shared/get-validate-function');
+var getValidateFunction = require('./shared/get-validate-function');
 var addModel = require('../swagger/add-model');
 var versionInfo = require('../version-info');
 var schemaName = 'creation';
