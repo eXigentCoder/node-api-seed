@@ -2,16 +2,6 @@
 var _ = require('lodash');
 var util = require('util');
 var paramNames = require('get-parameter-names');
-// var maps = {
-//     remove: ['stepName'],
-//     remove2: 'stepName',
-//     removeIfExists: ['bob'],
-//     removeIfExists2: 'bob',
-//     startWith: [doWork],
-//     startWith2: doWork,
-//     endWith: [doWork],
-//     endWith2: doWork
-// };
 
 module.exports = function applyMaps(maps, steps) {
     if (_.isNil(maps)) {
@@ -20,13 +10,13 @@ module.exports = function applyMaps(maps, steps) {
     if (!_.isObject(maps)) {
         throw new Error(util.format('The passed in map must be an object or null if no mapping is required. Type : "%s". Value : "%j"', typeof maps, maps));
     }
-    applySkip(maps.skip, steps);
-    applySkipIfExists(maps.skipIfExists, steps);
-    applyAfter(maps.addAfter, steps);
-    applyBefore(maps.addBefore, steps);
-    applyReplace(maps.replace, steps);
-    applyStart(maps.startWith, steps);
-    applyEnd(maps.endWith, steps);
+    applySkip(maps.skip, steps); //done
+    applySkipIfExists(maps.skipIfExists, steps);//done
+    applyAfter(maps.addAfter, steps); //done
+    applyBefore(maps.addBefore, steps); //todo
+    applyReplace(maps.replace, steps); //done
+    applyStart(maps.startWith, steps); //todo
+    applyEnd(maps.endWith, steps); //todo
     return convertStepsToArray(steps);
 };
 
@@ -161,13 +151,6 @@ function applyBefore(addBefore, steps) {
 
 }
 
-//     replace1: {'stepName': [doWork]},
-//     replace2: {'stepName': doWork},
-//     replace3: {stepName: 'stepName', replacement: [doWork]},
-//     replace4: {stepName: 'stepName', replaceWith: doWork},
-//     replace5: [{'stepName': [doWork]}],
-//     replace6: [{'stepName': doWork}],
-//     replace7: [{stepName: 'stepName', add: [doWork]}],
 function applyReplace(replaceWith, steps) {
     var mapObjectName = paramNames(applyReplace)[0];
     var replaceCounter = 0;
