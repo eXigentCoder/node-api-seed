@@ -128,5 +128,8 @@ function executeTest(definition, rules, done) {
     if (rules.hasResults) {
         test.expect(common.hasResults);
     }
-    test.end(done);
+    test.end(function (err, res) {
+        console.verbose(res.body);
+        done(err);
+    });
 }
