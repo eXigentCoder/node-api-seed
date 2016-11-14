@@ -10,11 +10,11 @@ module.exports = function applyMaps(maps, steps) {
     if (!_.isObject(maps)) {
         throw new Error(util.format('The passed in map must be an object or null if no mapping is required. Type : "%s". Value : "%j"', typeof maps, maps));
     }
-    applySkip(maps.skip, steps); //done
-    applySkipIfExists(maps.skipIfExists, steps);//done
-    applyAfter(maps.addAfter, steps); //done
-    applyBefore(maps.addBefore, steps); //todo
-    applyReplace(maps.replace, steps); //done
+    applySkip(maps.skip, steps);
+    applySkipIfExists(maps.skipIfExists, steps);
+    applyAfter(maps.addAfter, steps);
+    applyBefore(maps.addBefore, steps);
+    applyReplace(maps.replace, steps);
     applyStart(maps.startWith, steps); //todo
     applyEnd(maps.endWith, steps); //todo
     return convertStepsToArray(steps);
