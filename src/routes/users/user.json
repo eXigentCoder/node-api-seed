@@ -36,6 +36,7 @@
             "name": "email",
             "unique": true,
             "background": false,
+            "includeInHistory": true,
             "fields": {
                 "email": 1
             }
