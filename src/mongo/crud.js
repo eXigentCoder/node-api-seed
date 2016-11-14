@@ -70,6 +70,10 @@ function findByIdentifier(metadata) {
             return next(new Error("Object has no identifier"));
         }
         var mongoQuery = getIdentifierQuery(identifier, metadata);
+        if (Object.keys(req.query).length > 0) {
+            var parsedQuery = parseQueryWithDefaults(req.query);
+            mongoQuery = _.merge({}, parsedQuery.filter, mongoQuery);
+        }
         mongo.db.collection(metadata.collectionName)
             .findOne(mongoQuery, dataRetrieved);
 

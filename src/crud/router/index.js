@@ -1,7 +1,7 @@
 'use strict';
 var swagger = require('swagger-spec-express');
 var express = require('express');
-var buildMetadata = require('../build-metadata');
+var buildMetadata = require('../../metadata/index');
 var addStandardRoutes = require('./add-standard-routes');
 var config = require('nconf');
 var _ = require('lodash');

@@ -1,35 +1,11 @@
 'use strict';
-var _ = require('lodash');
-var applyMaps = require('./step-maps');
+var ensureExistsOnReq = require('../output/ensure-exists-on-req');
+var applyMaps = require('./shared/apply-maps');
 var util = require('util');
-var create = require('../../crud/create');
-var getById = require('../../crud/get-by-id');
-var query = require('../../crud/query');
-var update = require('../../crud/update');
-var updateStatus = require('../../crud/update-status');
-var ensureExistsOnReq = require('../../output/ensure-exists-on-req');
-module.exports = function addStandardRoutes(router) {
-    if (!_.isObject(router.metadata)) {
-        throw new Error("Router.metadata must be set!");
-    }
-    router.add = {
-        query: function (options) {
-            query.addRoute(router, options);
-        },
-        getById: function (options) {
-            getById.addRoute(router, options);
-        },
-        create: function (options) {
-            create.addRoute(router, options);
-        },
-        update: function (options) {
-            update.addRoute(router, options);
-        },
-        updateStatus: function (options) {
-            updateStatus.addRoute(router, options);
-        }
-    };
-    router.getByIdAndUse = function (path, routerOrMiddleware, options) {
+var _ = require('lodash');
+
+module.exports = function (router) {
+    return function (path, routerOrMiddleware, options) {
         if (_.isObject(path) && _.isObject(routerOrMiddleware) && _.isNil(options)) {
             options = routerOrMiddleware;
             routerOrMiddleware = path;
