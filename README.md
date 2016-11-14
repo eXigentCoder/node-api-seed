@@ -2,6 +2,7 @@
 The seed for pretty much any api I write in node.js
 
 ![Build status](https://travis-ci.org/eXigentCoder/node-api-seed.svg?branch=master)
+[![Known Vulnerabilities](https://snyk.io/test/github/exigentcoder/node-api-seed/badge.svg)](https://snyk.io/test/github/exigentcoder/node-api-seed)
 
 # Global packages
 

@@ -2,6 +2,8 @@
 var outputMap = require('../output-map');
 var applyMaps = require('../swagger/router/step-maps');
 var addModel = require('../swagger/build-metadata/add-model');
+var config = require('nconf');
+
 module.exports = {
     addRoute: addRoute
 };
@@ -25,6 +27,7 @@ function getSteps(router, options) {
 
 function description(metadata) {
     addModel(metadata.schemas.output);
+    var correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
         summary: "Search for " + metadata.titlePlural,
@@ -32,7 +35,7 @@ function description(metadata) {
         common: {
             responses: ["500", "400", "401"],
             parameters: {
-                header: ["X-Request-Id"],
+                header: [correlationIdOptions.reqHeader],
                 query: ["select", "skip", "limit", "sort", "rawQuery"]
             }
         },
@@ -40,7 +43,7 @@ function description(metadata) {
             200: {
                 description: 'Returns the list of ' + metadata.titlePlural + ' matching the supplied parameters.',
                 arrayOfModel: metadata.schemas.output.name,
-                commonHeaders: ["X-Request-Id"]
+                commonHeaders: [correlationIdOptions.resHeader]
             }
         }
     };

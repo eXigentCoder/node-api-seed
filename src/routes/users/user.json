@@ -25,6 +25,7 @@
         }
     },
     "additionalProperties": false,
+    "trackHistory": true,
     "required": [
         "email",
         "firstName",

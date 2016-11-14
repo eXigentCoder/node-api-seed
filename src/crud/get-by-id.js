@@ -3,6 +3,7 @@ var outputMap = require('../output-map');
 var applyMaps = require('../swagger/router/step-maps');
 var _ = require('lodash');
 var addModel = require('../swagger/build-metadata/add-model');
+var config = require('nconf');
 
 module.exports = {
     addRoute: addRoute
@@ -26,6 +27,7 @@ function getSteps(router, options) {
 
 function description(metadata) {
     addModel(metadata.schemas.output);
+    var correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
         summary: "Get " + metadata.title + " By " + _.startCase(metadata.identifierName) + ".",
@@ -42,14 +44,14 @@ function description(metadata) {
         common: {
             responses: ["500", "400", "401", "404"],
             parameters: {
-                header: ["X-Request-Id"]
+                header: [correlationIdOptions.reqHeader]
             }
         },
         responses: {
             "200": {
                 description: "Returns the single " + metadata.title + " matching the provided parameters.",
                 model: metadata.schemas.output.name,
-                commonHeaders: ["X-Request-Id"]
+                commonHeaders: [correlationIdOptions.resHeader]
             }
         }
     };
