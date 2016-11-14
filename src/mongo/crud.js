@@ -41,11 +41,26 @@ function query(metadata) {
 
 function parseQueryWithDefaults(queryString) {
     var parsedQuery = aqp(queryString);
+    if (_.isObject(queryString)) {
+        coerceTypes(queryString, parsedQuery.filter);
+    }
     parsedQuery.projection = parsedQuery.projection || {};
     parsedQuery.skip = parsedQuery.skip || 0;
     parsedQuery.limit = parsedQuery.limit || 50;
     parsedQuery.sort = parsedQuery.sort || {};
     return parsedQuery;
+}
+
+function coerceTypes(inputObject, filter) {
+    Object.keys(filter).forEach(function (key) {
+        if (!inputObject[key]) {
+            return;
+        }
+        if (inputObject[key] instanceof mongo.ObjectId) {
+            filter[key] = mongo.ObjectId(filter[key]);
+            return;
+        }
+    });
 }
 
 function findByIdentifier(metadata) {
