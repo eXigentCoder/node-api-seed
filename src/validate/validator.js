@@ -1,6 +1,7 @@
 'use strict';
 var _ = require('lodash');
 var jsonSchemaFilter = require('json-schema-filter');
+var customFormats = require('./custom-formats');
 var Ajv = require('ajv');
 var ajv = new Ajv({
     removeAdditional: 'failing',
@@ -10,7 +11,7 @@ var ajv = new Ajv({
     verbose: true,
     format: 'full'
 });
-
+customFormats.addAllToAjv(ajv);
 
 module.exports = {
     addSchema: addSchema,
