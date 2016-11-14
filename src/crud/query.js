@@ -1,5 +1,5 @@
 'use strict';
-var outputMap = require('../output-map');
+var outputMap = require('../output');
 var applyMaps = require('../swagger/router/step-maps');
 var addModel = require('../swagger/build-metadata/add-model');
 var config = require('nconf');

@@ -1,14 +1,13 @@
 'use strict';
 var _ = require('lodash');
 var applyMaps = require('./step-maps');
-var outputMap = require('../../output-map');
 var util = require('util');
 var create = require('../../crud/create');
 var getById = require('../../crud/get-by-id');
 var query = require('../../crud/query');
 var update = require('../../crud/update');
 var updateStatus = require('../../crud/update-status');
-var ensureExistsOnReq = require('../../output-map/ensure-exists-on-req');
+var ensureExistsOnReq = require('../../output/ensure-exists-on-req');
 module.exports = function addStandardRoutes(router) {
     if (!_.isObject(router.metadata)) {
         throw new Error("Router.metadata must be set!");

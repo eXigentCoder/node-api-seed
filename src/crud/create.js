@@ -1,5 +1,5 @@
 'use strict';
-var outputMap = require('../output-map');
+var outputMap = require('../output');
 var applyMaps = require('../swagger/router/step-maps');
 var ensureSchemaSet = require('./../swagger/build-metadata/ensure-schema-set');
 var getValidateFunction = require('./@shared/get-validate-function');
