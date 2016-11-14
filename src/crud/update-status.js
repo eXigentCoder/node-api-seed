@@ -1,6 +1,6 @@
 'use strict';
 var output = require('../output');
-var applyMaps = require('../swagger/router/step-maps');
+var applyMaps = require('./step-maps');
 var getValidateFunction = require('./@shared/get-validate-function');
 var schemaName = 'updateStatus';
 var _ = require('lodash');

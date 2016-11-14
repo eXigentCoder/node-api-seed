@@ -2,7 +2,7 @@
 require('../../../@util/init.js');
 var _ = require('lodash');
 var util = require("util");
-var applyMaps = require('../../../../src/swagger/router/step-maps');
+var applyMaps = require('../../../../src/crud/step-maps');
 var applySkip = applyMaps._applySkip;
 var applySkipIfExists = applyMaps._applySkipIfExists;
 var Steps = require('./fake-steps');
