@@ -1,11 +1,11 @@
 'use strict';
 var _ = require('lodash');
-var create = require('../../crud/create');
-var getById = require('../../crud/get-by-id');
-var query = require('../../crud/query');
-var update = require('../../crud/update');
-var updateStatus = require('../../crud/update-status');
-var getByIdAndUse = require('../../crud/get-by-id-and-use');
+var create = require('../create');
+var getById = require('../get-by-id');
+var query = require('../query');
+var update = require('../update');
+var updateStatus = require('../update-status');
+var getByIdAndUse = require('../get-by-id-and-use');
 module.exports = function addStandardRoutes(router) {
     if (!_.isObject(router.metadata)) {
         throw new Error("Router.metadata must be set!");

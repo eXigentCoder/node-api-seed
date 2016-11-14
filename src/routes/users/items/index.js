@@ -9,7 +9,7 @@ var index = input.required.indexOf('ownerId');
 if (index >= 0) {
     input.required.splice(index, 1);
 }
-var router = require('../../../swagger/router')({
+var router = require('../../../crud/router')({
     schemas: {
         core: schema,
         output: output,

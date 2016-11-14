@@ -1,6 +1,6 @@
 'use strict';
 var schema = require('./user.json');
-var router = require('../../swagger/router')({
+var router = require('../../crud/router')({
     schema: schema
 });
 var crudMiddleware = require('../../mongo/crud')(router.metadata);
