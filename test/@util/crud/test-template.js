@@ -1,6 +1,8 @@
 'use strict';
 var _ = require('lodash');
 var jsf = require('json-schema-faker');
+var customFormats = require('../../../src/validate/custom-formats');
+customFormats.addAllToJsf(jsf);
 var util = require('util');
 
 module.exports = function (definition) {

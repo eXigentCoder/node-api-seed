@@ -3,6 +3,7 @@ var metadata = require('../../../src/routes/users').metadata;
 var config = require('nconf');
 
 var specification = {
+    title: "Users",
     baseUrl: '/users',
     metadata: metadata,
     cases: {
