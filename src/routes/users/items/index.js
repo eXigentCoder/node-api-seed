@@ -11,13 +11,22 @@ var router = require('../../../swagger/router')({
 });
 var crudMiddleware = require('../../../mongo/crud')(router.metadata);
 module.exports = router;
-var creationMaps = {
-    addBefore: {
-        'query': filterOwner
+router.add.query({
+    crudMiddleware: crudMiddleware,
+    maps: {
+        addBefore: {
+            'query': filterOwner
+        }
     }
-};
-router.add.query({crudMiddleware: crudMiddleware, maps: creationMaps});
-router.add.getById({crudMiddleware: crudMiddleware});
+});
+router.add.getById({
+    crudMiddleware: crudMiddleware,
+    maps: {
+        addBefore: {
+            'findByIdentifier': filterOwner
+        }
+    }
+});
 router.add.create({crudMiddleware: crudMiddleware});
 router.add.update({crudMiddleware: crudMiddleware});
 
