@@ -17,6 +17,9 @@ function discoverAndRunTests() {
         if (!_.isObject(definition)) {
             throw new Error('Definition was not an object');
         }
+        if (Object.keys(definition).length === 0) {
+            return;
+        }
         definitions.push(definition);
     }
 
@@ -125,5 +128,8 @@ function executeTest(definition, rules, done) {
     if (rules.hasResults) {
         test.expect(common.hasResults);
     }
-    test.end(done);
+    test.end(function (err, res) {
+        console.verbose(res.body);
+        done(err);
+    });
 }

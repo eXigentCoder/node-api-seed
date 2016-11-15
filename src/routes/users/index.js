@@ -1,15 +1,17 @@
 'use strict';
 var schema = require('./user.json');
-var router = require('../../swagger/router')({
+var router = require('../../crud/router')({
     schema: schema
 });
 var crudMiddleware = require('../../mongo/crud')(router.metadata);
 var bcrypt = require('bcrypt');
 var config = require("nconf");
 var generatePassword = require('password-generator');
+var items = require('./items');
 module.exports = router;
 
 router.add.query({crudMiddleware: crudMiddleware});
+router.getByIdAndUse('/items', items, {crudMiddleware: crudMiddleware});
 router.add.getById({crudMiddleware: crudMiddleware});
 var creationMaps = {
     addAfter: {

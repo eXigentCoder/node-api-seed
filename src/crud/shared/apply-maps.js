@@ -2,16 +2,6 @@
 var _ = require('lodash');
 var util = require('util');
 var paramNames = require('get-parameter-names');
-// var maps = {
-//     remove: ['stepName'],
-//     remove2: 'stepName',
-//     removeIfExists: ['bob'],
-//     removeIfExists2: 'bob',
-//     startWith: [doWork],
-//     startWith2: doWork,
-//     endWith: [doWork],
-//     endWith2: doWork
-// };
 
 module.exports = function applyMaps(maps, steps) {
     if (_.isNil(maps)) {
@@ -25,8 +15,8 @@ module.exports = function applyMaps(maps, steps) {
     applyAfter(maps.addAfter, steps);
     applyBefore(maps.addBefore, steps);
     applyReplace(maps.replace, steps);
-    applyStart(maps.startWith, steps);
-    applyEnd(maps.endWith, steps);
+    applyStart(maps.startWith, steps); //todo
+    applyEnd(maps.endWith, steps); //todo
     return convertStepsToArray(steps);
 };
 
@@ -44,6 +34,7 @@ function convertStepsToArray(stepObject) {
 module.exports._applySkip = applySkip;
 module.exports._applySkipIfExists = applySkipIfExists;
 module.exports._applyAfter = applyAfter;
+module.exports._applyBefore = applyBefore;
 module.exports._applyReplace = applyReplace;
 module.exports._applyStart = applyStart;
 module.exports._applyEnd = applyEnd;
@@ -152,22 +143,60 @@ function applyAfter(addAfter, steps) {
 }
 
 function applyBefore(addBefore, steps) {
+    var mapObjectName = paramNames(applyBefore)[0];
+    var addCounter = 0;
     if (!_.isObject(steps)) {
         throw new Error("Steps must be an object");
     }
     if (_.isNil(addBefore)) {
         return;
     }
-
+    if (!_.isObject(addBefore)) {
+        throw new Error("addBefore must be an object or array of objects");
+    }
+    if (_.isArray(addBefore)) {
+        addBefore.forEach(function (item) {
+            applyBefore(item, steps);
+        });
+        return;
+    }
+    if (addBefore.stepName && addBefore.add) {
+        add(addBefore.stepName, addBefore.add);
+        return;
+    }
+    var pairs = _.toPairs(addBefore);
+    pairs.forEach(function (pair) {
+        var stepName = pair[0];
+        var functions = pair[1];
+        if (!_.isArray(functions) && !_.isFunction(functions)) {
+            throw new Error(util.format("The value property in the %s object should have been a function or array of functions to add but was a %s with a value of %j", mapObjectName, typeof functions, functions));
+        }
+        add(stepName, functions);
+    });
+    function add(stepName, functions) {
+        if (_.isFunction(functions)) {
+            add(stepName, [functions]);
+            return;
+        }
+        if (!steps[stepName]) {
+            throw new Error("No step by the name of " + stepName + " was found, please check the spelling and try again");
+        }
+        _.forIn(steps, function (value, key) {
+            delete steps[key];
+            if (key === stepName) {
+                addFunctions();
+            }
+            steps[key] = value;
+        });
+        function addFunctions() {
+            functions.forEach(function (functionToAdd) {
+                addCounter++;
+                steps['added' + addCounter] = functionToAdd;
+            });
+        }
+    }
 }
 
-//     replace1: {'stepName': [doWork]},
-//     replace2: {'stepName': doWork},
-//     replace3: {stepName: 'stepName', replacement: [doWork]},
-//     replace4: {stepName: 'stepName', replaceWith: doWork},
-//     replace5: [{'stepName': [doWork]}],
-//     replace6: [{'stepName': doWork}],
-//     replace7: [{stepName: 'stepName', add: [doWork]}],
 function applyReplace(replaceWith, steps) {
     var mapObjectName = paramNames(applyReplace)[0];
     var replaceCounter = 0;
