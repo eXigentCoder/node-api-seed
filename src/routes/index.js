@@ -24,6 +24,7 @@ function authenticate(req, res, next) {
             return next(err);
         }
         if (user) {
+            req.user = user;
             return next();
         }
         return next(boom.unauthorized());

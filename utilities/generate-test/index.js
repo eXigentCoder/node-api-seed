@@ -185,7 +185,7 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.creation))");
             addLine(".set(common.authentication())");
-            addLine(".expect(common.success(200))");
+            addLine(".expect(common.success(201))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
             indent--;
