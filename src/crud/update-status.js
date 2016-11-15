@@ -45,6 +45,13 @@ function description(metadata) {
                 required: false,
                 in: "body",
                 schema: {}
+            },
+            {
+                name: 'newStatusName',
+                description: "The new status to set for this " + metadata.title.toLowerCase(),
+                required: true,
+                in: "path",
+                type: "string"
             }
         ],
         common: {
