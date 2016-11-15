@@ -176,9 +176,9 @@ function writeRoutesAsTest(data) {
 
     function addCreate(foundRoute) {
         addHappy();
-        //addNoAuth();
+        addNoAuth();
+        addNoData();
         function addHappy() {
-            console.log(foundRoute, data);
             addLine("it('Happy case', function (done) {");
             indent++;
             addLine("common.request.post('" + foundRoute.fullPath + "')");
@@ -186,6 +186,35 @@ function writeRoutesAsTest(data) {
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.creation))");
             addLine(".set(common.authentication())");
             addLine(".expect(common.success(201))");
+            addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+
+        function addNoAuth() {
+            addLine("it('No Authentication', function (done) {");
+            indent++;
+            addLine("common.request.post('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.creation))");
+            addLine(".expect(common.error(401))");
+            addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+
+        function addNoData() {
+            addLine("it('No Data', function (done) {");
+            indent++;
+            addLine("common.request.post('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".send({})");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.error(400))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
             indent--;

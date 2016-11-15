@@ -38,7 +38,7 @@ describe('Users', function () {
         });
         it('Invalid path parameter', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email":"b2f7a7f2-308e-4ce2-9f59-bab7b97e035d"}))
+                .use(common.urlTemplate({"email":"9479210c-a874-4521-870f-bb2d2792bb0d"}))
                 .set(common.authentication())
                 .expect(common.error(404))
                 .expect(common.matchesSwaggerSchema)
@@ -51,6 +51,21 @@ describe('Users', function () {
                 .send(common.generateDataFromSchema(router.metadata.schemas.creation))
                 .set(common.authentication())
                 .expect(common.success(201))
+                .expect(common.matchesSwaggerSchema)
+                .end(common.logResponse(done));
+        });
+        it('No Authentication', function (done) {
+            common.request.post('/users')
+                .send(common.generateDataFromSchema(router.metadata.schemas.creation))
+                .expect(common.error(401))
+                .expect(common.matchesSwaggerSchema)
+                .end(common.logResponse(done));
+        });
+        it('No Data', function (done) {
+            common.request.post('/users')
+                .send({})
+                .set(common.authentication())
+                .expect(common.error(400))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
