@@ -45,7 +45,16 @@ after(function (done) {
 
 module.exports = {
     defaultTimeout: 5000,
-    app: null
+    app: null,
+    logResponse: function (done) {
+        return function (err, res) {
+            console.verbose({
+                statusCode: res.statusCode,
+                body: res.body
+            });
+            return done(err);
+        };
+    }
 };
 
 Object.keys(expect).forEach(function (key) {
