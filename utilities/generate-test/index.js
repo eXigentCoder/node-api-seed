@@ -17,7 +17,8 @@ var uuid = require('node-uuid');
         outputPath: './test/routes/users/generated.js',
         routePrefix: '/users',
         pathParameters: {
-            email: config.get('tests').defaultUser._id
+            email: config.get('tests').defaultUser._id,
+            newStatusName: 'testStatus'
         }
     };
     //eslint-disable-next-line global-require
@@ -276,8 +277,52 @@ function writeRoutesAsTest(data) {
     }
 
     function addUpdateStatus(foundRoute) {
+        addHappy();
+        addNoAuth();
+        addNoData();
+        function addHappy() {
+            addLine("it('Happy case', function (done) {");
+            indent++;
+            addLine("common.request.put('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.success(204))");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
 
-        addLine('//update status');
+        function addNoAuth() {
+            addLine("it('No Authentication', function (done) {");
+            indent++;
+            addLine("common.request.put('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))");
+            addLine(".expect(common.error(401))");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+
+        function addNoData() {
+            addLine("it('No Data', function (done) {");
+            indent++;
+            addLine("common.request.put('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            addLine(".send({})");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.error(400))");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
     }
 
     function addDelete(foundRoute) {

@@ -2,6 +2,7 @@
 var output = require('../output');
 var applyMaps = require('./shared/apply-maps');
 var getValidateFunction = require('./shared/get-validate-function');
+var ensureSchemaSet = require('./../metadata/ensure-schema-set');
 var schemaName = 'updateStatus';
 var _ = require('lodash');
 var config = require('nconf');
@@ -11,6 +12,7 @@ module.exports = {
 };
 
 function addRoute(router, options) {
+    ensureSchemaSet(router.metadata, schemaName, 'Input');
     router.put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, options))
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
 }
