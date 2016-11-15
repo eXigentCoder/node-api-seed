@@ -5,6 +5,7 @@ var getValidateFunction = require('./shared/get-validate-function');
 var schemaName = 'updateStatus';
 var _ = require('lodash');
 var config = require('nconf');
+var validator = require('../validate/validator');
 
 module.exports = {
     addRoute: addRoute
@@ -12,8 +13,14 @@ module.exports = {
 
 function addRoute(router, options) {
     if (!router.metadata.schemas.updateStatus) {
-        throw new Error("No update status schema set.");
+        if (router.metadata.schemas.core.updateStatusSchema) {
+            router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
+            router.metadata.schemas.updateStatus.id = router.metadata.schemas.core.id.replace('.json', '-updateStatus.json');
+        } else {
+            throw new Error("No update status schema set.");
+        }
     }
+    validator.addSchema(router.metadata.schemas.updateStatus);
     router.put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, options))
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
 }
@@ -47,7 +54,7 @@ function description(metadata) {
                 description: "Any data you would like to store, associated with the status update.",
                 required: false,
                 in: "body",
-                schema: {}
+                schema: _.omit(metadata.schemas.updateStatus, 'id')
             },
             {
                 name: 'newStatusName',
