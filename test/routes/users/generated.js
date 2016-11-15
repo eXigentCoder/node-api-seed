@@ -27,9 +27,16 @@ describe('Users', function () {
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
+        it('No Authentication', function (done) {
+            common.request.get('/users/:email')
+                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .expect(common.error(401))
+                .expect(common.matchesSwaggerSchema)
+                .end(common.logResponse(done));
+        });
         it('Invalid path parameter', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email":"070cf33f-9532-40e9-915b-510080685924"}))
+                .use(common.urlTemplate({"email":"2296cb26-fb77-4535-9569-4d44c0667c37"}))
                 .set(common.authentication())
                 .expect(common.error(404))
                 .expect(common.matchesSwaggerSchema)

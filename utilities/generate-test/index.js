@@ -130,6 +130,7 @@ function writeRoutesAsTest(data) {
     function addGetById(foundRoute) {
         var url = getUrl(foundRoute);
         addHappy();
+        addNoAuth();
         addNotFound();
         function addHappy() {
             addLine("it('Happy case', function (done) {");
@@ -139,6 +140,20 @@ function writeRoutesAsTest(data) {
             addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
             addLine(".set(common.authentication())");
             addLine(".expect(common.success(200))");
+            addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+
+        function addNoAuth() {
+            addLine("it('No Authentication', function (done) {");
+            indent++;
+            addLine("common.request.get('" + url + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            addLine(".expect(common.error(401))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
             indent--;
