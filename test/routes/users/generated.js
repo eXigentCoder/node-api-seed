@@ -38,7 +38,7 @@ describe('Users', function () {
         });
         it('Invalid path parameter', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email":"9479210c-a874-4521-870f-bb2d2792bb0d"}))
+                .use(common.urlTemplate({"email":"e21559d4-1b0f-465f-a28a-881adefaf928"}))
                 .set(common.authentication())
                 .expect(common.error(404))
                 .expect(common.matchesSwaggerSchema)
@@ -71,7 +71,29 @@ describe('Users', function () {
         });
     });
     describe('Updates a User By Email', function () {
-        //update
+        it('Happy case', function (done) {
+            common.request.put('/users/:email')
+                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .send(common.generateDataFromSchema(router.metadata.schemas.update))
+                .set(common.authentication())
+                .expect(common.success(204))
+                .end(common.logResponse(done));
+        });
+        it('No Authentication', function (done) {
+            common.request.put('/users/:email')
+                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .send(common.generateDataFromSchema(router.metadata.schemas.update))
+                .expect(common.error(401))
+                .end(common.logResponse(done));
+        });
+        it('No Data', function (done) {
+            common.request.put('/users/:email')
+                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .send({})
+                .set(common.authentication())
+                .expect(common.error(400))
+                .end(common.logResponse(done));
+        });
     });
     describe('Updates the status of a User By Email', function () {
         //update status

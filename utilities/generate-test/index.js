@@ -224,8 +224,52 @@ function writeRoutesAsTest(data) {
     }
 
     function addUpdate(foundRoute) {
+        addHappy();
+        addNoAuth();
+        addNoData();
+        function addHappy() {
+            addLine("it('Happy case', function (done) {");
+            indent++;
+            addLine("common.request.put('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.update))");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.success(204))");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
 
-        addLine('//update');
+        function addNoAuth() {
+            addLine("it('No Authentication', function (done) {");
+            indent++;
+            addLine("common.request.put('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.update))");
+            addLine(".expect(common.error(401))");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+
+        function addNoData() {
+            addLine("it('No Data', function (done) {");
+            indent++;
+            addLine("common.request.put('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            addLine(".send({})");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.error(400))");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
     }
 
     function addUpdateStatus(foundRoute) {
