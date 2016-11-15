@@ -25,7 +25,14 @@ describe('Users', function () {
                 .set(common.authentication())
                 .expect(common.success(200))
                 .expect(common.matchesSwaggerSchema)
-                .expect(common.hasResults)
+                .end(common.logResponse(done));
+        });
+        it('Invalid path parameter', function (done) {
+            common.request.get('/users/:email')
+                .use(common.urlTemplate({"email":"070cf33f-9532-40e9-915b-510080685924"}))
+                .set(common.authentication())
+                .expect(common.error(404))
+                .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
     });

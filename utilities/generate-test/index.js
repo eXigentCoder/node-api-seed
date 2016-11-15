@@ -8,6 +8,7 @@ var indentationTemplate = "    ";
 var path = require('path');
 var _ = require('lodash');
 var config = require('nconf');
+var uuid = require('node-uuid');
 
 (function setInputs() {
     var data = {
@@ -129,6 +130,7 @@ function writeRoutesAsTest(data) {
     function addGetById(foundRoute) {
         var url = getUrl(foundRoute);
         addHappy();
+        addNotFound();
         function addHappy() {
             addLine("it('Happy case', function (done) {");
             indent++;
@@ -138,7 +140,21 @@ function writeRoutesAsTest(data) {
             addLine(".set(common.authentication())");
             addLine(".expect(common.success(200))");
             addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".expect(common.hasResults)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+
+        function addNotFound() {
+            addLine("it('Invalid path parameter', function (done) {");
+            indent++;
+            addLine("common.request.get('" + url + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute, {fake: true})) + "))");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.error(404))");
+            addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
             indent--;
             indent--;
@@ -146,12 +162,17 @@ function writeRoutesAsTest(data) {
         }
     }
 
-    function getPathParameterObject(foundRoute) {
+    function getPathParameterObject(foundRoute, options) {
+        options = options || {};
         var pathParams = foundRoute.parameters.filter((param)=> {
             return param.in === 'path';
         });
         var result = {};
         pathParams.forEach(function (pathParam) {
+            if (options.fake) {
+                result[pathParam.name] = uuid.v4();
+                return;
+            }
             var paramValue = data.pathParameters[pathParam.name];
             if (paramValue) {
                 result[pathParam.name] = paramValue;
