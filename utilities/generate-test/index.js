@@ -63,6 +63,7 @@ function writeRoutesAsTest(data) {
     }
 
     function addRoute(foundRoute) {
+        foundRoute.fullPath = getFullPath(foundRoute);
         if (foundRoute.verb === 'get') {
             if (foundRoute.path.indexOf(':') >= 0) {
                 return addGetById(foundRoute);
@@ -87,13 +88,12 @@ function writeRoutesAsTest(data) {
     }
 
     function addQuery(foundRoute) {
-        var url = getUrl(foundRoute);
         addHappy();
         addNoAuth();
         function addHappy() {
             addLine("it('Happy case', function (done) {");
             indent++;
-            addLine("common.request.get('" + url + "')");
+            addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             addLine(".set(common.authentication())");
             addLine(".expect(common.success(200))");
@@ -108,7 +108,7 @@ function writeRoutesAsTest(data) {
         function addNoAuth() {
             addLine("it('No Authentication', function (done) {");
             indent++;
-            addLine("common.request.get('" + url + "')");
+            addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             addLine(".expect(common.error(401))");
             addLine(".expect(common.matchesSwaggerSchema)");
@@ -119,23 +119,15 @@ function writeRoutesAsTest(data) {
         }
     }
 
-    function getUrl(foundRoute) {
-        var url = (data.routePrefix || '') + foundRoute.path;
-        if (_.endsWith(url, '/')) {
-            url = url.substr(0, url.length - 1);
-        }
-        return url;
-    }
 
     function addGetById(foundRoute) {
-        var url = getUrl(foundRoute);
         addHappy();
         addNoAuth();
         addNotFound();
         function addHappy() {
             addLine("it('Happy case', function (done) {");
             indent++;
-            addLine("common.request.get('" + url + "')");
+            addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
             addLine(".set(common.authentication())");
@@ -150,7 +142,7 @@ function writeRoutesAsTest(data) {
         function addNoAuth() {
             addLine("it('No Authentication', function (done) {");
             indent++;
-            addLine("common.request.get('" + url + "')");
+            addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
             addLine(".expect(common.error(401))");
@@ -164,7 +156,7 @@ function writeRoutesAsTest(data) {
         function addNotFound() {
             addLine("it('Invalid path parameter', function (done) {");
             indent++;
-            addLine("common.request.get('" + url + "')");
+            addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute, {fake: true})) + "))");
             addLine(".set(common.authentication())");
@@ -175,6 +167,33 @@ function writeRoutesAsTest(data) {
             indent--;
             addLine("});");
         }
+    }
+
+
+    function addCreate(foundRoute) {
+        addLine('//create');
+    }
+
+    function addUpdate(foundRoute) {
+
+        addLine('//update');
+    }
+
+    function addUpdateStatus(foundRoute) {
+
+        addLine('//update status');
+    }
+
+    function addDelete(foundRoute) {
+        addLine('//delete');
+    }
+
+    function getFullPath(foundRoute) {
+        var url = (data.routePrefix || '') + foundRoute.path;
+        if (_.endsWith(url, '/')) {
+            url = url.substr(0, url.length - 1);
+        }
+        return url;
     }
 
     function getPathParameterObject(foundRoute, options) {
@@ -197,24 +216,6 @@ function writeRoutesAsTest(data) {
 
         });
         return result;
-    }
-
-    function addCreate(foundRoute) {
-        addLine('//create');
-    }
-
-    function addUpdate(foundRoute) {
-
-        addLine('//update');
-    }
-
-    function addUpdateStatus(foundRoute) {
-
-        addLine('//update status');
-    }
-
-    function addDelete(foundRoute) {
-        addLine('//delete');
     }
 }
 
