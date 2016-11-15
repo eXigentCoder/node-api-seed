@@ -17,11 +17,14 @@ router.use(rateLimit.api);
 
 router.use(function authenticate(req, res, next) {
     passport.authenticate('jwt', {session: false}, authenticationCallback)(req, res);
-    function authenticationCallback(user, authenticated, err) {
-        if (err || !req.user || !authenticated) {
-            return next(boom.unauthorized());
+    function authenticationCallback(err, user) {
+        if (err) {
+            return next(err);
         }
-        return next();
+        if (user) {
+            return next();
+        }
+        return next(boom.unauthorized());
     }
 });
 

@@ -38,20 +38,17 @@ module.exports = function (app, callback) {
         "type": "string",
         "format": "date-time"
     });
-    swagger.common.addModel({
-        "name": "serverError",
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
-            }
-        }
-    });
+
     swagger.common.addResponse({
         "name": "500",
         "description": "Server Error",
         "schema": {
-            $ref: "#/definitions/serverError"
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
         }
     });
     swagger.common.addResponse({
