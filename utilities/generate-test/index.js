@@ -82,30 +82,37 @@ function writeRoutesAsTest(data) {
     }
 
     function addQuery(foundRoute) {
-        addLine("it('Happy case', function (done) {");
-        indent++;
         var url = (data.routePrefix || '') + foundRoute.path;
         if (_.endsWith(url, '/')) {
             url = url.substr(0, url.length - 1);
         }
-        addLine("common.request.get('" + url + "')");
-        indent++;
-        addLine(".expect(common.success(200))");
-        addLine(".set(common.authentication())");
-        addLine(".expect(common.matchesSwaggerSchema)");
-        addLine(".end(done);");
-        indent--;
-        indent--;
-        addLine("});");
-
-        /*
-         it('Get', function (done) {
-         common.request.get('/')
-         .expect(common.success(200))
-         .expect(common.matchesSwaggerSchema)
-         .end(done);
-         });
-         */
+        addHappy();
+        addNoAuth();
+        function addHappy() {
+            addLine("it('Happy case', function (done) {");
+            indent++;
+            addLine("common.request.get('" + url + "')");
+            indent++;
+            addLine(".expect(common.success(200))");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+        function addNoAuth() {
+            addLine("it('No Authentication', function (done) {");
+            indent++;
+            addLine("common.request.get('" + url + "')");
+            indent++;
+            addLine(".expect(common.error(401))");
+            addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
     }
 
     function addGetById(foundRoute) {

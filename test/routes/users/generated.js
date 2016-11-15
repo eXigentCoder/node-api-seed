@@ -8,7 +8,13 @@ describe('Users', function () {
                 .expect(common.success(200))
                 .set(common.authentication())
                 .expect(common.matchesSwaggerSchema)
-                .end(done);
+                .end(common.logResponse(done));
+        });
+        it('No Authentication', function (done) {
+            common.request.get('/users')
+                .expect(common.error(401))
+                .expect(common.matchesSwaggerSchema)
+                .end(common.logResponse(done));
         });
     });
     describe('Get User By Email.', function () {

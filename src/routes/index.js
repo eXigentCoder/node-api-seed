@@ -14,8 +14,10 @@ module.exports = router;
 router.use('/', base);
 router.use('/authentication', authentication);
 router.use(rateLimit.api);
+router.use(authenticate);
+router.use('/users', users);
 
-router.use(function authenticate(req, res, next) {
+function authenticate(req, res, next) {
     passport.authenticate('jwt', {session: false}, authenticationCallback)(req, res);
     function authenticationCallback(err, user) {
         if (err) {
@@ -26,8 +28,4 @@ router.use(function authenticate(req, res, next) {
         }
         return next(boom.unauthorized());
     }
-});
-
-
-router.use('/users', users);
-
+}
