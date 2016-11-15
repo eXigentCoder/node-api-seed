@@ -5,8 +5,8 @@ describe('Users', function () {
     describe('Search for Users', function () {
         it('Happy case', function (done) {
             common.request.get('/users')
-                .expect(common.success(200))
                 .set(common.authentication())
+                .expect(common.success(200))
                 .expect(common.matchesSwaggerSchema)
                 .expect(common.hasResults)
                 .end(common.logResponse(done));
@@ -19,7 +19,15 @@ describe('Users', function () {
         });
     });
     describe('Get User By Email.', function () {
-        //getById
+        it('Happy case', function (done) {
+            common.request.get('/users/:email')
+                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .set(common.authentication())
+                .expect(common.success(200))
+                .expect(common.matchesSwaggerSchema)
+                .expect(common.hasResults)
+                .end(common.logResponse(done));
+        });
     });
     describe('Posts Through An User To Be Created.', function () {
         //create

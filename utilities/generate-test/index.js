@@ -7,6 +7,7 @@ var fileOptions = {encoding: 'utf8'};
 var indentationTemplate = "    ";
 var path = require('path');
 var _ = require('lodash');
+var config = require('nconf');
 
 (function setInputs() {
     var data = {
@@ -14,7 +15,10 @@ var _ = require('lodash');
         router: require('../../src/routes/users/index'),
         tagsToGenerateFor: ['User'],
         outputPath: './test/routes/users/generated.js',
-        routePrefix: '/users'
+        routePrefix: '/users',
+        pathParameters: {
+            email: config.get('tests').defaultUser._id
+        }
     };
     findRoutes(data);
 }());
@@ -82,10 +86,7 @@ function writeRoutesAsTest(data) {
     }
 
     function addQuery(foundRoute) {
-        var url = (data.routePrefix || '') + foundRoute.path;
-        if (_.endsWith(url, '/')) {
-            url = url.substr(0, url.length - 1);
-        }
+        var url = getUrl(foundRoute);
         addHappy();
         addNoAuth();
         function addHappy() {
@@ -93,8 +94,8 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.get('" + url + "')");
             indent++;
-            addLine(".expect(common.success(200))");
             addLine(".set(common.authentication())");
+            addLine(".expect(common.success(200))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".expect(common.hasResults)");
             addLine(".end(common.logResponse(done));");
@@ -102,6 +103,7 @@ function writeRoutesAsTest(data) {
             indent--;
             addLine("});");
         }
+
         function addNoAuth() {
             addLine("it('No Authentication', function (done) {");
             indent++;
@@ -116,8 +118,49 @@ function writeRoutesAsTest(data) {
         }
     }
 
+    function getUrl(foundRoute) {
+        var url = (data.routePrefix || '') + foundRoute.path;
+        if (_.endsWith(url, '/')) {
+            url = url.substr(0, url.length - 1);
+        }
+        return url;
+    }
+
     function addGetById(foundRoute) {
-        addLine('//getById');
+        var url = getUrl(foundRoute);
+        addHappy();
+        function addHappy() {
+            addLine("it('Happy case', function (done) {");
+            indent++;
+            addLine("common.request.get('" + url + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.success(200))");
+            addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".expect(common.hasResults)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+    }
+
+    function getPathParameterObject(foundRoute) {
+        var pathParams = foundRoute.parameters.filter((param)=> {
+            return param.in === 'path';
+        });
+        var result = {};
+        pathParams.forEach(function (pathParam) {
+            var paramValue = data.pathParameters[pathParam.name];
+            if (paramValue) {
+                result[pathParam.name] = paramValue;
+            } else {
+                result[pathParam.name] = 'todo';
+            }
+
+        });
+        return result;
     }
 
     function addCreate(foundRoute) {
