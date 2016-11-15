@@ -96,6 +96,7 @@ function writeRoutesAsTest(data) {
             addLine(".expect(common.success(200))");
             addLine(".set(common.authentication())");
             addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".expect(common.hasResults)");
             addLine(".end(common.logResponse(done));");
             indent--;
             indent--;

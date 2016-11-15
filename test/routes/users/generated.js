@@ -8,6 +8,7 @@ describe('Users', function () {
                 .expect(common.success(200))
                 .set(common.authentication())
                 .expect(common.matchesSwaggerSchema)
+                .expect(common.hasResults)
                 .end(common.logResponse(done));
         });
         it('No Authentication', function (done) {
