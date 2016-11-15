@@ -7,6 +7,7 @@ var expect = require('./expect');
 var set = require('./set');
 var dropAndRecreate = require('../@data/drop-and-recreate');
 var initialised = false;
+var generateDataFromSchema = require('./generate-data-from-schema');
 before(function (done) {
     if (initialised) {
         return process.nextTick(done);
@@ -54,7 +55,8 @@ module.exports = {
             });
             return done(err);
         };
-    }
+    },
+    generateDataFromSchema : generateDataFromSchema
 };
 
 Object.keys(expect).forEach(function (key) {

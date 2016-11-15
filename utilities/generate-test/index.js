@@ -12,8 +12,7 @@ var uuid = require('node-uuid');
 
 (function setInputs() {
     var data = {
-        //eslint-disable-next-line global-require
-        router: require('../../src/routes/users/index'),
+        routerPath: './src/routes/users/index.js',
         tagsToGenerateFor: ['User'],
         outputPath: './test/routes/users/generated.js',
         routePrefix: '/users',
@@ -21,6 +20,8 @@ var uuid = require('node-uuid');
             email: config.get('tests').defaultUser._id
         }
     };
+    //eslint-disable-next-line global-require
+    data.router = require(relativePath(__filename, data.routerPath));
     findRoutes(data);
 }());
 
@@ -42,7 +43,9 @@ function writeRoutesAsTest(data) {
     var outputContent = "";
     var indent = 0;
     addLine("'use strict';");
-    addLine("var common = require('" + path.relative(data.outputPath, './test/@util/integration-common.js').replace(/\\/g, '/').replace('../', '') + "');");
+    addLine("var common = require('" + relativePath(data.outputPath, './test/@util/integration-common.js') + "');");
+    addLine("var router = require('" + relativePath(data.outputPath, data.routerPath) + "');");
+    addLine();
     addLine("describe('" + data.router.metadata.titlePlural + "', function () {");
     indent++;
     addLine("this.timeout(common.defaultTimeout);");
@@ -59,6 +62,9 @@ function writeRoutesAsTest(data) {
     fs.writeFileSync(data.outputPath, outputContent, fileOptions);
 
     function addLine(line) {
+        if (_.isNil(line)) {
+            line = '';
+        }
         outputContent += addLineWithIndent(line, indent);
     }
 
@@ -119,7 +125,6 @@ function writeRoutesAsTest(data) {
         }
     }
 
-
     function addGetById(foundRoute) {
         addHappy();
         addNoAuth();
@@ -169,9 +174,24 @@ function writeRoutesAsTest(data) {
         }
     }
 
-
     function addCreate(foundRoute) {
-        addLine('//create');
+        addHappy();
+        //addNoAuth();
+        function addHappy() {
+            console.log(foundRoute, data);
+            addLine("it('Happy case', function (done) {");
+            indent++;
+            addLine("common.request.post('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.creation))");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.success(200))");
+            addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
     }
 
     function addUpdate(foundRoute) {
@@ -217,6 +237,10 @@ function writeRoutesAsTest(data) {
         });
         return result;
     }
+}
+
+function relativePath(from, to) {
+    return path.relative(from, to).replace(/\\/g, '/').replace('../', '');
 }
 
 function addLineWithIndent(line, indentLevel) {

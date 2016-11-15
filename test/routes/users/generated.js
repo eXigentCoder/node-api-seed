@@ -1,5 +1,7 @@
 'use strict';
 var common = require('../../@util/integration-common.js');
+var router = require('../../../src/routes/users/index.js');
+
 describe('Users', function () {
     this.timeout(common.defaultTimeout);
     describe('Search for Users', function () {
@@ -36,7 +38,7 @@ describe('Users', function () {
         });
         it('Invalid path parameter', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email":"2296cb26-fb77-4535-9569-4d44c0667c37"}))
+                .use(common.urlTemplate({"email":"2f391894-4a17-4a58-aca1-83bed5cf482c"}))
                 .set(common.authentication())
                 .expect(common.error(404))
                 .expect(common.matchesSwaggerSchema)
@@ -44,7 +46,14 @@ describe('Users', function () {
         });
     });
     describe('Posts Through An User To Be Created.', function () {
-        //create
+        it('Happy case', function (done) {
+            common.request.post('/users')
+                .send(common.generateDataFromSchema(router.metadata.schemas.creation))
+                .set(common.authentication())
+                .expect(common.success(200))
+                .expect(common.matchesSwaggerSchema)
+                .end(common.logResponse(done));
+        });
     });
     describe('Updates a User By Email', function () {
         //update
