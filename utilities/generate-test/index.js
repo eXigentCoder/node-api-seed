@@ -49,12 +49,15 @@ function writeRoutesAsTest(data) {
     addLine("describe('" + data.router.metadata.titlePlural + "', function () {");
     indent++;
     addLine("this.timeout(common.defaultTimeout);");
-    data.foundRoutes.forEach(function (foundRoute) {
+    data.foundRoutes.forEach(function (foundRoute, index) {
         addLine("describe('" + foundRoute.summary + "', function () {");
         indent++;
         addRoute(foundRoute);
         indent--;
         addLine("});");
+        if (index < data.foundRoutes.length - 1) {
+            addLine();
+        }
     });
     indent--;
     addLine("});");
@@ -278,7 +281,7 @@ function writeRoutesAsTest(data) {
     }
 
     function addDelete(foundRoute) {
-        addLine('//delete');
+        throw new Error("Not implemented");
     }
 
     function getFullPath(foundRoute) {

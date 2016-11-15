@@ -20,6 +20,7 @@ describe('Users', function () {
                 .end(common.logResponse(done));
         });
     });
+    
     describe('Get User By Email.', function () {
         it('Happy case', function (done) {
             common.request.get('/users/:email')
@@ -38,13 +39,14 @@ describe('Users', function () {
         });
         it('Invalid path parameter', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email":"e21559d4-1b0f-465f-a28a-881adefaf928"}))
+                .use(common.urlTemplate({"email":"b05fd86f-884b-4ced-916c-0ad04d59804c"}))
                 .set(common.authentication())
                 .expect(common.error(404))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
     });
+    
     describe('Posts Through An User To Be Created.', function () {
         it('Happy case', function (done) {
             common.request.post('/users')
@@ -70,6 +72,7 @@ describe('Users', function () {
                 .end(common.logResponse(done));
         });
     });
+    
     describe('Updates a User By Email', function () {
         it('Happy case', function (done) {
             common.request.put('/users/:email')
@@ -95,6 +98,7 @@ describe('Users', function () {
                 .end(common.logResponse(done));
         });
     });
+    
     describe('Updates the status of a User By Email', function () {
         //update status
     });
