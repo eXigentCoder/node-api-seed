@@ -11,14 +11,24 @@ var config = require('nconf');
 var uuid = require('node-uuid');
 
 (function setInputs() {
+    // var data = {
+    //     routerPath: './src/routes/users/index.js',
+    //     tagsToGenerateFor: ['User'],
+    //     outputPath: './test/routes/users/index.integration.js',
+    //     routePrefix: '/users',
+    //     pathParameters: {
+    //         email: config.get('tests').defaultUser._id,
+    //         newStatusName: 'testStatus'
+    //     }
+    // };
     var data = {
-        routerPath: './src/routes/users/index.js',
-        tagsToGenerateFor: ['User'],
-        outputPath: './test/routes/users/generated.js',
-        routePrefix: '/users',
+        routerPath: './src/routes/users/items/index.js',
+        tagsToGenerateFor: ['Item'],
+        outputPath: './test/routes/users/items/index.integration.js',
+        routePrefix: '/users/:email/items',
         pathParameters: {
             email: config.get('tests').defaultUser._id,
-            newStatusName: 'testStatus'
+            name: 'item1'
         }
     };
     //eslint-disable-next-line global-require
@@ -74,6 +84,9 @@ function writeRoutesAsTest(data) {
 
     function addRoute(foundRoute) {
         foundRoute.fullPath = getFullPath(foundRoute);
+        foundRoute.pathParameters = getPathParameterObject(foundRoute);
+        foundRoute.pathParameterString = JSON.stringify(foundRoute.pathParameters);
+        foundRoute.hasPathParameters = Object.keys(foundRoute.pathParameters).length > 0;
         if (foundRoute.verb === 'get') {
             if (foundRoute.path.indexOf(':') >= 0) {
                 return addGetById(foundRoute);
@@ -105,6 +118,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".set(common.authentication())");
             addLine(".expect(common.success(200))");
             addLine(".expect(common.matchesSwaggerSchema)");
@@ -120,6 +136,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".expect(common.error(401))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
@@ -138,7 +157,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".set(common.authentication())");
             addLine(".expect(common.success(200))");
             addLine(".expect(common.matchesSwaggerSchema)");
@@ -153,7 +174,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".expect(common.error(401))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
@@ -187,6 +210,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.post('" + foundRoute.fullPath + "')");
             indent++;
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.creation))");
             addLine(".set(common.authentication())");
             addLine(".expect(common.success(201))");
@@ -202,6 +228,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.post('" + foundRoute.fullPath + "')");
             indent++;
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.creation))");
             addLine(".expect(common.error(401))");
             addLine(".expect(common.matchesSwaggerSchema)");
@@ -216,6 +245,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.post('" + foundRoute.fullPath + "')");
             indent++;
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".send({})");
             addLine(".set(common.authentication())");
             addLine(".expect(common.error(400))");
@@ -237,6 +269,9 @@ function writeRoutesAsTest(data) {
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
             addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.update))");
             addLine(".set(common.authentication())");
             addLine(".expect(common.success(204))");
@@ -251,7 +286,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.update))");
             addLine(".expect(common.error(401))");
             addLine(".end(common.logResponse(done));");
@@ -265,7 +302,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".send({})");
             addLine(".set(common.authentication())");
             addLine(".expect(common.error(400))");
@@ -285,7 +324,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))");
             addLine(".set(common.authentication())");
             addLine(".expect(common.success(204))");
@@ -300,7 +341,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))");
             addLine(".expect(common.error(401))");
             addLine(".end(common.logResponse(done));");
@@ -314,7 +357,9 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
             addLine(".send({})");
             addLine(".set(common.authentication())");
             addLine(".expect(common.error(400))");
@@ -339,9 +384,18 @@ function writeRoutesAsTest(data) {
 
     function getPathParameterObject(foundRoute, options) {
         options = options || {};
+        foundRoute.parameters = foundRoute.parameters || [];
         var pathParams = foundRoute.parameters.filter((param)=> {
             return param.in === 'path';
         });
+        if (data.routePrefix.indexOf(':') >= 0) {
+            var urlParts = data.routePrefix.split('/').filter(function (urlPart) {
+                return urlPart.indexOf(':') >= 0;
+            });
+            urlParts.forEach(function (urlPart) {
+                pathParams.push({name: urlPart.replace(':', '')});
+            });
+        }
         var result = {};
         pathParams.forEach(function (pathParam) {
             if (options.fake) {
