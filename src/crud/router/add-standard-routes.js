@@ -27,6 +27,21 @@ module.exports = function addStandardRoutes(router) {
             updateStatus(router, options);
         }
     };
+    router.query = function (options) {
+        return query(router, options);
+    };
+    router.getById = function (options) {
+        return getById(router, options);
+    };
+    router.create = function (options) {
+        return create(router, options);
+    };
+    router.update = function (options) {
+        return update(router, options);
+    };
+    router.updateStatus = function (options) {
+        return updateStatus(router, options);
+    };
     router.getByIdAndUse = getByIdAndUse(router);
 };
 
