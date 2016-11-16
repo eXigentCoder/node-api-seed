@@ -4,7 +4,7 @@ var bcrypt = require('bcrypt');
 var config = require("nconf");
 var items = require('./items');
 var generatePassword = require('password-generator');
-var roles = require('../../../src/roles/roles.js');
+var roles = require('../../roles/index.js');
 var router = require('../../crud/router')({
     schemas: {
         core: schema
@@ -19,7 +19,7 @@ router.getByIdAndUse('/items', items)
     .getById()
     .create({
         addAfter: {
-        'addVersionInfo': [createPassword,addUserRoles]
+            'addVersionInfo': [createPassword, addUserRoles]
         }
     })
     .update()
@@ -37,6 +37,6 @@ function createPassword(req, res, next) {
     }
 }
 
-function addUserRoles(req,res,next){
+function addUserRoles(req, res, next) {
     roles.addUserRoles(req.userId, request.role);
 }
