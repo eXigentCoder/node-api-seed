@@ -20,6 +20,7 @@ module.exports = function (callback) {
             firstName: 'Ryan',
             surname: 'Kotzen',
             passwordHash: hash,
+            role: 'member',
             versionInfo: {
                 dateCreated: moment.utc().toDate(),
                 versionTag: uuid.v4(),

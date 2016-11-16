@@ -8,6 +8,7 @@ var bcrypt = require('bcrypt');
 var config = require("nconf");
 var generatePassword = require('password-generator');
 var items = require('./items');
+var roles = require('../../../src/roles/roles.js');
 module.exports = router;
 
 router.add.query({crudMiddleware: crudMiddleware});
@@ -15,7 +16,7 @@ router.getByIdAndUse('/items', items, {crudMiddleware: crudMiddleware});
 router.add.getById({crudMiddleware: crudMiddleware});
 var creationMaps = {
     addAfter: {
-        'addVersionInfo': createPassword
+        'addVersionInfo': [createPassword,addUserRoles]
     }
 };
 router.add.create({crudMiddleware: crudMiddleware, maps: creationMaps});
@@ -32,4 +33,8 @@ function createPassword(req, res, next) {
         req.body.passwordHash = hash;
         next();
     }
+}
+
+function addUserRoles(req,res,next){
+    roles.addUserRoles(req.userId, request.role);
 }
