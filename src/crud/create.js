@@ -7,6 +7,7 @@ var addModel = require('../swagger/add-model');
 var versionInfo = require('../version-info');
 var schemaName = 'creation';
 var config = require('nconf');
+var moment = require('moment');
 
 module.exports = function addRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
@@ -19,6 +20,7 @@ function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
         addVersionInfo: versionInfo.add,
+        setStatusIfApplicable: setStatusIfApplicable(router.metadata),
         create: crudMiddleware.create,
         filterOutput: output.filter,
         sendCreateResult: sendCreateResult(router.metadata)
@@ -72,5 +74,22 @@ function description(metadata) {
                 model: metadata.schemas.output.name
             }
         }
+    };
+}
+
+function setStatusIfApplicable(metadata) {
+    return function _setStatusIfApplicable(req, res, next) {
+        var statuses = metadata.schemas.core.statuses;
+        if (!statuses || statuses.length <= 0) {
+            return next();
+        }
+        req.body.status = statuses[0].name;
+        req.body.statusDate = moment.utc().toDate();
+        req.body.statusLog = [{
+            status: req.body.status,
+            data: {},
+            statusDate: req.body.statusDate
+        }];
+        return next();
     };
 }

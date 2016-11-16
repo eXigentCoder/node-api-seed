@@ -116,18 +116,19 @@ function updateStatus(metadata) {
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var filter = getIdentifierQuery(identifier, metadata);
+        var filter = getIdentifierQuery(identifier, metadata)
+        var now = moment.utc().toDate();
         var updateStatement = {
             $set: {
                 status: req.params.newStatusName,
-                statusDate: moment.utc().toDate(),
+                statusDate: now,
                 versionInfo: req.body.versionInfo
             },
             $push: {
                 statusLog: {
                     status: req.params.newStatusName,
                     data: _.omit(req.body, metadataFields),
-                    statusDate: moment.utc().toDate()
+                    statusDate: now
                 }
             }
         };
