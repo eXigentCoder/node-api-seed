@@ -5,6 +5,33 @@
     "description": "A user of the site",
     "type": "object",
     "identifierName": "email",
+    "statuses": [
+        {
+            "name": "active",
+            "description": "Default status, shows that the user is active and can login"
+        },
+        {
+            "name": "inactive",
+            "description": "Shows that the user is inactive and can't login"
+        },
+        {
+            "name": "testStatus",
+            "description": "Some other status to be used for testing"
+        }
+    ],
+    "updateStatusSchema": {
+        "type": "object",
+        "properties": {
+            "comment": {
+                "type": "string",
+                "minLength": 1
+            }
+        },
+        "required": [
+            "comment"
+        ],
+        "additionalProperties": true
+    },
     "properties": {
         "email": {
             "type": "string",

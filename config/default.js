@@ -204,6 +204,7 @@ module.exports = {
     },
     tests: {
         defaultUser: {
+            _id: '580d9f45622d510b044fb6a8',
             email: 'default@gmail.com',
             password: '12345678'
         }

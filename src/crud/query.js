@@ -4,24 +4,22 @@ var applyMaps = require('./shared/apply-maps');
 var addModel = require('../swagger/add-model');
 var config = require('nconf');
 
-module.exports = {
-    addRoute: addRoute
+
+module.exports = function addRoute(router, crudMiddleware, maps) {
+    router.get('/', getSteps(router, crudMiddleware, maps))
+        .describe(router.metadata.queryDescription || description(router.metadata));
+    return router;
 };
 
-function addRoute(router, options) {
-    router.get('/', getSteps(router, options))
-        .describe(router.metadata.queryDescription || description(router.metadata));
-}
-
-function getSteps(router, options) {
+function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        query: options.crudMiddleware.query,
+        query: crudMiddleware.query,
         setOutput: output.setFrom(router.metadata.namePlural),
         ensureOutput: output.ensureExists({default: []}),
         filterOutput: output.filter,
         sendOutput: output.send
     };
-    return applyMaps(options.maps, steps);
+    return applyMaps(maps, steps);
 }
 
 function description(metadata) {

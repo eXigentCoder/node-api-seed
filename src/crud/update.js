@@ -9,26 +9,23 @@ var schemaName = 'update';
 var versionInfo = require('../version-info');
 var config = require('nconf');
 
-module.exports = {
-    addRoute: addRoute
+module.exports = function addRoute(router, crudMiddleware, maps) {
+    ensureSchemaSet(router.metadata, schemaName, 'Input');
+    router.put('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
+        .describe(router.metadata.updateDescription || description(router.metadata));
+    return router;
 };
 
-function addRoute(router, options) {
-    ensureSchemaSet(router.metadata, schemaName, 'Input');
-    router.put('/:' + router.metadata.identifierName, getSteps(router, options))
-        .describe(router.metadata.updateDescription || description(router.metadata));
-}
-
-function getSteps(router, options) {
+function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
-        getExistingVersionInfo: options.crudMiddleware.getExistingVersionInfo,
+        getExistingVersionInfo: crudMiddleware.getExistingVersionInfo,
         updateVersionInfo: versionInfo.update,
-        update: options.crudMiddleware.update,
-        writeHistoryItem: options.crudMiddleware.writeHistoryItem,
+        update: crudMiddleware.update,
+        writeHistoryItem: crudMiddleware.writeHistoryItem,
         sendOutput: output.sendNoContent
     };
-    return applyMaps(options.maps, steps);
+    return applyMaps(maps, steps);
 }
 
 function description(metadata) {
