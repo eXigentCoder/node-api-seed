@@ -18,11 +18,12 @@ var creationMaps = {
         'addVersionInfo': createPassword
     }
 };
-router.query(crudMiddleware)
-    .getById(crudMiddleware)
-    .create(crudMiddleware, creationMaps)
-    .update(crudMiddleware)
-    .updateStatus(crudMiddleware);
+router.crudMiddleware = crudMiddleware;
+router.query()
+    .getById()
+    .create(creationMaps)
+    .update()
+    .updateStatus();
 
 function createPassword(req, res, next) {
     var randomPw = generatePassword(18, false);
