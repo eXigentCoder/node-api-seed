@@ -19,7 +19,7 @@ module.exports = function addRoute(router, crudMiddleware, maps) {
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
-        getExistingVersionInfo: crudMiddleware.getExistingMetadata,
+        getExistingMetadata: crudMiddleware.getExistingMetadata,
         updateVersionInfo: versionInfo.update,
         update: crudMiddleware.update,
         writeHistoryItem: crudMiddleware.writeHistoryItem,
