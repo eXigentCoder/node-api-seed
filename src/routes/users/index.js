@@ -3,6 +3,8 @@ var schema = require('./user.json');
 var router = require('../../crud/router')({
     schema: schema
 });
+var addStandardRoutes = require('../../crud/router/add-standard-routes');
+addStandardRoutes(router);
 var crudMiddleware = require('../../mongo/crud')(router.metadata);
 var bcrypt = require('bcrypt');
 var config = require("nconf");

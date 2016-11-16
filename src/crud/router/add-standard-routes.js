@@ -12,19 +12,19 @@ module.exports = function addStandardRoutes(router) {
     }
     router.add = {
         query: function (options) {
-            query.addRoute(router, options);
+            query(router, options);
         },
         getById: function (options) {
-            getById.addRoute(router, options);
+            getById(router, options);
         },
         create: function (options) {
-            create.addRoute(router, options);
+            create(router, options);
         },
         update: function (options) {
-            update.addRoute(router, options);
+            update(router, options);
         },
         updateStatus: function (options) {
-            updateStatus.addRoute(router, options);
+            updateStatus(router, options);
         }
     };
     router.getByIdAndUse = getByIdAndUse(router);

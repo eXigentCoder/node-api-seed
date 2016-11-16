@@ -1,22 +1,18 @@
 'use strict';
 var _ = require('lodash');
 var schema = require('./item.json');
-var output = require('./item-output.json');
-output = _.merge({}, schema, output);
-var input = _.cloneDeep(schema);
-delete input.properties.ownerId;
-var index = input.required.indexOf('ownerId');
-if (index >= 0) {
-    input.required.splice(index, 1);
-}
+var addStandardRoutes = require('../../../crud/router/add-standard-routes');
+var outputSchema = _.merge({}, schema, require('./item-output.json'));
+var inputSchema = buildInputSchema();
 var router = require('../../../crud/router')({
     schemas: {
         core: schema,
-        output: output,
-        creation: input,
-        update: input
+        output: outputSchema,
+        creation: inputSchema,
+        update: inputSchema
     }
 });
+addStandardRoutes(router);
 var crudMiddleware = require('../../../mongo/crud')(router.metadata);
 module.exports = router;
 router.add.query({
@@ -54,4 +50,13 @@ function setOwner(req, res, next) {
     req.body = req.body || {};
     req.body.ownerId = req.process.user._id.toString();
     return next();
+}
+function buildInputSchema() {
+    var input = _.cloneDeep(schema);
+    delete input.properties.ownerId;
+    var index = input.required.indexOf('ownerId');
+    if (index >= 0) {
+        input.required.splice(index, 1);
+    }
+    return input;
 }
