@@ -5,10 +5,10 @@ var util = require('util');
 var _ = require('lodash');
 
 module.exports = function (router, path, routerOrMiddleware, crudMiddleware, maps) {
-    if (!_.isObject(path) && arguments.length === 4) {
+    if (_.isObject(path)) {
         //path omitted, move all args up by one.
         maps = crudMiddleware;
-        crudMiddleware = routerOrMiddleware;
+        crudMiddleware = routerOrMiddleware || crudMiddleware;
         routerOrMiddleware = path;
         path = '/';
     }
@@ -20,6 +20,7 @@ module.exports = function (router, path, routerOrMiddleware, crudMiddleware, map
     }
     var steps = getByIdAndUseSteps(router, routerOrMiddleware, crudMiddleware, maps);
     router.use('/:' + router.metadata.identifierName + path, steps);
+    return router;
 };
 
 function getByIdAndUseSteps(router, routerOrMiddleware, crudMiddleware, maps) {

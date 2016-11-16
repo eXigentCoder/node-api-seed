@@ -1,27 +1,24 @@
 'use strict';
 var schema = require('./user.json');
+var bcrypt = require('bcrypt');
+var config = require("nconf");
+var items = require('./items');
+var generatePassword = require('password-generator');
 var router = require('../../crud/router')({
     schema: schema
 });
-var addStandardRoutes = require('../../crud/router/add-standard-routes');
-addStandardRoutes(router);
-var crudMiddleware = require('../../mongo/crud')(router.metadata);
-var bcrypt = require('bcrypt');
-var config = require("nconf");
-var generatePassword = require('password-generator');
-var items = require('./items');
+require('../../crud/router/add-standard-routes')(router);
+router.crudMiddleware = require('../../mongo/crud')(router.metadata);
 module.exports = router;
 
-router.getByIdAndUse('/items', items, crudMiddleware);
-var creationMaps = {
-    addAfter: {
-        'addVersionInfo': createPassword
-    }
-};
-router.crudMiddleware = crudMiddleware;
-router.query()
+router.getByIdAndUse('/items', items)
+    .query()
     .getById()
-    .create(creationMaps)
+    .create({
+        addAfter: {
+            'addVersionInfo': createPassword
+        }
+    })
     .update()
     .updateStatus();
 
