@@ -12,9 +12,12 @@ module.exports = function applyMaps(maps, steps) {
     }
     applySkip(maps.skip, steps);
     applySkipIfExists(maps.skipIfExists, steps);
-    applyAfter(maps.addAfter, steps);
-    applyBefore(maps.addBefore, steps);
-    applyReplace(maps.replace, steps);
+    applyAfter(maps.addAfter, steps, true);
+    applyAfter(maps.addAfterIfExists, steps, false);
+    applyBefore(maps.addBefore, steps, true);
+    applyBefore(maps.addBeforeIfExists, steps, false);
+    applyReplace(maps.replace, steps, true);
+    applyReplace(maps.replaceIfExists, steps, false);
     applyStart(maps.startWith, steps); //todo
     applyEnd(maps.endWith, steps); //todo
     return convertStepsToArray(steps);
@@ -79,7 +82,7 @@ function _skip(options) {
     }
 }
 
-function applyAfter(addAfter, steps) {
+function applyAfter(addAfter, steps, throwIfStepNotFound) {
     var mapObjectName = paramNames(applyAfter)[0];
     var addCounter = 0;
     if (!_.isObject(steps)) {
@@ -93,7 +96,7 @@ function applyAfter(addAfter, steps) {
     }
     if (_.isArray(addAfter)) {
         addAfter.forEach(function (item) {
-            applyAfter(item, steps);
+            applyAfter(item, steps, throwIfStepNotFound);
         });
         return;
     }
@@ -116,6 +119,9 @@ function applyAfter(addAfter, steps) {
             return;
         }
         if (!steps[stepName]) {
+            if (throwIfStepNotFound === false) {
+                return;
+            }
             throw new Error("No step by the name of " + stepName + " was found, please check the spelling and try again");
         }
         var addOnNext = false;
@@ -142,7 +148,7 @@ function applyAfter(addAfter, steps) {
     }
 }
 
-function applyBefore(addBefore, steps) {
+function applyBefore(addBefore, steps, throwIfStepNotFound) {
     var mapObjectName = paramNames(applyBefore)[0];
     var addCounter = 0;
     if (!_.isObject(steps)) {
@@ -156,7 +162,7 @@ function applyBefore(addBefore, steps) {
     }
     if (_.isArray(addBefore)) {
         addBefore.forEach(function (item) {
-            applyBefore(item, steps);
+            applyBefore(item, steps, throwIfStepNotFound);
         });
         return;
     }
@@ -179,6 +185,9 @@ function applyBefore(addBefore, steps) {
             return;
         }
         if (!steps[stepName]) {
+            if (throwIfStepNotFound === false) {
+                return;
+            }
             throw new Error("No step by the name of " + stepName + " was found, please check the spelling and try again");
         }
         _.forIn(steps, function (value, key) {
@@ -197,7 +206,7 @@ function applyBefore(addBefore, steps) {
     }
 }
 
-function applyReplace(replaceWith, steps) {
+function applyReplace(replaceWith, steps, throwIfStepNotFound) {
     var mapObjectName = paramNames(applyReplace)[0];
     var replaceCounter = 0;
     if (!_.isObject(steps)) {
@@ -211,7 +220,7 @@ function applyReplace(replaceWith, steps) {
     }
     if (_.isArray(replaceWith)) {
         replaceWith.forEach(function (item) {
-            applyReplace(item, steps);
+            applyReplace(item, steps, throwIfStepNotFound);
         });
         return;
     }
@@ -234,6 +243,9 @@ function applyReplace(replaceWith, steps) {
             return;
         }
         if (!steps[stepName]) {
+            if (throwIfStepNotFound === false) {
+                return;
+            }
             throw new Error("No step by the name of " + stepName + " was found, please check the spelling and try again");
         }
         _.forIn(steps, function (value, key) {

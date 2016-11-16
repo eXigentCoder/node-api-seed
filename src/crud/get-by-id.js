@@ -5,24 +5,21 @@ var _ = require('lodash');
 var addModel = require('../swagger/add-model');
 var config = require('nconf');
 
-module.exports = {
-    addRoute: addRoute
+module.exports = function addRoute(router, crudMiddleware, maps) {
+    router.get('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
+        .describe(router.metadata.getByIdDescription || description(router.metadata));
+    return router;
 };
 
-function addRoute(router, options) {
-    router.get('/:' + router.metadata.identifierName, getSteps(router, options))
-        .describe(router.metadata.getByIdDescription || description(router.metadata));
-}
-
-function getSteps(router, options) {
+function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        findByIdentifier: options.crudMiddleware.findByIdentifier,
+        findByIdentifier: crudMiddleware.findByIdentifier,
         setOutput: output.setFrom(router.metadata.name),
         ensureOutput: output.ensureExists({metadata: router.metadata}),
         filterOutput: output.filter,
         sendOutput: output.send
     };
-    return applyMaps(options.maps, steps);
+    return applyMaps(maps, steps);
 }
 
 function description(metadata) {

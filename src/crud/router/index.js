@@ -2,7 +2,6 @@
 var swagger = require('swagger-spec-express');
 var express = require('express');
 var buildMetadata = require('../../metadata/index');
-var addStandardRoutes = require('./add-standard-routes');
 var config = require('nconf');
 var _ = require('lodash');
 
@@ -29,7 +28,6 @@ function createRouter(options) {
     var router = new express.Router(routerOptions);
     swagger.swaggerize(router);
     router.metadata = options;
-    addStandardRoutes(router);
     addCommonMiddleware(router);
     return router;
 }
