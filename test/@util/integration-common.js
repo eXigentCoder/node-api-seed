@@ -15,9 +15,9 @@ before(function (done) {
     initialised = true;
     this.timeout(10000);
     async.waterfall([
+        dropAndRecreate,
         createApp,
         createDataObject,
-        dropAndRecreate,
         expect.initialise
     ], waterfallComplete);
 
