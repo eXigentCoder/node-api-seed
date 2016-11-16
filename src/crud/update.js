@@ -1,34 +1,31 @@
 'use strict';
 var output = require('../output');
-var applyMaps = require('../swagger/router/step-maps');
-var ensureSchemaSet = require('./../swagger/build-metadata/ensure-schema-set');
-var getValidateFunction = require('./@shared/get-validate-function');
-var addModel = require('../swagger/build-metadata/add-model');
+var applyMaps = require('./shared/apply-maps');
+var ensureSchemaSet = require('./../metadata/ensure-schema-set');
+var getValidateFunction = require('./shared/get-validate-function');
+var addModel = require('../swagger/add-model');
 var _ = require('lodash');
 var schemaName = 'update';
 var versionInfo = require('../version-info');
 var config = require('nconf');
 
-module.exports = {
-    addRoute: addRoute
+module.exports = function addRoute(router, crudMiddleware, maps) {
+    ensureSchemaSet(router.metadata, schemaName, 'Input');
+    router.put('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
+        .describe(router.metadata.updateDescription || description(router.metadata));
+    return router;
 };
 
-function addRoute(router, options) {
-    ensureSchemaSet(router.metadata, schemaName, 'Input');
-    router.put('/:' + router.metadata.identifierName, getSteps(router, options))
-        .describe(router.metadata.updateDescription || description(router.metadata));
-}
-
-function getSteps(router, options) {
+function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
-        getExistingVersionInfo: options.crudMiddleware.getExistingVersionInfo,
+        getExistingMetadata: crudMiddleware.getExistingMetadata,
         updateVersionInfo: versionInfo.update,
-        update: options.crudMiddleware.update,
-        writeHistoryItem: options.crudMiddleware.writeHistoryItem,
+        update: crudMiddleware.update,
+        writeHistoryItem: crudMiddleware.writeHistoryItem,
         sendOutput: output.sendNoContent
     };
-    return applyMaps(options.maps, steps);
+    return applyMaps(maps, steps);
 }
 
 function description(metadata) {

@@ -2,17 +2,27 @@
 var _ = require('lodash');
 var url = require('url');
 var config = require('nconf');
+var authentication = require('../../src/authentication');
 
 module.exports = {
-    authentication: authentication,
+    authentication: setAuthentication,
     requestHeaders: function () {
-        return _.merge(authentication());// other headers that may be required, like requestId go here
+        return _.merge(setAuthentication());// other headers that may be required, like requestId go here
     },
     urlTemplate: urlTemplate
 };
 
-function authentication() {
-    var token = config.get('defaultUserAuthToken');
+function setAuthentication(options) {
+    var token;
+    options = options || {};
+    if (options.user) {
+        token = authentication.getUserToken(options.user);
+    }
+    else if (options.token) {
+        token = options.token;
+    } else {
+        token = config.get('defaultUserAuthToken');
+    }
     if (!token) {
         throw new Error("Token not yet set.");
     }

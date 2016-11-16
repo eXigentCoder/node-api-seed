@@ -38,41 +38,64 @@ module.exports = function (app, callback) {
         "type": "string",
         "format": "date-time"
     });
+
     swagger.common.addModel({
-        "name": "serverError",
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
+        name: "errorResponse",
+        type: "object",
+        properties: {
+            statusCode: {
+                description: "The http status code for the response",
+                type: "number"
+            },
+            error: {
+                description: "The description of the error",
+                type: "string"
             }
-        }
+        },
+        additionalProperties: true
     });
+
     swagger.common.addResponse({
         "name": "500",
         "description": "Server Error",
-        "schema": {
-            $ref: "#/definitions/serverError"
+        schema: {
+            $ref: "#/definitions/errorResponse"
         }
     });
     swagger.common.addResponse({
         "name": "401",
-        "description": "Not Authorised"
+        "description": "Not Authorised",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
     swagger.common.addResponse({
         "name": "404",
-        "description": "Not Found"
+        "description": "Not Found",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
     swagger.common.addResponse({
         "name": "409",
-        "description": "Conflict, item exists"
+        "description": "Conflict, item exists",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
     swagger.common.addResponse({
         "name": "400",
-        "description": "Validation error"
+        "description": "Validation error",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
     swagger.common.addResponse({
         "name": "412",
-        "description": "Precondition failed"
+        "description": "Precondition failed",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
     var correlationIdOptions = config.get('logging').correlationId;
     swagger.common.addResponseHeader({

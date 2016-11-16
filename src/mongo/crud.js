@@ -5,6 +5,7 @@ var boom = require('boom');
 var _ = require('lodash');
 var util = require('util');
 var moment = require('moment');
+var metadataFields = ['versionInfo', 'passwordHash', 'status', 'statusDate', 'statusLog'];//fields that need to exist in the system but should not be directly settable via PUT
 
 module.exports = function (metadata) {
     return {
@@ -13,7 +14,7 @@ module.exports = function (metadata) {
         create: create(metadata),
         update: update(metadata),
         updateStatus: updateStatus(metadata),
-        getExistingVersionInfo: getExistingVersionInfo(metadata),
+        getExistingMetadata: getExistingMetadata(metadata),
         writeHistoryItem: writeHistoryItem(metadata)
     };
 };
@@ -70,6 +71,10 @@ function findByIdentifier(metadata) {
             return next(new Error("Object has no identifier"));
         }
         var mongoQuery = getIdentifierQuery(identifier, metadata);
+        if (Object.keys(req.query).length > 0) {
+            var parsedQuery = parseQueryWithDefaults(req.query);
+            mongoQuery = _.merge({}, parsedQuery.filter, mongoQuery);
+        }
         mongo.db.collection(metadata.collectionName)
             .findOne(mongoQuery, dataRetrieved);
 
@@ -111,17 +116,19 @@ function updateStatus(metadata) {
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var filter = getIdentifierQuery(identifier, metadata);
+        var filter = getIdentifierQuery(identifier, metadata)
+        var now = moment.utc().toDate();
         var updateStatement = {
             $set: {
-                status: req.params.newStatus,
-                statusDate: moment.utc().toDate()
+                status: req.params.newStatusName,
+                statusDate: now,
+                versionInfo: req.body.versionInfo
             },
             $push: {
                 statusLog: {
-                    status: req.params.newStatus,
-                    data: req.body,
-                    statusDate: moment.utc().toDate()
+                    status: req.params.newStatusName,
+                    data: _.omit(req.body, metadataFields),
+                    statusDate: now
                 }
             }
         };
@@ -174,7 +181,7 @@ function writeHistoryItem(metadata) {
     };
 }
 
-function getExistingVersionInfo(metadata) {
+function getExistingMetadata(metadata) {
     return function (req, res, next) {
         var identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
@@ -182,11 +189,11 @@ function getExistingVersionInfo(metadata) {
         }
         var filter = getIdentifierQuery(identifier, metadata);
         var options = {
-            fields: {
-                'versionInfo': 1,
-                'passwordHash': 1
-            }
+            fields: {}
         };
+        metadataFields.forEach(function (field) {
+            options.fields[field] = 1;
+        });
         mongo.db.collection(metadata.collectionName)
             .findOne(filter, options, dataRetrieved);
         function dataRetrieved(err, document) {
@@ -197,10 +204,12 @@ function getExistingVersionInfo(metadata) {
                 return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, identifier)));
             }
             req.params[metadata.identifierName] = document._id;
-            req.body.versionInfo = document.versionInfo;
-            if (document.passwordHash) {
-                req.body.passwordHash = document.passwordHash;
-            }
+
+            metadataFields.forEach(function (field) {
+                if (document[field]) {
+                    req.body[field] = document[field];
+                }
+            });
             return next();
         }
     };
