@@ -13,25 +13,24 @@ var router = require('../../../crud/router')({
     }
 });
 addStandardRoutes(router);
-var crudMiddleware = require('../../../mongo/crud')(router.metadata);
+router.crudMiddleware = require('../../../mongo/crud')(router.metadata);
 module.exports = router;
 
+var filterOwnerMap = {
+    addBeforeIfExists: {
+        'query': filterOwner,
+        'findByIdentifier': filterOwner
+    }
+};
 var setOwnerMap = {
     addBefore: {
         'validate': setOwner
     }
 };
-router.query(crudMiddleware, {
-    addBefore: {
-        'query': filterOwner
-    }
-}).getById(crudMiddleware, {
-    addBefore: {
-        'findByIdentifier': filterOwner
-    }
-})
-    .create(crudMiddleware, setOwnerMap)
-    .update(crudMiddleware, setOwnerMap);
+router.query(filterOwnerMap)
+    .getById(filterOwnerMap)
+    .create(setOwnerMap)
+    .update(setOwnerMap);
 
 
 function filterOwner(req, res, next) {
@@ -45,6 +44,7 @@ function setOwner(req, res, next) {
     req.body.ownerId = req.process.user._id.toString();
     return next();
 }
+
 function buildInputSchema() {
     var input = _.cloneDeep(schema);
     delete input.properties.ownerId;
