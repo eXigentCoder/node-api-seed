@@ -21,7 +21,6 @@ module.exports = function (callback) {
             firstName: 'Ryan',
             surname: 'Kotzen',
             passwordHash: hash,
-            role: 'member',
             versionInfo: {
                 dateCreated: now,
                 versionTag: uuid.v4(),

@@ -48,14 +48,6 @@
             "type": "string",
             "minLength": 1,
             "faker": "name.lastName"
-        },
-        "role": {
-            "type": "string",
-            "faker": "member",
-            "enum":[
-              "member",
-              "admin"
-            ]
         }
     },
     "additionalProperties": false,
