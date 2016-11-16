@@ -7,6 +7,7 @@ var mongo = require('mongodb');
 var userId = '580d9f45622d510b044fb6a8';
 var resource = 'items';
 var permissions = ['view'];
+var role = 'member';
 
 describe('Test access control lists', function () {
     this.timeout(common.defaultTimeout);
@@ -19,22 +20,18 @@ describe('Test access control lists', function () {
         ], done);
 
         function addUserRoles(callback) {
-            roles.nodeAcl.addUserRoles(userId, permissions, callback);
+            roles.nodeAcl.addUserRoles(userId, role, callback);
         }
 
 
         function checkResources(callback) {
-            roles.nodeAcl.whatResources('member', function (err, resources) {
+            roles.nodeAcl.whatResources(role, function (err, resources) {
                 if (err) {
                     return callback(err);
                 }
                 var expected = {
-                    users: [
-                        "view"
-                    ],
-                    items: [
-                        "view"
-                    ]
+                    users: permissions,
+                    items: permissions
                 };
                 expect(resources).to.deep.equal(expected);
                 return callback();
@@ -44,10 +41,12 @@ describe('Test access control lists', function () {
         function checkPerms(callback) {
             roles.nodeAcl.allowedPermissions(userId, resource, permsChecked);
 
-            function permsChecked(err, permsChecked) {
+            function permsChecked(err, allowedPermissions) {
                 if (err) {
                     return callback(err);
                 }
+                var expectedPermissions = {items: permissions};
+                expect(allowedPermissions).to.deep.equal(expectedPermissions);
                 return callback();
             }
         }
