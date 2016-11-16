@@ -1,7 +1,6 @@
 'use strict';
 var _ = require('lodash');
 var schema = require('./item.json');
-var addStandardRoutes = require('../../../crud/router/add-standard-routes');
 var outputSchema = _.merge({}, schema, require('./item-output.json'));
 var inputSchema = buildInputSchema();
 var router = require('../../../crud/router')({
@@ -12,8 +11,8 @@ var router = require('../../../crud/router')({
         update: inputSchema
     }
 });
-addStandardRoutes(router);
 router.crudMiddleware = require('../../../mongo/crud')(router.metadata);
+require('../../../crud/router/add-standard-routes')(router);
 module.exports = router;
 
 var filterOwnerMap = {

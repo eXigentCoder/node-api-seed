@@ -5,10 +5,12 @@ var config = require("nconf");
 var items = require('./items');
 var generatePassword = require('password-generator');
 var router = require('../../crud/router')({
-    schema: schema
+    schemas: {
+        core: schema
+    }
 });
-require('../../crud/router/add-standard-routes')(router);
 router.crudMiddleware = require('../../mongo/crud')(router.metadata);
+require('../../crud/router/add-standard-routes')(router);
 module.exports = router;
 
 router.getByIdAndUse('/items', items)
