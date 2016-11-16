@@ -8,22 +8,22 @@ var versionInfo = require('../version-info');
 var schemaName = 'creation';
 var config = require('nconf');
 
-module.exports = function addRoute(router, options) {
+module.exports = function addRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
-    router.post('/', getSteps(router, options))
+    router.post('/', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.creationDescription || description(router.metadata));
     return router;
 };
 
-function getSteps(router, options) {
+function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
         addVersionInfo: versionInfo.add,
-        create: options.crudMiddleware.create,
+        create: crudMiddleware.create,
         filterOutput: output.filter,
         sendCreateResult: sendCreateResult(router.metadata)
     };
-    return applyMaps(options.maps, steps);
+    return applyMaps(maps, steps);
 }
 
 function sendCreateResult(metadata) {

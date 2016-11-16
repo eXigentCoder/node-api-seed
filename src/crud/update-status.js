@@ -7,7 +7,7 @@ var _ = require('lodash');
 var config = require('nconf');
 var validator = require('../validate/validator');
 
-module.exports = function addRoute(router, options) {
+module.exports = function addRoute(router, crudMiddleware, maps) {
     if (!router.metadata.schemas.updateStatus) {
         if (router.metadata.schemas.core.updateStatusSchema) {
             router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
@@ -17,19 +17,19 @@ module.exports = function addRoute(router, options) {
         }
     }
     validator.addSchema(router.metadata.schemas.updateStatus);
-    router.put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, options))
+    router.put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
     return router;
 };
 
-function getSteps(router, options) {
+function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
-        updateStatus: options.crudMiddleware.updateStatus,
-        writeHistoryItem: options.crudMiddleware.writeHistoryItem,
+        updateStatus: crudMiddleware.updateStatus,
+        writeHistoryItem: crudMiddleware.writeHistoryItem,
         sendOutput: output.sendNoContent
     };
-    return applyMaps(options.maps, steps);
+    return applyMaps(maps, steps);
 }
 
 function description(metadata) {

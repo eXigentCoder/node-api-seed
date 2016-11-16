@@ -12,17 +12,17 @@ var generatePassword = require('password-generator');
 var items = require('./items');
 module.exports = router;
 
-router.getByIdAndUse('/items', items, {crudMiddleware: crudMiddleware});
+router.getByIdAndUse('/items', items, crudMiddleware);
 var creationMaps = {
     addAfter: {
         'addVersionInfo': createPassword
     }
 };
-router.query({crudMiddleware: crudMiddleware})
-    .getById({crudMiddleware: crudMiddleware})
-    .create({crudMiddleware: crudMiddleware, maps: creationMaps})
-    .update({crudMiddleware: crudMiddleware})
-    .updateStatus({crudMiddleware: crudMiddleware});
+router.query(crudMiddleware)
+    .getById(crudMiddleware)
+    .create(crudMiddleware, creationMaps)
+    .update(crudMiddleware)
+    .updateStatus(crudMiddleware);
 
 function createPassword(req, res, next) {
     var randomPw = generatePassword(18, false);

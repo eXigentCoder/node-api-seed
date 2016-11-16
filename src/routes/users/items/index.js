@@ -15,29 +15,23 @@ var router = require('../../../crud/router')({
 addStandardRoutes(router);
 var crudMiddleware = require('../../../mongo/crud')(router.metadata);
 module.exports = router;
-router.add.query({
-    crudMiddleware: crudMiddleware,
-    maps: {
-        addBefore: {
-            'query': filterOwner
-        }
-    }
-});
-router.add.getById({
-    crudMiddleware: crudMiddleware,
-    maps: {
-        addBefore: {
-            'findByIdentifier': filterOwner
-        }
-    }
-});
+
 var setOwnerMap = {
     addBefore: {
         'validate': setOwner
     }
 };
-router.add.create({crudMiddleware: crudMiddleware, maps: setOwnerMap});
-router.add.update({crudMiddleware: crudMiddleware, maps: setOwnerMap});
+router.query(crudMiddleware, {
+    addBefore: {
+        'query': filterOwner
+    }
+}).getById(crudMiddleware, {
+    addBefore: {
+        'findByIdentifier': filterOwner
+    }
+})
+    .create(crudMiddleware, setOwnerMap)
+    .update(crudMiddleware, setOwnerMap);
 
 
 function filterOwner(req, res, next) {

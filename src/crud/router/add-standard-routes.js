@@ -10,38 +10,23 @@ module.exports = function addStandardRoutes(router) {
     if (!_.isObject(router.metadata)) {
         throw new Error("Router.metadata must be set!");
     }
-    router.add = {
-        query: function (options) {
-            query(router, options);
-        },
-        getById: function (options) {
-            getById(router, options);
-        },
-        create: function (options) {
-            create(router, options);
-        },
-        update: function (options) {
-            update(router, options);
-        },
-        updateStatus: function (options) {
-            updateStatus(router, options);
-        }
+    router.query = function (crudMiddleware, maps) {
+        return query(router, crudMiddleware, maps);
     };
-    router.query = function (options) {
-        return query(router, options);
+    router.getById = function (crudMiddleware, maps) {
+        return getById(router, crudMiddleware, maps);
     };
-    router.getById = function (options) {
-        return getById(router, options);
+    router.create = function (crudMiddleware, maps) {
+        return create(router, crudMiddleware, maps);
     };
-    router.create = function (options) {
-        return create(router, options);
+    router.update = function (crudMiddleware, maps) {
+        return update(router, crudMiddleware, maps);
     };
-    router.update = function (options) {
-        return update(router, options);
+    router.updateStatus = function (crudMiddleware, maps) {
+        return updateStatus(router, crudMiddleware, maps);
     };
-    router.updateStatus = function (options) {
-        return updateStatus(router, options);
+    router.getByIdAndUse = function (path, routerOrMiddleware, crudMiddleware, maps) {
+        return getByIdAndUse(router, path, routerOrMiddleware, crudMiddleware, maps);
     };
-    router.getByIdAndUse = getByIdAndUse(router);
 };
 
