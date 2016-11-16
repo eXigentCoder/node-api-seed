@@ -29,7 +29,7 @@ function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
         ensureStatusAllowed: ensureStatusAllowed(router.metadata),
-        getExistingVersionInfo: crudMiddleware.getExistingVersionInfo,
+        getExistingVersionInfo: crudMiddleware.getExistingMetadata,
         updateVersionInfo: versionInfo.update,
         updateStatus: crudMiddleware.updateStatus,
         writeHistoryItem: crudMiddleware.writeHistoryItem,
