@@ -37,6 +37,6 @@ function createPassword(req, res, next) {
     }
 }
 
-function addUserRoles(callback) {
-    roles.addUserRoles(req.user._Id.toString(), 'member', callback);
+function addUserRoles(req, res, next) {
+    roles.addUserRoles(req.user._id.toString(), 'member', next);
 }
