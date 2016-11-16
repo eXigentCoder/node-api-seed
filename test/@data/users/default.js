@@ -14,6 +14,7 @@ module.exports = function (callback) {
         if (err) {
             return callback(err);
         }
+        var now = moment.utc().toDate();
         var user = {
             _id: ObjectId(defaultUser._id),
             email: defaultUser.email,
@@ -22,12 +23,21 @@ module.exports = function (callback) {
             passwordHash: hash,
             role: 'member',
             versionInfo: {
-                dateCreated: moment.utc().toDate(),
+                dateCreated: now,
                 versionTag: uuid.v4(),
-                dateUpdated: moment.utc().toDate(),
+                dateUpdated: now,
                 createdBy: ObjectId("580d9f45622d510b044fb6a8"),
                 lastUpdatedBy: ObjectId("580d9f45622d510b044fb6a8")
-            }
+            },
+            status: "active",
+            statusDate: now,
+            statusLog: [
+                {
+                    status: "active",
+                    data: {},
+                    statusDate: now
+                }
+            ]
         };
         config.set('defaultUserAuthToken', authentication.getUserToken(user));
         return callback(null, user);

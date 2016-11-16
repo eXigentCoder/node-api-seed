@@ -7,8 +7,19 @@ var schemaName = 'updateStatus';
 var _ = require('lodash');
 var config = require('nconf');
 var validator = require('../validate/validator');
+var boom = require('boom');
+var util = require('util');
 
 module.exports = function addRoute(router, crudMiddleware, maps) {
+    if (!router.metadata.schemas.core.statuses) {
+        throw new Error("No statuses defined in metadata.schemas.core.statuses");
+    }
+    if (!_.isArray(router.metadata.schemas.core.statuses)) {
+        throw new Error("metadata.schemas.core.statuses must be an array");
+    }
+    if (router.metadata.schemas.core.statuses.length <= 0) {
+        throw new Error("metadata.schemas.core.statuses array must have at least one item in it.");
+    }
     if (!router.metadata.schemas.updateStatus) {
         if (router.metadata.schemas.core.updateStatusSchema) {
             router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
@@ -26,6 +37,8 @@ module.exports = function addRoute(router, crudMiddleware, maps) {
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
+        ensureStatusAllowed: ensureStatusAllowed(router.metadata),
+        getExistingMetadata: crudMiddleware.getExistingMetadata,
         updateVersionInfo: versionInfo.update,
         updateStatus: crudMiddleware.updateStatus,
         writeHistoryItem: crudMiddleware.writeHistoryItem,
@@ -75,5 +88,24 @@ function description(metadata) {
                 commonHeaders: [correlationIdOptions.resHeader]
             }
         }
+    };
+}
+
+function ensureStatusAllowed(metadata) {
+    return function _ensureStatusAllowed(req, res, next) {
+        var statusNames = metadata.schemas.core.statuses.map(function (statusObj) {
+            return statusObj.name;
+        });
+        var foundStatus = statusNames.some(function (statusName) {
+            if (statusName.toLowerCase() === req.params.newStatusName.toLowerCase()) {
+                req.params.newStatusName = statusName;
+                return true;
+            }
+            return false;
+        });
+        if (!foundStatus) {
+            return next(boom.badRequest(util.format('Invalid status name : "%s", should have been one of the following: %j', req.params.newStatusName, statusNames)));
+        }
+        return next();
     };
 }
