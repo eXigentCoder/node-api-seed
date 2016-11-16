@@ -11,6 +11,15 @@ var boom = require('boom');
 var util = require('util');
 
 module.exports = function addRoute(router, crudMiddleware, maps) {
+    if (!router.metadata.schemas.core.statuses) {
+        throw new Error("No statuses defined in metadata.schemas.core.statuses");
+    }
+    if (!_.isArray(router.metadata.schemas.core.statuses)) {
+        throw new Error("metadata.schemas.core.statuses must be an array");
+    }
+    if (router.metadata.schemas.core.statuses.length <= 0) {
+        throw new Error("metadata.schemas.core.statuses array must have at least one item in it.");
+    }
     if (!router.metadata.schemas.updateStatus) {
         if (router.metadata.schemas.core.updateStatusSchema) {
             router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
