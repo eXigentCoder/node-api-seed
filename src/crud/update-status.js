@@ -2,6 +2,7 @@
 var output = require('../output');
 var applyMaps = require('./shared/apply-maps');
 var getValidateFunction = require('./shared/get-validate-function');
+var versionInfo = require('../version-info');
 var schemaName = 'updateStatus';
 var _ = require('lodash');
 var config = require('nconf');
@@ -25,6 +26,7 @@ module.exports = function addRoute(router, crudMiddleware, maps) {
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
+        updateVersionInfo: versionInfo.update,
         updateStatus: crudMiddleware.updateStatus,
         writeHistoryItem: crudMiddleware.writeHistoryItem,
         sendOutput: output.sendNoContent
