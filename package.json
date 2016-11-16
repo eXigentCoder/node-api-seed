@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/eXigentCoder/node-api-seed#readme",
   "dependencies": {
+    "acl": "0.4.9",
     "ajv": "4.8.2",
     "api-query-params": "4.1.0",
     "async": "2.1.2",
