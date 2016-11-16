@@ -7,6 +7,8 @@ var schemaName = 'updateStatus';
 var _ = require('lodash');
 var config = require('nconf');
 var validator = require('../validate/validator');
+var boom = require('boom');
+var util = require('util');
 
 module.exports = function addRoute(router, crudMiddleware, maps) {
     if (!router.metadata.schemas.updateStatus) {
@@ -26,6 +28,7 @@ module.exports = function addRoute(router, crudMiddleware, maps) {
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
+        ensureStatusAllowed: ensureStatusAllowed(router.metadata),
         getExistingVersionInfo: crudMiddleware.getExistingVersionInfo,
         updateVersionInfo: versionInfo.update,
         updateStatus: crudMiddleware.updateStatus,
@@ -76,5 +79,24 @@ function description(metadata) {
                 commonHeaders: [correlationIdOptions.resHeader]
             }
         }
+    };
+}
+
+function ensureStatusAllowed(metadata) {
+    return function _ensureStatusAllowed(req, res, next) {
+        var statusNames = metadata.schemas.core.statuses.map(function (statusObj) {
+            return statusObj.name;
+        });
+        var foundStatus = statusNames.some(function (statusName) {
+            if (statusName.toLowerCase() === req.params.newStatusName.toLowerCase()) {
+                req.params.newStatusName = statusName;
+                return true;
+            }
+            return false;
+        });
+        if (!foundStatus) {
+            return next(boom.badRequest(util.format('Invalid status name : "%s", should have been one of the following: %j', req.params.newStatusName, statusNames)));
+        }
+        return next();
     };
 }
