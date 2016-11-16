@@ -1,27 +1,29 @@
 'use strict';
 var schema = require('./user.json');
-var router = require('../../swagger/router')({
-    schema: schema
-});
-var crudMiddleware = require('../../mongo/crud')(router.metadata);
 var bcrypt = require('bcrypt');
 var config = require("nconf");
-var generatePassword = require('password-generator');
 var items = require('./items');
+var generatePassword = require('password-generator');
 var roles = require('../../../src/roles/roles.js');
+var router = require('../../crud/router')({
+    schemas: {
+        core: schema
+    }
+});
+router.crudMiddleware = require('../../mongo/crud')(router.metadata);
+require('../../crud/router/add-standard-routes')(router);
 module.exports = router;
 
-router.add.query({crudMiddleware: crudMiddleware});
-router.getByIdAndUse('/items', items, {crudMiddleware: crudMiddleware});
-router.add.getById({crudMiddleware: crudMiddleware});
-var creationMaps = {
-    addAfter: {
+router.getByIdAndUse('/items', items)
+    .query()
+    .getById()
+    .create({
+        addAfter: {
         'addVersionInfo': [createPassword,addUserRoles]
-    }
-};
-router.add.create({crudMiddleware: crudMiddleware, maps: creationMaps});
-router.add.update({crudMiddleware: crudMiddleware});
-router.add.updateStatus({crudMiddleware: crudMiddleware});
+        }
+    })
+    .update()
+    .updateStatus();
 
 function createPassword(req, res, next) {
     var randomPw = generatePassword(18, false);

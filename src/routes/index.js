@@ -8,12 +8,25 @@ var authentication = require('./authentication');
 var users = require('./users');
 var rateLimit = require('../rate-limit');
 var passport = require("passport");
+var boom = require('boom');
 module.exports = router;
 
 router.use('/', base);
 router.use('/authentication', authentication);
 router.use(rateLimit.api);
-
-router.use(passport.authenticate('jwt', {session: false}));
+router.use(authenticate);
 router.use('/users', users);
 
+function authenticate(req, res, next) {
+    passport.authenticate('jwt', {session: false}, authenticationCallback)(req, res);
+    function authenticationCallback(err, user) {
+        if (err) {
+            return next(err);
+        }
+        if (user) {
+            req.user = user;
+            return next();
+        }
+        return next(boom.unauthorized());
+    }
+}

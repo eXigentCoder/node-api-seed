@@ -15,7 +15,7 @@ module.exports = function (callback) {
             return callback(err);
         }
         var user = {
-            _id: ObjectId('580d9f45622d510b044fb6a8'),
+            _id: ObjectId(defaultUser._id),
             email: defaultUser.email,
             firstName: 'Ryan',
             surname: 'Kotzen',
