@@ -118,13 +118,14 @@ function updateStatus(metadata) {
         var filter = getIdentifierQuery(identifier, metadata);
         var updateStatement = {
             $set: {
-                status: req.params.newStatus,
-                statusDate: moment.utc().toDate()
+                status: req.params.newStatusName,
+                statusDate: moment.utc().toDate(),
+                versionInfo: req.body.versionInfo
             },
             $push: {
                 statusLog: {
-                    status: req.params.newStatus,
-                    data: req.body,
+                    status: req.params.newStatusName,
+                    data: _.omit(req.body, 'versionInfo', 'passwordHash'),
                     statusDate: moment.utc().toDate()
                 }
             }

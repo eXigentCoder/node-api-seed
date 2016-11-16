@@ -20,11 +20,11 @@ describe('Users', function () {
                 .end(common.logResponse(done));
         });
     });
-    
+
     describe('Get User By Email.', function () {
         it('Happy case', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
                 .set(common.authentication())
                 .expect(common.success(200))
                 .expect(common.matchesSwaggerSchema)
@@ -32,21 +32,21 @@ describe('Users', function () {
         });
         it('No Authentication', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
                 .expect(common.error(401))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
         it('Invalid path parameter', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email":"2b8934a4-82ee-4cae-9ce8-0e3379254e4d"}))
+                .use(common.urlTemplate({"email": "2b8934a4-82ee-4cae-9ce8-0e3379254e4d"}))
                 .set(common.authentication())
                 .expect(common.error(404))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
     });
-    
+
     describe('Posts Through An User To Be Created.', function () {
         it('Happy case', function (done) {
             common.request.post('/users')
@@ -72,11 +72,11 @@ describe('Users', function () {
                 .end(common.logResponse(done));
         });
     });
-    
+
     describe('Updates a User By Email', function () {
         it('Happy case', function (done) {
             common.request.put('/users/:email')
-                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.update))
                 .set(common.authentication())
                 .expect(common.success(204))
@@ -84,25 +84,25 @@ describe('Users', function () {
         });
         it('No Authentication', function (done) {
             common.request.put('/users/:email')
-                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.update))
                 .expect(common.error(401))
                 .end(common.logResponse(done));
         });
         it('No Data', function (done) {
             common.request.put('/users/:email')
-                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
                 .send({})
                 .set(common.authentication())
                 .expect(common.error(400))
                 .end(common.logResponse(done));
         });
     });
-    
+
     describe('Updates the status of a User By Email', function () {
         it('Happy case', function (done) {
             common.request.put('/users/:email/:newStatusName')
-                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8","newStatusName":"testStatus"}))
+                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8", "newStatusName": "testStatus"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))
                 .set(common.authentication())
                 .expect(common.success(204))
@@ -110,14 +110,14 @@ describe('Users', function () {
         });
         it('No Authentication', function (done) {
             common.request.put('/users/:email/:newStatusName')
-                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8","newStatusName":"testStatus"}))
+                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8", "newStatusName": "testStatus"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))
                 .expect(common.error(401))
                 .end(common.logResponse(done));
         });
         it('No Data', function (done) {
             common.request.put('/users/:email/:newStatusName')
-                .use(common.urlTemplate({"email":"580d9f45622d510b044fb6a8","newStatusName":"testStatus"}))
+                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8", "newStatusName": "testStatus"}))
                 .send({})
                 .set(common.authentication())
                 .expect(common.error(400))
