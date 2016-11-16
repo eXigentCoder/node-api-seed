@@ -7,11 +7,7 @@ var _ = require('lodash');
 var config = require('nconf');
 var validator = require('../validate/validator');
 
-module.exports = {
-    addRoute: addRoute
-};
-
-function addRoute(router, options) {
+module.exports = function addRoute(router, options) {
     if (!router.metadata.schemas.updateStatus) {
         if (router.metadata.schemas.core.updateStatusSchema) {
             router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
@@ -23,7 +19,8 @@ function addRoute(router, options) {
     validator.addSchema(router.metadata.schemas.updateStatus);
     router.put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, options))
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
-}
+    return router;
+};
 
 function getSteps(router, options) {
     var steps = {

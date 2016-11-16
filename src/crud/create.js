@@ -8,15 +8,12 @@ var versionInfo = require('../version-info');
 var schemaName = 'creation';
 var config = require('nconf');
 
-module.exports = {
-    addRoute: addRoute
-};
-
-function addRoute(router, options) {
+module.exports = function addRoute(router, options) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
     router.post('/', getSteps(router, options))
         .describe(router.metadata.creationDescription || description(router.metadata));
-}
+    return router;
+};
 
 function getSteps(router, options) {
     var steps = {

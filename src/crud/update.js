@@ -9,15 +9,12 @@ var schemaName = 'update';
 var versionInfo = require('../version-info');
 var config = require('nconf');
 
-module.exports = {
-    addRoute: addRoute
-};
-
-function addRoute(router, options) {
+module.exports = function addRoute(router, options) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
     router.put('/:' + router.metadata.identifierName, getSteps(router, options))
         .describe(router.metadata.updateDescription || description(router.metadata));
-}
+    return router;
+};
 
 function getSteps(router, options) {
     var steps = {

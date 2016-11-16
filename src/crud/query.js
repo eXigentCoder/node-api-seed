@@ -4,14 +4,12 @@ var applyMaps = require('./shared/apply-maps');
 var addModel = require('../swagger/add-model');
 var config = require('nconf');
 
-module.exports = {
-    addRoute: addRoute
-};
 
-function addRoute(router, options) {
+module.exports = function addRoute(router, options) {
     router.get('/', getSteps(router, options))
         .describe(router.metadata.queryDescription || description(router.metadata));
-}
+    return router;
+};
 
 function getSteps(router, options) {
     var steps = {

@@ -5,14 +5,11 @@ var _ = require('lodash');
 var addModel = require('../swagger/add-model');
 var config = require('nconf');
 
-module.exports = {
-    addRoute: addRoute
-};
-
-function addRoute(router, options) {
+module.exports = function addRoute(router, options) {
     router.get('/:' + router.metadata.identifierName, getSteps(router, options))
         .describe(router.metadata.getByIdDescription || description(router.metadata));
-}
+    return router;
+};
 
 function getSteps(router, options) {
     var steps = {
