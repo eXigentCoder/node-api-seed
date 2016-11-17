@@ -38,5 +38,5 @@ function createPassword(req, res, next) {
 }
 
 function addUserRoles(req, res, next) {
-    roles.addUserRoles(req.user._id.toString(), 'member', next);
+    roles.nodeAcl.addUserRoles(req.user._id.toString(), 'member', next);
 }
