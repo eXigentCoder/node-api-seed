@@ -92,7 +92,7 @@ module.exports = {
             level: 'silly',
             handleExceptions: true,
             graylog: {
-                servers: [{host: 'localhost', port: 5555},{host: 'localhost', port: 12201}],
+                servers: [{host: 'pdhublogs1.liberty.fin-za.net', port: 5555}, {host: 'pdhublogs1.liberty.fin-za.net', port: 12201}],
                 facility: 'Node.js',
                 bufferSize: 1400
             },

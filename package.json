@@ -17,8 +17,7 @@
     "audit": "node_modules/.bin/nsp check",
     "secure": "node_modules/.bin/snyk wizard",
     "setDeploymentDate": "node ./utilities/set-deployment-date/index.js",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "snyk-protect": "snyk protect"
   },
   "repository": {
     "type": "git",
@@ -48,7 +47,6 @@
     "express": "4.14.0",
     "express-brute": "1.0.1",
     "express-brute-mongo": "1.0.0",
-    "gelf": "1.0.3",
     "get-parameter-names": "0.3.0",
     "helmet": "3.1.0",
     "json-schema-faker": "0.3.7",

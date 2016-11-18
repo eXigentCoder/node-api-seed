@@ -68,8 +68,6 @@ function addGraylogLogging() {
         return;
     }
     logger.add(WinstonGraylog2, _.omit(logglySettings, 'disabled'));
-    //winston.add()
-    //logger.add(new WinstonGraylog2(_.omit(logglySettings, 'disabled')));
 }
 
 function overrideConsole() {
