@@ -7,6 +7,7 @@ var expect = require('./expect');
 var set = require('./set');
 var dropAndRecreate = require('../@data/drop-and-recreate');
 var initialised = false;
+var generateDataFromSchema = require('./generate-data-from-schema');
 before(function (done) {
     if (initialised) {
         return process.nextTick(done);
@@ -14,9 +15,9 @@ before(function (done) {
     initialised = true;
     this.timeout(10000);
     async.waterfall([
+        dropAndRecreate,
         createApp,
         createDataObject,
-        dropAndRecreate,
         expect.initialise
     ], waterfallComplete);
 
@@ -45,7 +46,17 @@ after(function (done) {
 
 module.exports = {
     defaultTimeout: 5000,
-    app: null
+    app: null,
+    logResponse: function (done) {
+        return function (err, res) {
+            console.verbose({
+                statusCode: res.statusCode,
+                body: res.body
+            });
+            return done(err);
+        };
+    },
+    generateDataFromSchema : generateDataFromSchema
 };
 
 Object.keys(expect).forEach(function (key) {

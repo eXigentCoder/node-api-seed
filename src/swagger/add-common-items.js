@@ -1,5 +1,6 @@
 'use strict';
 var swagger = require('swagger-spec-express');
+var config = require('nconf');
 
 module.exports = function (app, callback) {
     swagger.common.parameters.addPath({
@@ -37,45 +38,68 @@ module.exports = function (app, callback) {
         "type": "string",
         "format": "date-time"
     });
+
     swagger.common.addModel({
-        "name": "serverError",
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
+        name: "errorResponse",
+        type: "object",
+        properties: {
+            statusCode: {
+                description: "The http status code for the response",
+                type: "number"
+            },
+            error: {
+                description: "The description of the error",
+                type: "string"
             }
-        }
+        },
+        additionalProperties: true
     });
+
     swagger.common.addResponse({
         "name": "500",
         "description": "Server Error",
-        "schema": {
-            $ref: "#/definitions/serverError"
+        schema: {
+            $ref: "#/definitions/errorResponse"
         }
     });
     swagger.common.addResponse({
         "name": "401",
-        "description": "Not Authorised"
+        "description": "Not Authorised",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
     swagger.common.addResponse({
         "name": "404",
-        "description": "Not Found"
+        "description": "Not Found",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
     swagger.common.addResponse({
         "name": "409",
-        "description": "Conflict, item exists"
+        "description": "Conflict, item exists",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
     swagger.common.addResponse({
         "name": "400",
-        "description": "Validation error"
+        "description": "Validation error",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
     swagger.common.addResponse({
         "name": "412",
-        "description": "Precondition failed"
+        "description": "Precondition failed",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
     });
-
+    var correlationIdOptions = config.get('logging').correlationId;
     swagger.common.addResponseHeader({
-        name: "X-Request-Id",
+        name: correlationIdOptions.resHeader,
         description: "A unique identifier that is used to track the request through the logs. Should be passed through in the request, but will be generated if one is not provided.",
         type: "string"
     });
@@ -113,7 +137,7 @@ module.exports = function (app, callback) {
         "type": "string"
     });
     swagger.common.parameters.addHeader({
-        name: "X-Request-Id",
+        name: correlationIdOptions.reqHeader,
         description: "A unique identifier that is used to track the request through the logs. Should be passed through in the request, but will be generated if one is not provided.",
         required: false,
         type: "string"

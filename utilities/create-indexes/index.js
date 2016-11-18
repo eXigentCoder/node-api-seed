@@ -31,10 +31,35 @@ function connectToDb(callback) {
 }
 
 function processAllItems(callback) {
-    var itemsToIndex = [user];
+    var schemas = [user];
+    var itemsToIndex = [];
+    schemas.forEach(function (item) {
+        itemsToIndex.push(item);
+        if (item.trackHistory) {
+            itemsToIndex.push(createHistoryIndexItem(item));
+        }
+    });
     async.each(itemsToIndex, ensureCollectionExists, callback);
 }
 
+function createHistoryIndexItem(item) {
+    var newItem = {
+        namePlural: (item.namePlural || pluralize.plural(item.name)) + '-history',
+        indexes: [{
+            name: 'historyId',
+            fields: {historyId: 1},
+            background: true,
+            unique: false
+        }]
+    };
+    item.indexes.forEach(function (index) {
+        if (!index.includeInHistory) {
+            return;
+        }
+        newItem.indexes.push(index);
+    });
+    return newItem;
+}
 
 function ensureCollectionExists(item, callback) {
     item.collectionName = item.namePlural || pluralize.plural(item.name);

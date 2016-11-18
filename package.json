@@ -8,8 +8,8 @@
   "scripts": {
     "start": "nodejs-dashboard node index.js",
     "watch": "nodemon .",
-    "test": "node_modules/.bin/istanbul --include-all-sources cover node_modules/mocha/bin/_mocha test/**/*.js",
-    "mocha": "node_modules/.bin/_mocha test/**/*.js",
+    "test": "node_modules/.bin/istanbul --include-all-sources cover node_modules/mocha/bin/_mocha 'test/**/*.js'",
+    "mocha": "node_modules/.bin/_mocha 'test/**/*.js'",
     "lint": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js --fix",
     "lint-ci": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js",
     "report": "plato -r -d report -e .eslintrc src",
@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/eXigentCoder/node-api-seed#readme",
   "dependencies": {
+    "acl": "0.4.9",
     "ajv": "4.8.2",
     "api-query-params": "4.1.0",
     "async": "2.1.2",
@@ -81,6 +82,7 @@
     "glob": "7.1.1",
     "istanbul": "0.4.5",
     "mocha": "3.1.2",
+    "node-mocks-http": "^1.5.4",
     "nodemon": "1.11.0",
     "npm-check": "5.4.0",
     "nsp": "2.6.2",

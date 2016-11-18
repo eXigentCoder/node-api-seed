@@ -1,31 +1,31 @@
 'use strict';
-var outputMap = require('../output-map');
-var applyMaps = require('../swagger/router/step-maps');
-var ensureSchemaSet = require('./../swagger/build-metadata/ensure-schema-set');
-var getValidateFunction = require('./@shared/get-validate-function');
-var addModel = require('../swagger/build-metadata/add-model');
+var output = require('../output');
+var applyMaps = require('./shared/apply-maps');
+var ensureSchemaSet = require('./../metadata/ensure-schema-set');
+var getValidateFunction = require('./shared/get-validate-function');
+var addModel = require('../swagger/add-model');
 var versionInfo = require('../version-info');
 var schemaName = 'creation';
+var config = require('nconf');
+var moment = require('moment');
 
-module.exports = {
-    addRoute: addRoute
+module.exports = function addRoute(router, crudMiddleware, maps) {
+    ensureSchemaSet(router.metadata, schemaName, 'Input');
+    router.post('/', getSteps(router, crudMiddleware, maps))
+        .describe(router.metadata.creationDescription || description(router.metadata));
+    return router;
 };
 
-function addRoute(router, options) {
-    ensureSchemaSet(router.metadata, schemaName, 'Input');
-    router.post('/', getSteps(router, options))
-        .describe(router.metadata.creationDescription || description(router.metadata));
-}
-
-function getSteps(router, options) {
+function getSteps(router, crudMiddleware, maps) {
     var steps = {
         validate: getValidateFunction(schemaName),
         addVersionInfo: versionInfo.add,
-        create: options.crudMiddleware.create,
-        filterOutput: outputMap.filterOutput,
+        setStatusIfApplicable: setStatusIfApplicable(router.metadata),
+        create: crudMiddleware.create,
+        filterOutput: output.filter,
         sendCreateResult: sendCreateResult(router.metadata)
     };
-    return applyMaps(options.maps, steps);
+    return applyMaps(maps, steps);
 }
 
 function sendCreateResult(metadata) {
@@ -47,6 +47,7 @@ function sendCreateResult(metadata) {
 function description(metadata) {
     addModel(metadata.schemas.output);
     addModel(metadata.schemas[schemaName]);
+    var correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
         summary: "Posts Through " + metadata.aOrAn + " " + metadata.title + " To Be Created.",
@@ -54,7 +55,7 @@ function description(metadata) {
         common: {
             responses: ["500", "400", "401"],
             parameters: {
-                header: ["X-Request-Id"]
+                header: [correlationIdOptions.reqHeader]
             }
         },
         parameters: [
@@ -69,9 +70,26 @@ function description(metadata) {
         responses: {
             "201": {
                 description: 'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
-                commonHeaders: ["X-Request-Id"],
+                commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }
         }
+    };
+}
+
+function setStatusIfApplicable(metadata) {
+    return function _setStatusIfApplicable(req, res, next) {
+        var statuses = metadata.schemas.core.statuses;
+        if (!statuses || statuses.length <= 0) {
+            return next();
+        }
+        req.body.status = statuses[0].name;
+        req.body.statusDate = moment.utc().toDate();
+        req.body.statusLog = [{
+            status: req.body.status,
+            data: {},
+            statusDate: req.body.statusDate
+        }];
+        return next();
     };
 }

@@ -3,7 +3,6 @@ var packageJson = require('../../package.json');
 var boom = require('boom');
 var _ = require('lodash');
 var config = require('nconf');
-var getRequestIdOptions = require('../logging/configure-request-id').getRequestIdOptions;
 
 module.exports = {
     errorHandler: function (err, req, res, next) {
@@ -21,8 +20,8 @@ module.exports = {
     },
     // eslint-disable-next-line no-unused-vars
     boomErrorHandler: function (err, req, res, next) {
-        var requestIdOptions = getRequestIdOptions();
-        var requestId = req[requestIdOptions.paramName] || 'unknown';
+        var correlationIdOptions = config.get('logging').correlationId;
+        var requestId = req[correlationIdOptions.paramName] || 'unknown';
         if (err.isServer) {
             console.error('RequestId-' + requestId, 'Server Error :', err);
         } else {
@@ -53,7 +52,7 @@ function exitProcess() {
 }
 
 process.on('uncaughtException', function (err) {
-    console.error('Unhandled Error on process : ', err, err.stack);
+    console.error('Unhandled Error on process : ', err);
     exitProcess();
 });
 
