@@ -10,7 +10,7 @@ var validator = require('../validate/validator');
 var boom = require('boom');
 var util = require('util');
 
-module.exports = function addRoute(router, crudMiddleware, maps) {
+module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
     if (!router.metadata.schemas.core.statuses) {
         throw new Error("No statuses defined in metadata.schemas.core.statuses");
     }
@@ -51,7 +51,7 @@ function description(metadata) {
     var correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
-        summary: "Updates the status of a " + metadata.title + " By " + _.startCase(metadata.identifierName),
+        summary: "Updates the status of " + metadata.aOrAn + " " + metadata.title + " By " + _.startCase(metadata.identifierName),
         tags: [metadata.tag.name],
         parameters: [
             {

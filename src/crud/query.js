@@ -5,7 +5,7 @@ var addModel = require('../swagger/add-model');
 var config = require('nconf');
 
 
-module.exports = function addRoute(router, crudMiddleware, maps) {
+module.exports = function addQueryRoute(router, crudMiddleware, maps) {
     router.get('/', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.queryDescription || description(router.metadata));
     return router;

@@ -9,7 +9,7 @@ var schemaName = 'creation';
 var config = require('nconf');
 var moment = require('moment');
 
-module.exports = function addRoute(router, crudMiddleware, maps) {
+module.exports = function addCreateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
     router.post('/', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.creationDescription || description(router.metadata));
