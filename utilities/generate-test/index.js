@@ -268,7 +268,6 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute)) + "))");
             if (foundRoute.hasPathParameters) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
