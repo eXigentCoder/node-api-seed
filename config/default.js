@@ -7,6 +7,7 @@ var host = 'localhost';
 var port = 10001;
 var reqCorrelationHeaderName = 'X-Request-ID';
 var resCorrelationHeaderName = reqCorrelationHeaderName;
+var pacakgeJson = require('../package.json');
 module.exports = {
     PORT: port, // The port the app runs on and listens on for inbound requests.
     host: host, // The host value for the currently running app e.g. my-application.com
@@ -92,8 +93,8 @@ module.exports = {
             level: 'silly',
             handleExceptions: true,
             graylog: {
-                servers: [{host: 'pdhublogs1.liberty.fin-za.net', port: 5555}, {host: 'pdhublogs1.liberty.fin-za.net', port: 12201}],
-                facility: 'Node.js',
+                servers: [{host: 'pdhublogs1.liberty.fin-za.net', port: 12201}],
+                facility: pacakgeJson.name,
                 bufferSize: 1400
             },
             staticMeta: {env: config.get('NODE_ENV')}
