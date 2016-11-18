@@ -51,7 +51,7 @@ function description(metadata) {
     var correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
-        summary: "Updates the status of a " + metadata.title + " By " + _.startCase(metadata.identifierName),
+        summary: "Updates the status of " + metadata.aOrAn + " " + metadata.title + " By " + _.startCase(metadata.identifierName),
         tags: [metadata.tag.name],
         parameters: [
             {
