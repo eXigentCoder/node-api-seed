@@ -5,7 +5,7 @@ var _ = require('lodash');
 var addModel = require('../swagger/add-model');
 var config = require('nconf');
 
-module.exports = function addRoute(router, crudMiddleware, maps) {
+module.exports = function addDeleteByIdRoute(router, crudMiddleware, maps) {
     router.delete('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.getByIdDescription || description(router.metadata));
     return router;

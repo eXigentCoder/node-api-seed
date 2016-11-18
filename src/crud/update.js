@@ -9,7 +9,7 @@ var schemaName = 'update';
 var versionInfo = require('../version-info');
 var config = require('nconf');
 
-module.exports = function addRoute(router, crudMiddleware, maps) {
+module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
     router.put('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.updateDescription || description(router.metadata));

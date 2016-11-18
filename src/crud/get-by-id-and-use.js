@@ -4,7 +4,7 @@ var applyMaps = require('./shared/apply-maps');
 var util = require('util');
 var _ = require('lodash');
 
-module.exports = function (router, path, routerOrMiddleware, crudMiddleware, maps) {
+module.exports = function addGetByIdAndUseRoute(router, path, routerOrMiddleware, crudMiddleware, maps) {
     if (_.isObject(path)) {
         //path omitted, move all args up by one.
         maps = crudMiddleware;

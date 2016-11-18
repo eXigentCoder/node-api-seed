@@ -10,7 +10,7 @@ var validator = require('../validate/validator');
 var boom = require('boom');
 var util = require('util');
 
-module.exports = function addRoute(router, crudMiddleware, maps) {
+module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
     if (!router.metadata.schemas.core.statuses) {
         throw new Error("No statuses defined in metadata.schemas.core.statuses");
     }
