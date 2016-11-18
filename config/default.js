@@ -2,10 +2,12 @@
 var passportJWT = require("passport-jwt");
 var ExtractJwt = passportJWT.ExtractJwt;
 var util = require('util');
+var config = require('nconf');
 var host = 'localhost';
 var port = 10001;
 var reqCorrelationHeaderName = 'X-Request-ID';
 var resCorrelationHeaderName = reqCorrelationHeaderName;
+var pacakgeJson = require('../package.json');
 module.exports = {
     PORT: port, // The port the app runs on and listens on for inbound requests.
     host: host, // The host value for the currently running app e.g. my-application.com
@@ -85,7 +87,19 @@ module.exports = {
         objectReplacements: [
             // replaces values in objects to be logged. key must be a string, value can either be a value to replace with or a function that takes in the existing value as its only argument.
             {key: 'password', value: '****'}
-        ]
+        ],
+        graylog: {
+            disabled: true,
+            name: "web-endpoint",
+            level: 'silly',
+            handleExceptions: true,
+            graylog: {
+                servers: [{host: '127.0.0.1', port: 12201}],
+                facility: pacakgeJson.name,
+                bufferSize: 1400
+            },
+            staticMeta: {env: config.get('NODE_ENV')}
+        }
     },
     errorHandling: {
         exposeServerErrorMessages: false, // Ensure that this is false on production environments to prevent leaking security vulnerabilities and stack information.
