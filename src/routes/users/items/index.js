@@ -29,7 +29,8 @@ var setOwnerMap = {
 router.query(filterOwnerMap)
     .getById(filterOwnerMap)
     .create(setOwnerMap)
-    .update(setOwnerMap);
+    .update(setOwnerMap)
+    .deleteById(filterOwnerMap);
 
 
 function filterOwner(req, res, next) {

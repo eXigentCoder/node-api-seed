@@ -1,27 +1,20 @@
 'use strict';
 var output = require('../output');
 var applyMaps = require('./shared/apply-maps');
-var ensureSchemaSet = require('./../metadata/ensure-schema-set');
-var getValidateFunction = require('./shared/get-validate-function');
-var addModel = require('../swagger/add-model');
 var _ = require('lodash');
-var schemaName = 'update';
-var versionInfo = require('../version-info');
+var addModel = require('../swagger/add-model');
 var config = require('nconf');
 
-module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
-    ensureSchemaSet(router.metadata, schemaName, 'Input');
-    router.put('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
-        .describe(router.metadata.updateDescription || description(router.metadata));
+module.exports = function addDeleteByIdRoute(router, crudMiddleware, maps) {
+    router.delete('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
+        .describe(router.metadata.getByIdDescription || description(router.metadata));
     return router;
 };
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        validate: getValidateFunction(schemaName),
-        getExistingMetadata: crudMiddleware.getExistingMetadata,
-        updateVersionInfo: versionInfo.update,
-        update: crudMiddleware.update,
+        findByIdentifier: crudMiddleware.findByIdentifier,
+        deleteByIdentifier: crudMiddleware.deleteByIdentifier,
         writeHistoryItem: crudMiddleware.writeHistoryItem,
         sendOutput: output.sendNoContent
     };
@@ -33,7 +26,7 @@ function description(metadata) {
     var correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
-        summary: "Updates " + metadata.aOrAn + " " + metadata.title + " By " + _.startCase(metadata.identifierName),
+        summary: "Removes " + metadata.aOrAn + " " + metadata.title + " By " + _.startCase(metadata.identifierName) + ".",
         tags: [metadata.tag.name],
         parameters: [
             {
@@ -45,7 +38,6 @@ function description(metadata) {
             }
         ],
         common: {
-
             responses: ["500", "400", "401", "404"],
             parameters: {
                 header: [correlationIdOptions.reqHeader]
@@ -53,7 +45,7 @@ function description(metadata) {
         },
         responses: {
             "204": {
-                description: "Shows that the update request was successfully carried out",
+                description: "Shows that the delete request was successfully carried out",
                 commonHeaders: [correlationIdOptions.resHeader]
             }
         }

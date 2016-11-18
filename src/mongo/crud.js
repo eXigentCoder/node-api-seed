@@ -15,7 +15,8 @@ module.exports = function (metadata) {
         update: update(metadata),
         updateStatus: updateStatus(metadata),
         getExistingMetadata: getExistingMetadata(metadata),
-        writeHistoryItem: writeHistoryItem(metadata)
+        writeHistoryItem: writeHistoryItem(metadata),
+        deleteByIdentifier: deleteByIdentifier(metadata)
     };
 };
 
@@ -210,6 +211,29 @@ function getExistingMetadata(metadata) {
                     req.body[field] = document[field];
                 }
             });
+            return next();
+        }
+    };
+}
+
+function deleteByIdentifier(metadata) {
+    return function (req, res, next) {
+        req.process.originalItem = req.process[metadata.name];
+        var identifier = req.params[metadata.identifierName];
+        if (_.isNil(identifier)) {
+            return next(new Error("Object has no identifier"));
+        }
+        var mongoQuery = getIdentifierQuery(identifier, metadata);
+        mongo.db.collection(metadata.collectionName)
+            .deleteOne(mongoQuery, documentDeleted);
+
+        function documentDeleted(err, result) {
+            if (err) {
+                return next(err);
+            }
+            if (result.deletedCount !== 1) {
+                console.warn(util.format('Expected 1 item to be deleted, but result was %s. Query : %j. Original Item : %j', result.deletedCount, mongoQuery, req.process.originalItem));
+            }
             return next();
         }
     };
