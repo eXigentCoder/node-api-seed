@@ -370,7 +370,55 @@ function writeRoutesAsTest(data) {
     }
 
     function addDelete(foundRoute) {
-        throw new Error("Not implemented");
+        addHappy();
+        addNoAuth();
+        addNotFound();
+        function addHappy() {
+            addLine("it('Happy case', function (done) {");
+            indent++;
+            addLine("common.request.delete('" + foundRoute.fullPath + "')");
+            indent++;
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.success(204))");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+
+        function addNoAuth() {
+            addLine("it('No Authentication', function (done) {");
+            indent++;
+            addLine("common.request.delete('" + foundRoute.fullPath + "')");
+            indent++;
+            if (foundRoute.hasPathParameters) {
+                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+            }
+            addLine(".expect(common.error(401))");
+            addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
+
+        function addNotFound() {
+            addLine("it('Invalid path parameter', function (done) {");
+            indent++;
+            addLine("common.request.delete('" + foundRoute.fullPath + "')");
+            indent++;
+            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute, {fake: true})) + "))");
+            addLine(".set(common.authentication())");
+            addLine(".expect(common.error(404))");
+            addLine(".expect(common.matchesSwaggerSchema)");
+            addLine(".end(common.logResponse(done));");
+            indent--;
+            indent--;
+            addLine("});");
+        }
     }
 
     function getFullPath(foundRoute) {
