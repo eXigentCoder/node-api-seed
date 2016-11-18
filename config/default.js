@@ -89,11 +89,12 @@ module.exports = {
             {key: 'password', value: '****'}
         ],
         graylog: {
+            disabled: true,
             name: "web-endpoint",
             level: 'silly',
             handleExceptions: true,
             graylog: {
-                servers: [{host: 'pdhublogs1.liberty.fin-za.net', port: 12201}],
+                servers: [{host: '127.0.0.1', port: 12201}],
                 facility: pacakgeJson.name,
                 bufferSize: 1400
             },
