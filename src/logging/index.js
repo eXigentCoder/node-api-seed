@@ -3,6 +3,7 @@ var winston = require('winston');
 var packageJson = require('../../package.json');
 require('winston-loggly');
 require('winston-daily-rotate-file');
+var WinstonGraylog2 = require('winston-graylog2');
 var config = require('nconf');
 var formatArgs = require('./format-args');
 var _ = require('lodash');
@@ -13,6 +14,7 @@ var logger = new winston.Logger({exitOnError: true});
 addConsoleLogging();
 addFileLogging();
 addLogglyLogging();
+addGraylogLogging();
 overrideConsole();
 
 function addConsoleLogging() {
@@ -58,6 +60,14 @@ function addLogglyLogging() {
         logglySettings.tags.push(packageJson.name);
     }
     logger.add(winston.transports.Loggly, _.omit(logglySettings, 'disabled'));
+}
+
+function addGraylogLogging() {
+    var logglySettings = logSettings.graylog;
+    if (logglySettings.disabled) {
+        return;
+    }
+    logger.add(WinstonGraylog2, _.omit(logglySettings, 'disabled'));
 }
 
 function overrideConsole() {

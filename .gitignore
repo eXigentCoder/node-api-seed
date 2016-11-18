@@ -42,3 +42,4 @@ yarn.lock
 
 # VS Code Editor files
 .vscode
+*.orig

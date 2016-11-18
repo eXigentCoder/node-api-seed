@@ -33,7 +33,7 @@ function findUser(req, res, next) {
 
 function comparePassword(req, res, next) {
     var user = req.process.user;
-    bcrypt.compare(req.body.password, user.password, passwordCompareComplete);
+    bcrypt.compare(req.body.password, user.passwordHash, passwordCompareComplete);
     function passwordCompareComplete(err, matches) {
         if (err) {
             return next(err);

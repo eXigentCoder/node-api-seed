@@ -4,6 +4,7 @@ var bcrypt = require('bcrypt');
 var config = require("nconf");
 var items = require('./items');
 var generatePassword = require('password-generator');
+var roles = require('../../roles');
 var router = require('../../crud/router')({
     schemas: {
         core: schema
@@ -18,7 +19,7 @@ router.getByIdAndUse('/items', items)
     .getById()
     .create({
         addAfter: {
-            'addVersionInfo': createPassword
+            'addVersionInfo': [createPassword, addUserRoles]
         }
     })
     .update()
@@ -34,4 +35,8 @@ function createPassword(req, res, next) {
         req.body.passwordHash = hash;
         next();
     }
+}
+
+function addUserRoles(req, res, next) {
+    roles.nodeAcl.addUserRoles(req.user._id.toString(), 'member', next);
 }

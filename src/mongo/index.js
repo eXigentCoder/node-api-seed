@@ -45,6 +45,11 @@ function closeConnection(callback) {
 }
 
 function connectToDb(app, callback) {
+    if (state.db) {
+        return process.nextTick(function () {
+            callback(null, app);
+        });
+    }
     var mongodbConfig = config.get('mongodb');
     MongoClient.connect(mongodbConfig.url, mongodbConfig.options, connected);
     function connected(err, db) {

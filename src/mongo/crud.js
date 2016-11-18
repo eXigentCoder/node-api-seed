@@ -116,7 +116,7 @@ function updateStatus(metadata) {
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var filter = getIdentifierQuery(identifier, metadata)
+        var filter = getIdentifierQuery(identifier, metadata);
         var now = moment.utc().toDate();
         var updateStatement = {
             $set: {
