@@ -8,7 +8,7 @@
   "scripts": {
     "start": "nodejs-dashboard node index.js",
     "watch": "nodemon .",
-    "test": "node_modules/.bin/istanbul --include-all-sources cover node_modules/mocha/bin/_mocha test/**/*.js",
+    "test": "node_modules/.bin/istanbul --include-all-sources cover -x **/public/** -x **/report/** node_modules/mocha/bin/_mocha test/**/*.js",
     "mocha": "node_modules/.bin/_mocha test/**/*.js",
     "lint": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js --fix",
     "lint-ci": "eslint \"modules/**/*.js\" \"src/**/*.js\" \"test/**/*.js\" index.js",
