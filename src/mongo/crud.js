@@ -42,7 +42,15 @@ function query(metadata) {
 }
 
 function parseQueryWithDefaults(queryString) {
-    var parsedQuery = aqp(queryString);
+    var agpOptions = {
+        casters: {
+            mongoId: val => mongo.ObjectId(val)
+        },
+        castParams: {
+            _id: 'mongoId'
+        }
+    };
+    var parsedQuery = aqp(queryString, agpOptions);
     if (_.isObject(queryString)) {
         coerceTypes(queryString, parsedQuery.filter);
     }
@@ -60,7 +68,6 @@ function coerceTypes(inputObject, filter) {
         }
         if (inputObject[key] instanceof mongo.ObjectId) {
             filter[key] = mongo.ObjectId(filter[key]);
-            return;
         }
     });
 }
@@ -72,12 +79,10 @@ function findByIdentifier(metadata) {
             return next(new Error("Object has no identifier"));
         }
         var mongoQuery = getIdentifierQuery(identifier, metadata);
-        if (Object.keys(req.query).length > 0) {
-            var parsedQuery = parseQueryWithDefaults(req.query);
-            mongoQuery = _.merge({}, parsedQuery.filter, mongoQuery);
-        }
+        mongoQuery = _.merge({}, req.query, mongoQuery);
+        var parsedQuery = parseQueryWithDefaults(mongoQuery);
         mongo.db.collection(metadata.collectionName)
-            .findOne(mongoQuery, dataRetrieved);
+            .findOne(parsedQuery.filter, dataRetrieved);
 
         function dataRetrieved(err, document) {
             if (err) {
@@ -94,7 +99,7 @@ function findByIdentifier(metadata) {
 
 function getIdentifierQuery(identifier, metadata) {
     if (mongo.isValidObjectId(identifier)) {
-        return {_id: mongo.ObjectId(identifier)};
+        return {_id: identifier};
     }
     var identifierQuery = {};
     identifierQuery[metadata.identifierName] = identifier;
@@ -117,7 +122,7 @@ function updateStatus(metadata) {
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var filter = getIdentifierQuery(identifier, metadata);
+        var mongoQuery = getIdentifierQuery(identifier, metadata);
         var now = moment.utc().toDate();
         var updateStatement = {
             $set: {
@@ -136,8 +141,9 @@ function updateStatus(metadata) {
         var options = {
             returnOriginal: true
         };
+        var parsedQuery = parseQueryWithDefaults(mongoQuery);
         mongo.db.collection(metadata.collectionName)
-            .findOneAndUpdate(filter, updateStatement, options, updateComplete);
+            .findOneAndUpdate(parsedQuery.filter, updateStatement, options, updateComplete);
         function updateComplete(err, result) {
             if (err) {
                 return next();
@@ -154,13 +160,14 @@ function update(metadata) {
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var filter = getIdentifierQuery(identifier, metadata);
+        var mongoQuery = getIdentifierQuery(identifier, metadata);
         var replacement = req.body;
         var options = {
             returnOriginal: true
         };
+        var parsedQuery = parseQueryWithDefaults(mongoQuery);
         mongo.db.collection(metadata.collectionName)
-            .findOneAndReplace(filter, replacement, options, updateComplete);
+            .findOneAndReplace(parsedQuery.filter, replacement, options, updateComplete);
         function updateComplete(err, result) {
             if (err) {
                 return next();
@@ -188,15 +195,16 @@ function getExistingMetadata(metadata) {
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var filter = getIdentifierQuery(identifier, metadata);
+        var mongoQuery = getIdentifierQuery(identifier, metadata);
         var options = {
             fields: {}
         };
         metadataFields.forEach(function (field) {
             options.fields[field] = 1;
         });
+        var parsedQuery = parseQueryWithDefaults(mongoQuery);
         mongo.db.collection(metadata.collectionName)
-            .findOne(filter, options, dataRetrieved);
+            .findOne(parsedQuery.filter, options, dataRetrieved);
         function dataRetrieved(err, document) {
             if (err) {
                 return next(err);
@@ -224,8 +232,9 @@ function deleteByIdentifier(metadata) {
             return next(new Error("Object has no identifier"));
         }
         var mongoQuery = getIdentifierQuery(identifier, metadata);
+        var parsedQuery = parseQueryWithDefaults(mongoQuery);
         mongo.db.collection(metadata.collectionName)
-            .deleteOne(mongoQuery, documentDeleted);
+            .deleteOne(parsedQuery.filter, documentDeleted);
 
         function documentDeleted(err, result) {
             if (err) {
