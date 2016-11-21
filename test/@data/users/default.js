@@ -10,9 +10,9 @@ module.exports = function (callback) {
     var defaultUser = config.get('tests').defaultUser;
     bcrypt.hash(defaultUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
 
-    function hashCalculated(err, hash) {
-        if (err) {
-            return callback(err);
+    function hashCalculated(hashErr, hash) {
+        if (hashErr) {
+            return callback(hashErr);
         }
         var now = moment.utc().toDate();
         var user = {
@@ -39,8 +39,8 @@ module.exports = function (callback) {
             ]
         };
         config.set('defaultUserAuthToken', authentication.getUserToken(user));
-        roles.nodeAcl.addUserRoles(user._id.toString(), 'admin', function (err) {
-            return callback(err, user);
+        roles.nodeAcl.addUserRoles(user._id.toString(), 'admin', function (addRoleErr) {
+            return callback(addRoleErr, user);
         });
     }
 };
