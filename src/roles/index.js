@@ -4,6 +4,7 @@ var boom = require('boom');
 var mongo = require('../mongo');
 var nodeAcl = null;
 var async = require('async');
+var util = require('util');
 
 module.exports = {
     initialise: initialise,
@@ -30,7 +31,8 @@ function initialise(app, callback) {
 
 function checkRole(resource, permissions) {
     return function (req, res, next) {
-        nodeAcl.isAllowed(req.user._id.toString(), resource, permissions, roleChecked);
+        var userIdString = req.user._id.toString();
+        nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
 
         function roleChecked(err, isAllowed) {
             if (err) {
@@ -39,7 +41,7 @@ function checkRole(resource, permissions) {
             if (isAllowed) {
                 return next();
             }
-            return next(boom.forbidden());
+            return next(boom.forbidden(util.format('User %s does not have all of the required permissions (%j) to access the "%s" resource.', userIdString, permissions, resource)));
         }
     };
 }

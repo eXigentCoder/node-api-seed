@@ -3,6 +3,7 @@ var ensureExistsOnReq = require('../output/ensure-exists-on-req');
 var applyMaps = require('./shared/apply-maps');
 var util = require('util');
 var _ = require('lodash');
+var roles = require('../roles');
 
 module.exports = function addGetByIdAndUseRoute(router, path, routerOrMiddleware, crudMiddleware, maps) {
     if (_.isObject(path)) {
@@ -25,6 +26,7 @@ module.exports = function addGetByIdAndUseRoute(router, path, routerOrMiddleware
 
 function getByIdAndUseSteps(router, routerOrMiddleware, crudMiddleware, maps) {
     var steps = {
+        checkRole: roles.checkRole(router.metadata.namePlural, 'getById'),
         findByIdentifier: crudMiddleware.findByIdentifier,
         ensureExistsOnReq: ensureExistsOnReq('process.' + router.metadata.name, {metadata: router.metadata})
     };

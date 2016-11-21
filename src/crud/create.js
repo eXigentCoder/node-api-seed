@@ -8,6 +8,7 @@ var versionInfo = require('../version-info');
 var schemaName = 'creation';
 var config = require('nconf');
 var moment = require('moment');
+var roles = require('../roles');
 
 module.exports = function addCreateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
@@ -18,6 +19,7 @@ module.exports = function addCreateRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
+        checkRole: roles.checkRole(router.metadata.namePlural, 'create'),
         validate: getValidateFunction(schemaName),
         addVersionInfo: versionInfo.add,
         setStatusIfApplicable: setStatusIfApplicable(router.metadata),

@@ -8,6 +8,7 @@ var _ = require('lodash');
 var schemaName = 'update';
 var versionInfo = require('../version-info');
 var config = require('nconf');
+var roles = require('../roles');
 
 module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
@@ -18,6 +19,7 @@ module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
+        checkRole: roles.checkRole(router.metadata.namePlural, 'replace'),
         validate: getValidateFunction(schemaName),
         getExistingMetadata: crudMiddleware.getExistingMetadata,
         updateVersionInfo: versionInfo.update,
