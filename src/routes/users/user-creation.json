@@ -1,0 +1,11 @@
+{
+    "properties": {
+        "role": {
+            "type": "string",
+            "enum": [
+                "member",
+                "admin"
+            ]
+        }
+    }
+}

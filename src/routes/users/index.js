@@ -5,9 +5,12 @@ var config = require("nconf");
 var items = require('./items');
 var generatePassword = require('password-generator');
 var roles = require('../../roles');
+var _ = require('lodash');
+var boom = require('boom');
 var router = require('../../crud/router')({
     schemas: {
-        core: schema
+        core: schema,
+        creation: _.merge({}, schema, require('./user-creation.json'))
     }
 });
 router.crudMiddleware = require('../../mongo/crud')(router.metadata);
@@ -38,5 +41,20 @@ function createPassword(req, res, next) {
 }
 
 function addUserRoles(req, res, next) {
-    roles.nodeAcl.addUserRoles(req.user._id.toString(), 'member', next);
+    var roleToSet = 'admin';//req.body.role || 'member';
+    delete req.body.role;
+    if (roleToSet === 'admin') {
+        return roles.nodeAcl.hasRole(req.user._id.toString(), 'admin', hasRoleCheckComplete);
+    }
+    hasRoleCheckComplete(null, true);
+
+    function hasRoleCheckComplete(err, hasRole) {
+        if (err) {
+            return next(err);
+        }
+        if (!hasRole) {
+            return next(boom.forbidden("Only admins can add other admin users."));
+        }
+        roles.nodeAcl.addUserRoles(req.user._id.toString(), roleToSet, next);
+    }
 }
