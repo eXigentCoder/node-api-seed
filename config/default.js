@@ -106,6 +106,7 @@ module.exports = {
         exposeErrorRoutes: false // Set this to true if you need to test the /error routes
     },
     swagger: {
+        hideUi: false,
         // Swagger options, see http://npmjs.com/package/swagger-spec-express
         writeFile: false, // Controls if the constructed swagger.json file is written to disk. Useful if you need to distribute it or debug.
         appendPortToHost: false, // If you are running on localhost for example, you would want this to be true so that requests will go to localhost:port however it may be useful in other environments too.

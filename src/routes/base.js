@@ -6,6 +6,7 @@ var router = express.Router(routerOptions);
 var packageJson = require('../../package.json');
 var testErrors = require('../routes/test-errors');
 var path = require('path');
+var boom = require('boom');
 var swagger = require('swagger-spec-express');
 swagger.swaggerise(router);
 var appInfoSchema = require('./app-info.json');
@@ -17,13 +18,17 @@ swagger.common.addModel(appInfoSchema);
 
 router.get('/', function (req, res) {
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    res.status(200).json({
+    var appInfo = {
         appName: packageJson.name,
         version: packageJson.version,
         deploymentDate: packageJson.deploymentDate,
         environment: config.get('NODE_ENV'),
         swaggerUiUrl: fullUrl + 'apidocs'
-    });
+    };
+    if (config.get('swagger').hideUi) {
+        delete appInfo.swaggerUiUrl;
+    }
+    res.status(200).json(appInfo);
 }).describe({
     security: false,
     summary: "Get API Details",
@@ -46,7 +51,12 @@ router.get('/', function (req, res) {
     }
 });
 
-router.use('/apidocs', express.static(path.join(__dirname, '../../public')));
+router.use('/apidocs', function (req, res, next) {
+    if (config.get('swagger').hideUi) {
+        return next(boom.forbidden("Swagger ui is not allowed for this environment."));
+    }
+    return express.static(path.join(__dirname, '../../public'))(req, res, next);
+});
 
 router.post('/report-violation', function logCspViolation(req, res) {
     if (req.body) {
@@ -57,7 +67,10 @@ router.post('/report-violation', function logCspViolation(req, res) {
     res.status(204).end();
 });
 
-router.get("/apidocs.json", function getApiDocument(req, res) {
+router.get("/apidocs.json", function getApiDocument(req, res, next) {
+    if (config.get('swagger').hideUi) {
+        return next(boom.forbidden("Swagger ui is not allowed for this environment."));
+    }
     return res.status(200).json(swagger.json());
 }).describe({
     security: false,
