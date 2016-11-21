@@ -26,7 +26,7 @@ module.exports = function addGetByIdAndUseRoute(router, path, routerOrMiddleware
 
 function getByIdAndUseSteps(router, routerOrMiddleware, crudMiddleware, maps) {
     var steps = {
-        checkRole: roles.checkRole(router.metadata.namePlural, 'getById'),
+        checkRole: roles.checkRole(router.metadata.namePlural, 'getById', router.metadata),
         findByIdentifier: crudMiddleware.findByIdentifier,
         ensureExistsOnReq: ensureExistsOnReq('process.' + router.metadata.name, {metadata: router.metadata})
     };

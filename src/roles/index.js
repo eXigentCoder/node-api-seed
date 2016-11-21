@@ -3,7 +3,6 @@ var NodeAcl = require('acl');
 var boom = require('boom');
 var mongo = require('../mongo');
 var nodeAcl = null;
-var async = require('async');
 var util = require('util');
 
 module.exports = {
@@ -43,8 +42,9 @@ function initialise(app, callback) {
     });
 }
 
-function checkRole(resource, permissions) {
+function checkRole(resource, permissions, metadata) {
     return function (req, res, next) {
+        console.verbose(metadata, 'Todo check ownership of the item as well as role if applicable');
         var userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
 
