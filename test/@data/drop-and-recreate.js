@@ -20,7 +20,7 @@ module.exports = function dropAndRecreate(callback) {
     ], callback);
 };
 function initialiseRoles(callback) {
-    roles.initialise(null, function (err) {
+    roles.initialise({}, function (err) {
         return callback(err);
     });
 }

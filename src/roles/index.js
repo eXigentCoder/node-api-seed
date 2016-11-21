@@ -21,10 +21,24 @@ function initialise(app, callback) {
     var prefix = 'acl-';
     nodeAcl = new NodeAcl(new NodeAcl.mongodbBackend(mongo.db, prefix));
     module.exports.nodeAcl = nodeAcl;
-    async.parallel([
-        nodeAcl.allow.bind(nodeAcl, 'member', ['users', 'items'], 'view'),
-        nodeAcl.allow.bind(nodeAcl, 'admin', ['users', 'items'], '*')
-    ], function (err) {
+    var aclRules = [
+        {
+            roles: ['member'],
+            allows: [
+                {resources: ['items'], permissions: ['query', 'update', 'updateStatus', 'create', 'deleteById', 'getById']},
+                {resources: ['users'], permissions: ['query', 'getById']}
+            ]
+        }, {
+            roles: 'admin',
+            allows: [
+                {resources: ['users', 'items'], permissions: '*'}
+            ]
+        }
+    ];
+    if (app.aclRules) {
+        aclRules = app.aclRules;
+    }
+    nodeAcl.allow(aclRules, function (err) {
         return callback(err, app);
     });
 }
