@@ -12,6 +12,11 @@ module.exports = {
 };
 
 function initialise(app, callback) {
+    if (nodeAcl !== null) {
+        return process.nextTick(function () {
+            callback(null, app);
+        });
+    }
     var prefix = 'acl-';
     nodeAcl = new NodeAcl(new NodeAcl.mongodbBackend(mongo.db, prefix));
     module.exports.nodeAcl = nodeAcl;
