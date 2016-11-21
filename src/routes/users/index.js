@@ -41,7 +41,7 @@ function createPassword(req, res, next) {
 }
 
 function addUserRoles(req, res, next) {
-    var roleToSet = 'admin';//req.body.role || 'member';
+    var roleToSet = req.body.role || 'member';
     delete req.body.role;
     if (roleToSet === 'admin') {
         return roles.nodeAcl.hasRole(req.user._id.toString(), 'admin', hasRoleCheckComplete);

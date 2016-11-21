@@ -4,7 +4,7 @@ var async = require('async');
 var roles = require('../../src/roles');
 var mongo = require('mongodb');
 
-var userId = '580d9f45622d510b044fb6a8';
+var userId = '580d9f45622d510b044fb703';
 var resource = 'items';
 var permissions = ['view'];
 var role = 'member';

@@ -5,7 +5,7 @@ var config = require('nconf');
 var authentication = require('../../../src/authentication');
 var moment = require('moment');
 var uuid = require("node-uuid");
-
+var roles = require('../../../src/roles');
 module.exports = function (callback) {
     var defaultUser = config.get('tests').defaultUser;
     bcrypt.hash(defaultUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
@@ -39,6 +39,8 @@ module.exports = function (callback) {
             ]
         };
         config.set('defaultUserAuthToken', authentication.getUserToken(user));
-        return callback(null, user);
+        roles.nodeAcl.addUserRoles(user._id.toString(), 'admin', function (err) {
+            return callback(err, user);
+        });
     }
 };
