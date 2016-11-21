@@ -6,23 +6,26 @@ schemaKeys.push('definitions');
 
 module.exports = function addModel(schema) {
     var modelSchema = _.cloneDeep(_.pick(schema, schemaKeys));
-    stripSpecificProperties(modelSchema);
+    filterProperties(modelSchema.properties);
+    if (modelSchema.definitions) {
+        Object.keys(modelSchema.definitions).forEach(function (definitionName) {
+            var definitionValue = modelSchema.definitions[definitionName];
+            filterProperties(definitionValue.properties);
+        });
+    }
     swagger.common.addModel(modelSchema, {validation: 'warn'});
 };
 
-const propertiesToStrip = ['faker', 'chance'];
-function stripSpecificProperties(schema) {
-    if (_.isArray(schema)) {
-        schema.forEach(function (item) {
-            stripSpecificProperties(item);
+function filterProperties(properties) {
+    Object.keys(properties).forEach(function (propertyName) {
+        var propertyValue = properties[propertyName];
+        Object.keys(propertyValue).forEach(function (key) {
+            if (schemaKeys.indexOf(key) < 0) {
+                delete propertyValue[key];
+            }
+            if (key.toLowerCase() === 'properties') {
+                filterProperties(propertyValue.properties);
+            }
         });
-        return;
-    }
-    if (!_.isObject(schema)) {
-        return;
-    }
-    propertiesToStrip.forEach(function (key) {
-        delete schema[key];
     });
-    _.valuesIn(schema).forEach(stripSpecificProperties);
 }
