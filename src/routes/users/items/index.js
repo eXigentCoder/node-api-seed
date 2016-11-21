@@ -1,11 +1,10 @@
 'use strict';
 var _ = require('lodash');
 var schema = require('./item.json');
-var outputSchema = _.merge({}, schema, require('./item-output.json'));
 var router = require('../../../crud/router')({
     schemas: {
         core: schema,
-        output: outputSchema,
+        output: _.merge({}, schema, require('./item-output.json')),
         creation: buildInputSchema(),
         update: buildInputSchema()
     }
