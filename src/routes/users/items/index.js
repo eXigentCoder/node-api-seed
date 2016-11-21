@@ -2,13 +2,12 @@
 var _ = require('lodash');
 var schema = require('./item.json');
 var outputSchema = _.merge({}, schema, require('./item-output.json'));
-var inputSchema = buildInputSchema();
 var router = require('../../../crud/router')({
     schemas: {
         core: schema,
         output: outputSchema,
-        creation: inputSchema,
-        update: inputSchema
+        creation: buildInputSchema(),
+        update: buildInputSchema()
     }
 });
 router.crudMiddleware = require('../../../mongo/crud')(router.metadata);
