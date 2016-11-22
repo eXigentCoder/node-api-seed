@@ -15,7 +15,7 @@ var mongo = require('./mongo');
 var helmet = require('helmet');
 var rateLimit = require('./rate-limit');
 var authentication = require('./authentication');
-var roles = require('./roles');
+var permissions = require('./permissions');
 
 module.exports = function initialise(callback) {
     async.waterfall([
@@ -27,7 +27,7 @@ module.exports = function initialise(callback) {
         mongo.connect,
         rateLimit.initialise,
         authentication.initialise,
-        roles.initialise
+        permissions.initialise
     ], callback);
 };
 

@@ -9,7 +9,7 @@ var config = require('nconf');
 var validator = require('../validate/validator');
 var boom = require('boom');
 var util = require('util');
-var roles = require('../roles');
+var permissions = require('../permissions');
 
 module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
     if (!router.metadata.schemas.core.statuses) {
@@ -37,7 +37,7 @@ module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: roles.checkPermissions(router.metadata.namePlural, 'updateStatus'),
+        checkPermissions: permissions.ensureHasPermissionsForResource(router.metadata.namePlural, 'updateStatus'),
         validate: getValidateFunction(schemaName),
         ensureStatusAllowed: ensureStatusAllowed(router.metadata),
         getExistingMetadata: crudMiddleware.getExistingMetadata,

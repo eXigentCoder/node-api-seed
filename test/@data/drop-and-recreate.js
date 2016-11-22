@@ -4,7 +4,7 @@ var dropExistingData = require('./drop-existing-data');
 var findItemsToCreate = require('./find-items-to-create');
 var insertData = require('./insert-data');
 var mongo = require('../../src/mongo/index');
-var roles = require('../../src/roles');
+var permissions = require('../../src/permissions');
 
 module.exports = function dropAndRecreate(callback) {
     async.waterfall([
@@ -20,7 +20,7 @@ module.exports = function dropAndRecreate(callback) {
     ], callback);
 };
 function initialiseRoles(callback) {
-    roles.initialise({}, function (err) {
+    permissions.initialise({}, function (err) {
         return callback(err);
     });
 }

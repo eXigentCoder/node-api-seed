@@ -4,7 +4,7 @@ var bcrypt = require('bcrypt');
 var config = require("nconf");
 var items = require('./items');
 var generatePassword = require('password-generator');
-var roles = require('../../roles');
+var permissions = require('../../permissions');
 var _ = require('lodash');
 var boom = require('boom');
 var router = require('../../crud/router')({
@@ -44,7 +44,7 @@ function addUserRoles(req, res, next) {
     var roleToSet = req.body.role || 'member';
     delete req.body.role;
     if (roleToSet === 'admin') {
-        return roles.nodeAcl.hasRole(req.user._id.toString(), 'admin', hasRoleCheckComplete);
+        return permissions.nodeAcl.hasRole(req.user._id.toString(), 'admin', hasRoleCheckComplete);
     }
     hasRoleCheckComplete(null, true);
 
@@ -55,6 +55,6 @@ function addUserRoles(req, res, next) {
         if (!hasRole) {
             return next(boom.forbidden("Only admins can add other admin users."));
         }
-        roles.nodeAcl.addUserRoles(req.user._id.toString(), roleToSet, next);
+        permissions.nodeAcl.addUserRoles(req.user._id.toString(), roleToSet, next);
     }
 }

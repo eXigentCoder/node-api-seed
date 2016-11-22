@@ -24,7 +24,6 @@
             "query",
             "update",
             "updateStatus",
-            "create",
             "deleteById",
             "getById"
         ]

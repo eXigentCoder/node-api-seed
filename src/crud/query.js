@@ -3,7 +3,7 @@ var output = require('../output');
 var applyMaps = require('./shared/apply-maps');
 var addModel = require('../swagger/add-model');
 var config = require('nconf');
-var roles = require('../roles');
+var permissions = require('../permissions');
 
 module.exports = function addQueryRoute(router, crudMiddleware, maps) {
     router.get('/', getSteps(router, crudMiddleware, maps))
@@ -13,7 +13,7 @@ module.exports = function addQueryRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: roles.checkPermissions(router.metadata.namePlural, 'query'),
+        checkPermissions: permissions.ensureHasPermissionsForResource(router.metadata.namePlural, 'query'),
         query: crudMiddleware.query,
         setOutput: output.setFrom(router.metadata.namePlural),
         ensureOutput: output.ensureExists({default: []}),

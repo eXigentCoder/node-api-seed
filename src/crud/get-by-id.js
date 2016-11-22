@@ -4,7 +4,7 @@ var applyMaps = require('./shared/apply-maps');
 var _ = require('lodash');
 var addModel = require('../swagger/add-model');
 var config = require('nconf');
-var roles = require('../roles');
+var permissions = require('../permissions');
 
 module.exports = function addGetByIdRoute(router, crudMiddleware, maps) {
     router.get('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
@@ -14,7 +14,7 @@ module.exports = function addGetByIdRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: roles.checkPermissions(router.metadata.namePlural, 'getById'),
+        checkPermissions: permissions.ensureHasPermissionsForResource(router.metadata.namePlural, 'getById'),
         findByIdentifier: crudMiddleware.findByIdentifier,
         setOutput: output.setFrom(router.metadata.name),
         ensureOutput: output.ensureExists({metadata: router.metadata}),

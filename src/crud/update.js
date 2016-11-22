@@ -8,7 +8,7 @@ var _ = require('lodash');
 var schemaName = 'update';
 var versionInfo = require('../version-info');
 var config = require('nconf');
-var roles = require('../roles');
+var permissions = require('../permissions');
 
 module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
@@ -19,7 +19,7 @@ module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: roles.checkPermissions(router.metadata.namePlural, 'update'),
+        checkPermissions: permissions.ensureHasPermissionsForResource(router.metadata.namePlural, 'update'),
         validate: getValidateFunction(schemaName),
         getExistingMetadata: crudMiddleware.getExistingMetadata,
         updateVersionInfo: versionInfo.update,

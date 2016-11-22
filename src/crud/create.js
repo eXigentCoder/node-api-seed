@@ -8,7 +8,7 @@ var versionInfo = require('../version-info');
 var schemaName = 'creation';
 var config = require('nconf');
 var moment = require('moment');
-var roles = require('../roles');
+var permissions = require('../permissions');
 var boom = require('boom');
 var util = require('util');
 
@@ -21,7 +21,7 @@ module.exports = function addCreateRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: roles.checkPermissions(router.metadata.namePlural, 'create'),
+        checkPermissions: permissions.ensureHasPermissionsForResource(router.metadata.namePlural, 'create'),
         validate: getValidateFunction(schemaName),
         addVersionInfo: versionInfo.add,
         setStatusIfApplicable: setStatusIfApplicable(router.metadata),
