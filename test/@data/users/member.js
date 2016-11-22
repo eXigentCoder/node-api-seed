@@ -2,7 +2,6 @@
 var ObjectId = require('mongodb').ObjectId;
 var bcrypt = require('bcrypt');
 var config = require('nconf');
-var authentication = require('../../../src/authentication');
 var moment = require('moment');
 var uuid = require("node-uuid");
 var permissions = require('../../../src/permissions');

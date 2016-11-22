@@ -1,13 +1,14 @@
 'use strict';
 var common = require('../../@util/integration-common.js');
 var router = require('../../../src/routes/users/index.js');
+var config = require('nconf');
 
 describe('Users', function () {
     this.timeout(common.defaultTimeout);
     describe('Search for Users', function () {
         it('Happy case', function (done) {
             common.request.get('/users')
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(200))
                 .expect(common.matchesSwaggerSchema)
                 .expect(common.hasResults)
@@ -25,7 +26,7 @@ describe('Users', function () {
         it('Happy case', function (done) {
             common.request.get('/users/:email')
                 .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(200))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
@@ -40,7 +41,7 @@ describe('Users', function () {
         it('Invalid path parameter', function (done) {
             common.request.get('/users/:email')
                 .use(common.urlTemplate({"email": "2b8934a4-82ee-4cae-9ce8-0e3379254e4d"}))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(404))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
@@ -51,7 +52,7 @@ describe('Users', function () {
         it('Happy case', function (done) {
             common.request.post('/users')
                 .send(common.generateDataFromSchema(router.metadata.schemas.creation))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(201))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
@@ -66,7 +67,7 @@ describe('Users', function () {
         it('No Data', function (done) {
             common.request.post('/users')
                 .send({})
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(400))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
@@ -78,7 +79,7 @@ describe('Users', function () {
             common.request.put('/users/:email')
                 .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.update))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(204))
                 .end(common.logResponse(done));
         });
@@ -93,7 +94,7 @@ describe('Users', function () {
             common.request.put('/users/:email')
                 .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
                 .send({})
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(400))
                 .end(common.logResponse(done));
         });
@@ -104,7 +105,7 @@ describe('Users', function () {
             common.request.put('/users/:email/:newStatusName')
                 .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8", "newStatusName": "testStatus"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(204))
                 .end(common.logResponse(done));
         });
@@ -119,7 +120,7 @@ describe('Users', function () {
             common.request.put('/users/:email/:newStatusName')
                 .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8", "newStatusName": "testStatus"}))
                 .send({})
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(400))
                 .end(common.logResponse(done));
         });

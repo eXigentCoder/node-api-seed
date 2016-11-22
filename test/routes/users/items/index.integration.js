@@ -1,6 +1,7 @@
 'use strict';
 var common = require('../../../@util/integration-common.js');
 var router = require('../../../../src/routes/users/items/index.js');
+var config = require('nconf');
 
 describe('Items', function () {
     this.timeout(common.defaultTimeout);
@@ -8,7 +9,7 @@ describe('Items', function () {
         it('Happy case', function (done) {
             common.request.get('/users/:email/items')
                 .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(200))
                 .expect(common.matchesSwaggerSchema)
                 .expect(common.hasResults)
@@ -27,7 +28,7 @@ describe('Items', function () {
         it('Happy case', function (done) {
             common.request.get('/users/:email/items/:name')
                 .use(common.urlTemplate({"name": "item1", "email": "580d9f45622d510b044fb6a8"}))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(200))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
@@ -42,7 +43,7 @@ describe('Items', function () {
         it('Invalid path parameter', function (done) {
             common.request.get('/users/:email/items/:name')
                 .use(common.urlTemplate({"name": "28f2c035-ca2e-48aa-bca4-79c4e17b5d80", "email": "25459faf-99be-41a6-8653-c3b839116612"}))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(404))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
@@ -54,7 +55,7 @@ describe('Items', function () {
             common.request.post('/users/:email/items')
                 .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.creation))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(201))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
@@ -71,7 +72,7 @@ describe('Items', function () {
             common.request.post('/users/:email/items')
                 .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
                 .send({})
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(400))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
@@ -83,7 +84,7 @@ describe('Items', function () {
             common.request.put('/users/:email/items/:name')
                 .use(common.urlTemplate({"name": "item1", "email": "580d9f45622d510b044fb6a8"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.update))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(204))
                 .end(common.logResponse(done));
         });
@@ -98,7 +99,7 @@ describe('Items', function () {
             common.request.put('/users/:email/items/:name')
                 .use(common.urlTemplate({"name": "item1", "email": "580d9f45622d510b044fb6a8"}))
                 .send({})
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(400))
                 .end(common.logResponse(done));
         });
@@ -108,7 +109,7 @@ describe('Items', function () {
         it('Happy case', function (done) {
             common.request.delete('/users/:email/items/:name')
                 .use(common.urlTemplate({"name": "item3", "email": "580d9f45622d510b044fb6a8"}))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(204))
                 .end(common.logResponse(done));
         });
@@ -122,7 +123,7 @@ describe('Items', function () {
         it('Invalid path parameter', function (done) {
             common.request.delete('/users/:email/items/:name')
                 .use(common.urlTemplate({"name": "7b7c0077-3b0f-41b4-92b8-30f7492fd510", "email": "805bb305-7af7-4941-bd8c-a50df72cd8da"}))
-                .set(common.authentication())
+                .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(404))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));

@@ -1,14 +1,10 @@
 'use strict';
 var _ = require('lodash');
 var url = require('url');
-var config = require('nconf');
 var authentication = require('../../src/authentication');
 
 module.exports = {
     authentication: setAuthentication,
-    requestHeaders: function () {
-        return _.merge(setAuthentication());// other headers that may be required, like requestId go here
-    },
     urlTemplate: urlTemplate
 };
 
@@ -20,11 +16,9 @@ function setAuthentication(options) {
     }
     else if (options.token) {
         token = options.token;
-    } else {
-        token = config.get('defaultUserAuthToken');
     }
     if (!token) {
-        throw new Error("Token not yet set.");
+        throw new Error("Either options.user or options.token must be set.");
     }
     return {"Authorization": "Bearer " + token};
 }
