@@ -31,7 +31,7 @@ function description(metadata) {
         summary: "Search for " + metadata.titlePlural,
         tags: [metadata.tag.name],
         common: {
-            responses: ["500", "400", "401"],
+            responses: ["500", "400", "401", '403'],
             parameters: {
                 header: [correlationIdOptions.reqHeader],
                 query: ["select", "skip", "limit", "sort", "rawQuery"]

@@ -58,7 +58,7 @@ function description(metadata) {
         summary: "Posts Through " + metadata.aOrAn + " " + metadata.title + " To Be Created.",
         tags: [metadata.tag.name],
         common: {
-            responses: ["500", "400", "401"],
+            responses: ["500", "400", "401", '403'],
             parameters: {
                 header: [correlationIdOptions.reqHeader]
             }

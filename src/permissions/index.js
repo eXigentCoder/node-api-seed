@@ -34,6 +34,9 @@ function initialise(app, callback) {
             allows: [
                 {resources: ['users', 'items'], permissions: '*'}
             ]
+        }, {
+            roles: 'guest',
+            allows: []
         }
     ];
     if (app.aclRules) {

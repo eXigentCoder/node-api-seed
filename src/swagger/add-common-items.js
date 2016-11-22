@@ -70,6 +70,13 @@ module.exports = function (app, callback) {
         }
     });
     swagger.common.addResponse({
+        "name": "403",
+        "description": "Forbidden",
+        schema: {
+            $ref: "#/definitions/errorResponse"
+        }
+    });
+    swagger.common.addResponse({
         "name": "404",
         "description": "Not Found",
         schema: {

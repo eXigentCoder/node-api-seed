@@ -48,7 +48,7 @@ function description(metadata) {
         ],
         common: {
 
-            responses: ["500", "400", "401", "404"],
+            responses: ["500", "400", "401", "404", '403'],
             parameters: {
                 header: [correlationIdOptions.reqHeader]
             }

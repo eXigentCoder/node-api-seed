@@ -227,6 +227,11 @@ module.exports = {
             _id: '580d9f45622d510b044fb6a9',
             email: 'normal@gmail.com',
             password: '12345678'
+        },
+        guestUser: {
+            _id: '580d9f45622d510b044fb6b0',
+            email: 'guest@gmail.com',
+            password: '12345678'
         }
     }
 };
