@@ -37,7 +37,7 @@ module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: roles.checkPermissions(router.metadata.namePlural, 'updateStatus', router.metadata),
+        checkPermissions: roles.checkPermissions(router.metadata.namePlural, 'updateStatus'),
         validate: getValidateFunction(schemaName),
         ensureStatusAllowed: ensureStatusAllowed(router.metadata),
         getExistingMetadata: crudMiddleware.getExistingMetadata,

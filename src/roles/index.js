@@ -42,9 +42,8 @@ function initialise(app, callback) {
     });
 }
 
-function checkRole(resource, permissions, metadata) {
+function checkRole(resource, permissions) {
     return function (req, res, next) {
-        console.verbose(metadata, 'Todo check ownership of the item as well as role if applicable');
         var userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
 
