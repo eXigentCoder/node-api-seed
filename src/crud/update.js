@@ -19,7 +19,7 @@ module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkRole: roles.checkRole(router.metadata.namePlural, 'update', router.metadata),
+        checkPermissions: roles.checkRole(router.metadata.namePlural, 'update', router.metadata),
         validate: getValidateFunction(schemaName),
         getExistingMetadata: crudMiddleware.getExistingMetadata,
         updateVersionInfo: versionInfo.update,

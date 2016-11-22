@@ -6,7 +6,7 @@ var uuid = require("node-uuid");
 module.exports = {
     name: 'item3',
     description: 'Really cool item, that is about to be deleted',
-    ownerId: ObjectId('580d9f45622d510b044fb6a8'),
+    owner: ObjectId('580d9f45622d510b044fb6a8'),
     versionInfo: {
         dateCreated: moment.utc().toDate(),
         versionTag: uuid.v4(),

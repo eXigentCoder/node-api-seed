@@ -4,9 +4,7 @@ var schema = require('./item.json');
 var router = require('../../../crud/router')({
     schemas: {
         core: schema,
-        output: _.merge({}, schema, require('./item-output.json')),
-        creation: buildInputSchema(),
-        update: buildInputSchema()
+        output: _.merge({}, schema, require('./item-output.json'))
     }
 });
 router.crudMiddleware = require('../../../mongo/crud')(router.metadata);
@@ -19,36 +17,16 @@ var filterOwnerMap = {
         'findByIdentifier': filterOwner
     }
 };
-var setOwnerMap = {
-    addBefore: {
-        'validate': setOwner
-    }
-};
+
 router.query(filterOwnerMap)
     .getById(filterOwnerMap)
-    .create(setOwnerMap)
-    .update(setOwnerMap)
+    .create()
+    .update()
     .deleteById(filterOwnerMap);
 
 
 function filterOwner(req, res, next) {
     req.query = req.query || {};
-    req.query.ownerId = req.process.user._id;
+    req.query.owner = req.process.user._id;
     return next();
-}
-
-function setOwner(req, res, next) {
-    req.body = req.body || {};
-    req.body.ownerId = req.process.user._id.toString();
-    return next();
-}
-
-function buildInputSchema() {
-    var input = _.cloneDeep(schema);
-    delete input.properties.ownerId;
-    var index = input.required.indexOf('ownerId');
-    if (index >= 0) {
-        input.required.splice(index, 1);
-    }
-    return input;
 }

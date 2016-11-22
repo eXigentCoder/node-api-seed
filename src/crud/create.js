@@ -9,6 +9,8 @@ var schemaName = 'creation';
 var config = require('nconf');
 var moment = require('moment');
 var roles = require('../roles');
+var boom = require('boom');
+var util = require('util');
 
 module.exports = function addCreateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
@@ -19,10 +21,11 @@ module.exports = function addCreateRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkRole: roles.checkRole(router.metadata.namePlural, 'create', router.metadata),
+        checkPermissions: roles.checkRole(router.metadata.namePlural, 'create', router.metadata),
         validate: getValidateFunction(schemaName),
         addVersionInfo: versionInfo.add,
         setStatusIfApplicable: setStatusIfApplicable(router.metadata),
+        setOwnerIfApplicable: setOwnerIfApplicable(router.metadata),
         create: crudMiddleware.create,
         filterOutput: output.filter,
         sendCreateResult: sendCreateResult(router.metadata)
@@ -91,6 +94,30 @@ function setStatusIfApplicable(metadata) {
             status: req.body.status,
             data: {},
             statusDate: req.body.statusDate
+        }];
+        return next();
+    };
+}
+
+function setOwnerIfApplicable(metadata) {
+    return function _setOwnerIfApplicable(req, res, next) {
+        var ownershipRules = metadata.schemas.core.ownership;
+        if (!ownershipRules || ownershipRules.doNotTrack) {
+            return next();
+        }
+        if (ownershipRules.field) {
+            req.body.owner = req.body[ownershipRules.field];
+            if (!req.body.owner) {
+                return next(boom.badRequest(util.format('Owner field "%s" was blank', ownershipRules.field)));
+            }
+        } else {
+            req.body.owner = req.user._id;
+        }
+        req.body.ownerDate = moment.utc().toDate();
+        req.body.ownerLog = [{
+            owner: req.body.owner,
+            data: {},
+            ownerDate: req.body.ownerDate
         }];
         return next();
     };

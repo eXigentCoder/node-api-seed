@@ -6,11 +6,6 @@
     "type": "object",
     "identifierName": "name",
     "properties": {
-        "ownerId": {
-            "type": "string",
-            "format": "mongoId",
-            "mongoId": true
-        },
         "name": {
             "type": "string",
             "minLength": 1,
@@ -24,8 +19,17 @@
     },
     "additionalProperties": true,
     "trackHistory": true,
+    "ownership": {
+        "permissions": [
+            "query",
+            "update",
+            "updateStatus",
+            "create",
+            "deleteById",
+            "getById"
+        ]
+    },
     "required": [
-        "ownerId",
         "name"
     ],
     "indexes": [

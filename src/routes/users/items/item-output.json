@@ -1,6 +1,6 @@
 {
     "properties": {
-        "ownerId": {
+        "owner": {
             "type": "string",
             "format": "mongoId",
             "mongoId": false
