@@ -73,6 +73,14 @@ describe('Items', function () {
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
+        it('Normal users can get by id', function (done) {
+            common.request.get('/users/:email/items/:name')
+                .use(common.urlTemplate({"name": "item1", "email": "580d9f45622d510b044fb6a8"}))
+                .set(common.authentication({user: config.get('tests').normalUser}))
+                .expect(common.success(200))
+                .expect(common.matchesSwaggerSchema)
+                .end(common.logResponse(done));
+        });
     });
 
     describe('Posts Through An Item To Be Created.', function () {
