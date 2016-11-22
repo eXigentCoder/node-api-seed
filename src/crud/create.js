@@ -21,7 +21,7 @@ module.exports = function addCreateRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: roles.checkRole(router.metadata.namePlural, 'create', router.metadata),
+        checkPermissions: roles.checkPermissions(router.metadata.namePlural, 'create', router.metadata),
         validate: getValidateFunction(schemaName),
         addVersionInfo: versionInfo.add,
         setStatusIfApplicable: setStatusIfApplicable(router.metadata),
@@ -92,7 +92,7 @@ function setStatusIfApplicable(metadata) {
         req.body.statusDate = moment.utc().toDate();
         req.body.statusLog = [{
             status: req.body.status,
-            data: {},
+            data: null,
             statusDate: req.body.statusDate
         }];
         return next();
@@ -116,7 +116,7 @@ function setOwnerIfApplicable(metadata) {
         req.body.ownerDate = moment.utc().toDate();
         req.body.ownerLog = [{
             owner: req.body.owner,
-            data: {},
+            data: null,
             ownerDate: req.body.ownerDate
         }];
         return next();

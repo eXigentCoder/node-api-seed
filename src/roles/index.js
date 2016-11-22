@@ -7,7 +7,7 @@ var util = require('util');
 
 module.exports = {
     initialise: initialise,
-    checkRole: checkRole,
+    checkPermissions: checkRole,
     nodeAcl: null
 };
 

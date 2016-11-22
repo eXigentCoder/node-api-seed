@@ -22,7 +22,7 @@ describe('Test access control lists', function () {
         }
 
         function checkAllowed(callback) {
-            var middleware = roles.checkRole(resource, permissions);
+            var middleware = roles.checkPermissions(resource, permissions);
             var req = {
                 user: {
                     _id: mongo.ObjectId(userId)

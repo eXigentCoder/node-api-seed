@@ -14,7 +14,7 @@ module.exports = function addDeleteByIdRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: roles.checkRole(router.metadata.namePlural, 'deleteById', router.metadata),
+        checkPermissions: roles.checkPermissions(router.metadata.namePlural, 'deleteById', router.metadata),
         findByIdentifier: crudMiddleware.findByIdentifier,
         deleteByIdentifier: crudMiddleware.deleteByIdentifier,
         writeHistoryItem: crudMiddleware.writeHistoryItem,
