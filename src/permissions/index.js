@@ -26,7 +26,7 @@ function initialise(app, callback) {
         {
             roles: ['member'],
             allows: [
-                {resources: ['items'], permissions: ['query', 'update', 'updateStatus', 'create', 'deleteById', 'getById']},
+                {resources: ['items'], permissions: ['query', 'create', 'getById']},
                 {resources: ['users'], permissions: ['query', 'getById']}
             ]
         }, {

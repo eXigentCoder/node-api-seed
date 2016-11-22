@@ -30,6 +30,15 @@ describe('Items', function () {
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
+        it('Normal users can search items', function (done) {
+            common.request.get('/users/:email/items')
+                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
+                .set(common.authentication({user: config.get('tests').normalUser}))
+                .expect(common.success(200))
+                .expect(common.matchesSwaggerSchema)
+                .expect(common.hasResults)
+                .end(common.logResponse(done));
+        });
     });
 
     describe('Get Item By Name.', function () {

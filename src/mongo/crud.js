@@ -48,7 +48,8 @@ function parseQueryWithDefaults(queryString) {
             mongoId: val => mongo.ObjectId(val)
         },
         castParams: {
-            _id: 'mongoId'
+            _id: 'mongoId',
+            owner: 'mongoId'
         }
     };
     var parsedQuery = aqp(queryString, agpOptions);
