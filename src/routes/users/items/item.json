@@ -21,11 +21,10 @@
     "trackHistory": true,
     "ownership": {
         "permissions": [
-            "query",
+            "create",
             "update",
             "updateStatus",
-            "deleteById",
-            "getById"
+            "deleteById"
         ]
     },
     "required": [

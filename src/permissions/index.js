@@ -4,6 +4,7 @@ var boom = require('boom');
 var mongo = require('../mongo');
 var nodeAcl = null;
 var util = require('util');
+var _ = require('lodash');
 
 module.exports = {
     initialise: initialise,
@@ -26,7 +27,7 @@ function initialise(app, callback) {
         {
             roles: ['member'],
             allows: [
-                {resources: ['items'], permissions: ['query', 'create', 'getById']},
+                {resources: ['items'], permissions: ['query', 'getById']},
                 {resources: ['users'], permissions: ['query', 'getById']}
             ]
         }, {
@@ -66,9 +67,12 @@ function checkRoleOnly(resource, permissions) {
 
 function checkRoleAndOwner(resource, permissions, ownership) {
     return function (req, res, next) {
+        if (!_.isArray(permissions)) {
+            permissions = [permissions];
+        }
         var userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
-        var message = util.format('User %s does not have all of the required permissions (%j) to access the "%s" resource.', userIdString, permissions, resource);
+        var message = util.format('User %s does not have all of the required permissions %j to access the "%s" resource.', userIdString, permissions, resource);
 
         function roleChecked(err, isAllowed) {
             if (err) {
@@ -85,7 +89,7 @@ function checkRoleAndOwner(resource, permissions, ownership) {
                     return next(boom.forbidden(message));
                 }
             });
-            if (userIdString !== req.body.owner) {
+            if (userIdString !== req.body.owner.toString()) {
                 return next(boom.forbidden(message));
             }
             return next();

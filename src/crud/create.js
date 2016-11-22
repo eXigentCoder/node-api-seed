@@ -21,11 +21,11 @@ module.exports = function addCreateRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: permissions.checkRoleOnly(router.metadata.namePlural, 'create'),
         validate: getValidateFunction(schemaName),
         addVersionInfo: versionInfo.add,
         setStatusIfApplicable: setStatusIfApplicable(router.metadata),
         setOwnerIfApplicable: setOwnerIfApplicable(router.metadata),
+        checkPermissions: permissions.checkRoleAndOwner(router.metadata.namePlural, 'create', router.metadata.schemas.core.ownership),
         create: crudMiddleware.create,
         filterOutput: output.filter,
         sendCreateResult: sendCreateResult(router.metadata)

@@ -119,6 +119,24 @@ describe('Items', function () {
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
+        it('Normal users can create their own items', function (done) {
+            common.request.post('/users/:email/items')
+                .use(common.urlTemplate({"email": config.get('tests').normalUser._id}))
+                .send(common.generateDataFromSchema(router.metadata.schemas.creation))
+                .set(common.authentication({user: config.get('tests').normalUser}))
+                .expect(common.success(201))
+                .expect(common.matchesSwaggerSchema)
+                .end(common.logResponse(done));
+        });
+        it('Normal users can not create items for others', function (done) {
+            common.request.post('/users/:email/items')
+                .use(common.urlTemplate({"email": config.get('tests').adminUser._id}))
+                .send(common.generateDataFromSchema(router.metadata.schemas.creation))
+                .set(common.authentication({user: config.get('tests').normalUser}))
+                .expect(common.error(403))
+                .expect(common.matchesSwaggerSchema)
+                .end(common.logResponse(done));
+        });
     });
 
     describe('Updates An Item By Name', function () {
@@ -153,6 +171,22 @@ describe('Items', function () {
                 .expect(common.error(403))
                 .end(common.logResponse(done));
         });
+        // it('Normal users can not update other peoples items', function (done) {
+        //     common.request.put('/users/:email/items/:name')
+        //         .use(common.urlTemplate({"name": "item1", "email": "580d9f45622d510b044fb6a8"}))
+        //         .set(common.authentication({user: config.get('tests').normalUser}))
+        //         .send(common.generateDataFromSchema(router.metadata.schemas.update))
+        //         .expect(common.error(403))
+        //         .end(common.logResponse(done));
+        // });
+        // it('Normal users can update their own items', function (done) {
+        //     common.request.put('/users/:email/items/:name')
+        //         .use(common.urlTemplate({"name": "item1", "email": "580d9f45622d510b044fb6a8"}))
+        //         .send(common.generateDataFromSchema(router.metadata.schemas.update))
+        //         .set(common.authentication({user: config.get('tests').adminUser}))
+        //         .expect(common.success(204))
+        //         .end(common.logResponse(done));
+        // });
     });
 
     describe('Removes An Item By Name.', function () {
