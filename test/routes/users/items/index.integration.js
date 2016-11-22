@@ -220,5 +220,22 @@ describe('Items', function () {
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
         });
+
+        it('Normal users can not delete other peoples items', function (done) {
+            common.request.delete('/users/:email/items/:name')
+                .use(common.urlTemplate({"name": "item5", "email": config.get('tests').adminUser._id}))
+                .set(common.authentication({user: config.get('tests').normalUser}))
+                .expect(common.error(403))
+                .expect(common.matchesSwaggerSchema)
+                .end(common.logResponse(done));
+        });
+        it('Normal users can delete their own items', function (done) {
+            common.request.put('/users/:email/items/:name')
+                .use(common.urlTemplate({"name": "item6", "email": config.get('tests').normalUser._id}))
+                .send(common.generateDataFromSchema(router.metadata.schemas.update))
+                .set(common.authentication({user: config.get('tests').normalUser}))
+                .expect(common.success(204))
+                .end(common.logResponse(done));
+        });
     });
 });

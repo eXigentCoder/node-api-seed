@@ -5,7 +5,7 @@ var mongo = require('../mongo');
 var nodeAcl = null;
 var util = require('util');
 var _ = require('lodash');
-
+const messageTemplate = 'User %s does not have all of the required permissions %j to perform this action on the "%s" resource.';
 module.exports = {
     initialise: initialise,
     checkRoleOnly: checkRoleOnly,
@@ -50,6 +50,9 @@ function initialise(app, callback) {
 
 function checkRoleOnly(resource, permissions) {
     return function (req, res, next) {
+        if (!_.isArray(permissions)) {
+            permissions = [permissions];
+        }
         var userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
 
@@ -60,7 +63,7 @@ function checkRoleOnly(resource, permissions) {
             if (isAllowed) {
                 return next();
             }
-            return next(boom.forbidden(util.format('User %s does not have all of the required permissions (%j) to access the "%s" resource.', userIdString, permissions, resource)));
+            return next(boom.forbidden(util.format(messageTemplate, userIdString, permissions, resource)));
         }
     };
 }
@@ -72,7 +75,7 @@ function checkRoleAndOwner(resource, permissions, ownership) {
         }
         var userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
-        var message = util.format('User %s does not have all of the required permissions %j to access the "%s" resource.', userIdString, permissions, resource);
+        const message = util.format(messageTemplate, userIdString, permissions, resource);
 
         function roleChecked(err, isAllowed) {
             if (err) {
@@ -99,9 +102,12 @@ function checkRoleAndOwner(resource, permissions, ownership) {
 
 function checkRoleAndOwnerToSetQuery(resource, permissions, ownership) {
     return function (req, res, next) {
+        if (!_.isArray(permissions)) {
+            permissions = [permissions];
+        }
         var userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
-        var message = util.format('User %s does not have all of the required permissions (%j) to access the "%s" resource.', userIdString, permissions, resource);
+        const message = util.format(messageTemplate, userIdString, permissions, resource);
 
         function roleChecked(err, isAllowed) {
             if (err) {
