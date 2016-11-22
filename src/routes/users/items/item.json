@@ -20,6 +20,7 @@
     "additionalProperties": true,
     "trackHistory": true,
     "ownership": {
+        "setOwnerExpression": "process.user._id",
         "permissions": [
             "create",
             "update",

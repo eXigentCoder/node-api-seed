@@ -11,6 +11,7 @@ var moment = require('moment');
 var permissions = require('../permissions');
 var boom = require('boom');
 var util = require('util');
+var _ = require('lodash');
 
 module.exports = function addCreateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
@@ -105,10 +106,10 @@ function setOwnerIfApplicable(metadata) {
         if (!ownership || ownership.doNotTrack) {
             return next();
         }
-        if (ownership.field) {
-            req.body.owner = req.body[ownership.field];
+        if (ownership.setOwnerExpression) {
+            req.body.owner = _.get(req, ownership.setOwnerExpression);
             if (!req.body.owner) {
-                return next(boom.badRequest(util.format('Owner field "%s" was blank', ownership.field)));
+                return next(boom.badRequest(util.format('Owner from expression "%s" was blank', ownership.setOwnerExpression)));
             }
         } else {
             req.body.owner = req.user._id;

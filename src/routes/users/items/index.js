@@ -1,7 +1,6 @@
 'use strict';
 var _ = require('lodash');
 var schema = require('./item.json');
-var moment = require('moment');
 var router = require('../../../crud/router')({
     schemas: {
         core: schema,
@@ -18,15 +17,10 @@ var filterOwnerMap = {
         'findByIdentifier': filterOwner
     }
 };
-var setOwnerFromPathMap = {
-    replace: {
-        'setOwnerIfApplicable': setOwnerFromPath
-    }
-};
 
 router.query(filterOwnerMap)
     .getById(filterOwnerMap)
-    .create(setOwnerFromPathMap)
+    .create()
     .update()
     .deleteById(filterOwnerMap);
 
@@ -34,16 +28,5 @@ router.query(filterOwnerMap)
 function filterOwner(req, res, next) {
     req.query = req.query || {};
     req.query.owner = req.process.user._id;
-    return next();
-}
-
-function setOwnerFromPath(req, res, next) {
-    req.body.owner = req.process.user._id;
-    req.body.ownerDate = moment.utc().toDate();
-    req.body.ownerLog = [{
-        owner: req.body.owner,
-        data: null,
-        ownerDate: req.body.ownerDate
-    }];
     return next();
 }
