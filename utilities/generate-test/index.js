@@ -121,7 +121,7 @@ function writeRoutesAsTest(data) {
             if (foundRoute.hasPathParameters) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.success(200))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".expect(common.hasResults)");
@@ -160,7 +160,7 @@ function writeRoutesAsTest(data) {
             if (foundRoute.hasPathParameters) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.success(200))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
@@ -191,7 +191,7 @@ function writeRoutesAsTest(data) {
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute, {fake: true})) + "))");
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.error(404))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
@@ -214,7 +214,7 @@ function writeRoutesAsTest(data) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.creation))");
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.success(201))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
@@ -249,7 +249,7 @@ function writeRoutesAsTest(data) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
             addLine(".send({})");
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.error(400))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
@@ -272,7 +272,7 @@ function writeRoutesAsTest(data) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.update))");
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.success(204))");
             addLine(".end(common.logResponse(done));");
             indent--;
@@ -305,7 +305,7 @@ function writeRoutesAsTest(data) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
             addLine(".send({})");
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.error(400))");
             addLine(".end(common.logResponse(done));");
             indent--;
@@ -327,7 +327,7 @@ function writeRoutesAsTest(data) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
             addLine(".send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))");
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.success(204))");
             addLine(".end(common.logResponse(done));");
             indent--;
@@ -360,7 +360,7 @@ function writeRoutesAsTest(data) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
             addLine(".send({})");
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.error(400))");
             addLine(".end(common.logResponse(done));");
             indent--;
@@ -381,7 +381,7 @@ function writeRoutesAsTest(data) {
             if (foundRoute.hasPathParameters) {
                 addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
             }
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.success(204))");
             addLine(".end(common.logResponse(done));");
             indent--;
@@ -411,7 +411,7 @@ function writeRoutesAsTest(data) {
             addLine("common.request.delete('" + foundRoute.fullPath + "')");
             indent++;
             addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute, {fake: true})) + "))");
-            addLine(".set(common.authentication())");
+            addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine(".expect(common.error(404))");
             addLine(".expect(common.matchesSwaggerSchema)");
             addLine(".end(common.logResponse(done));");
