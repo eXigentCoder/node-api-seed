@@ -5,7 +5,8 @@ var boom = require('boom');
 var _ = require('lodash');
 var util = require('util');
 var moment = require('moment');
-var metadataFields = ['versionInfo', 'passwordHash', 'status', 'statusDate', 'statusLog'];//fields that need to exist in the system but should not be directly settable via PUT
+//fields that need to exist in the system but should not be directly settable via PUT
+var metadataFields = ['versionInfo', 'passwordHash', 'status', 'statusDate', 'statusLog', 'owner', 'ownerDate', 'ownerLog'];
 
 module.exports = function (metadata) {
     return {

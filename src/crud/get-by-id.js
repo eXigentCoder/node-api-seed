@@ -14,7 +14,7 @@ module.exports = function addGetByIdRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: permissions.ensureHasPermissionsForResource(router.metadata.namePlural, 'getById'),
+        checkPermissions: permissions.checkRoleAndOwnerToSetQuery(router.metadata.namePlural, 'getById', router.metadata.schemas.core.ownership),
         findByIdentifier: crudMiddleware.findByIdentifier,
         setOutput: output.setFrom(router.metadata.name),
         ensureOutput: output.ensureExists({metadata: router.metadata}),

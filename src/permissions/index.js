@@ -7,7 +7,9 @@ var util = require('util');
 
 module.exports = {
     initialise: initialise,
-    ensureHasPermissionsForResource: checkRole,
+    checkRoleOnly: checkRoleOnly,
+    checkRoleAndOwner: checkRoleAndOwner,
+    checkRoleAndOwnerToSetQuery: checkRoleAndOwnerToSetQuery,
     nodeAcl: null
 };
 
@@ -42,7 +44,7 @@ function initialise(app, callback) {
     });
 }
 
-function checkRole(resource, permissions) {
+function checkRoleOnly(resource, permissions) {
     return function (req, res, next) {
         var userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
@@ -55,6 +57,63 @@ function checkRole(resource, permissions) {
                 return next();
             }
             return next(boom.forbidden(util.format('User %s does not have all of the required permissions (%j) to access the "%s" resource.', userIdString, permissions, resource)));
+        }
+    };
+}
+
+function checkRoleAndOwner(resource, permissions, ownership) {
+    return function (req, res, next) {
+        var userIdString = req.user._id.toString();
+        nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
+        var message = util.format('User %s does not have all of the required permissions (%j) to access the "%s" resource.', userIdString, permissions, resource);
+
+        function roleChecked(err, isAllowed) {
+            if (err) {
+                return next(err);
+            }
+            if (isAllowed) {
+                return next();
+            }
+            if (!ownership || ownership.doNotTrack || !ownership.permissions) {
+                return next(boom.forbidden(message));
+            }
+            permissions.forEach(function (permission) {
+                if (ownership.permissions.indexOf(permission) < 0) {
+                    return next(boom.forbidden(message));
+                }
+            });
+            if (userIdString !== req.body.owner) {
+                return next(boom.forbidden(message));
+            }
+            return next();
+        }
+    };
+}
+
+function checkRoleAndOwnerToSetQuery(resource, permissions, ownership) {
+    return function (req, res, next) {
+        var userIdString = req.user._id.toString();
+        nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
+        var message = util.format('User %s does not have all of the required permissions (%j) to access the "%s" resource.', userIdString, permissions, resource);
+
+        function roleChecked(err, isAllowed) {
+            if (err) {
+                return next(err);
+            }
+            if (isAllowed) {
+                return next();
+            }
+            if (!ownership || ownership.doNotTrack || !ownership.permissions) {
+                return next(boom.forbidden(message));
+            }
+            permissions.forEach(function (permission) {
+                if (ownership.permissions.indexOf(permission) < 0) {
+                    return next(boom.forbidden(message));
+                }
+            });
+            req.query = req.query || {};
+            req.query.owner = req.user._id;
+            return next();
         }
     };
 }

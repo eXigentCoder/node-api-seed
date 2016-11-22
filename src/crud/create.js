@@ -21,7 +21,7 @@ module.exports = function addCreateRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: permissions.ensureHasPermissionsForResource(router.metadata.namePlural, 'create'),
+        checkPermissions: permissions.checkRoleOnly(router.metadata.namePlural, 'create'),
         validate: getValidateFunction(schemaName),
         addVersionInfo: versionInfo.add,
         setStatusIfApplicable: setStatusIfApplicable(router.metadata),
@@ -101,14 +101,14 @@ function setStatusIfApplicable(metadata) {
 
 function setOwnerIfApplicable(metadata) {
     return function _setOwnerIfApplicable(req, res, next) {
-        var ownershipRules = metadata.schemas.core.ownership;
-        if (!ownershipRules || ownershipRules.doNotTrack) {
+        var ownership = metadata.schemas.core.ownership;
+        if (!ownership || ownership.doNotTrack) {
             return next();
         }
-        if (ownershipRules.field) {
-            req.body.owner = req.body[ownershipRules.field];
+        if (ownership.field) {
+            req.body.owner = req.body[ownership.field];
             if (!req.body.owner) {
-                return next(boom.badRequest(util.format('Owner field "%s" was blank', ownershipRules.field)));
+                return next(boom.badRequest(util.format('Owner field "%s" was blank', ownership.field)));
             }
         } else {
             req.body.owner = req.user._id;

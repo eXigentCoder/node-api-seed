@@ -13,7 +13,7 @@ module.exports = function addQueryRoute(router, crudMiddleware, maps) {
 
 function getSteps(router, crudMiddleware, maps) {
     var steps = {
-        checkPermissions: permissions.ensureHasPermissionsForResource(router.metadata.namePlural, 'query'),
+        checkPermissions: permissions.checkRoleAndOwnerToSetQuery(router.metadata.namePlural, 'query', router.metadata.schemas.core.ownership),
         query: crudMiddleware.query,
         setOutput: output.setFrom(router.metadata.namePlural),
         ensureOutput: output.ensureExists({default: []}),
