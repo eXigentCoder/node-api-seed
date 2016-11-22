@@ -7,8 +7,8 @@ var moment = require('moment');
 var uuid = require("node-uuid");
 var permissions = require('../../../src/permissions');
 module.exports = function (callback) {
-    var defaultUser = config.get('tests').defaultUser;
-    bcrypt.hash(defaultUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
+    var adminUser = config.get('tests').adminUser;
+    bcrypt.hash(adminUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
 
     function hashCalculated(hashErr, hash) {
         if (hashErr) {
@@ -16,8 +16,8 @@ module.exports = function (callback) {
         }
         var now = moment.utc().toDate();
         var user = {
-            _id: ObjectId(defaultUser._id),
-            email: defaultUser.email,
+            _id: ObjectId(adminUser._id),
+            email: adminUser.email,
             firstName: 'Ryan',
             surname: 'Kotzen',
             passwordHash: hash,

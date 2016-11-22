@@ -5,9 +5,9 @@ var uuid = require("node-uuid");
 var config = require('nconf');
 
 module.exports = function (callback) {
-    var defaultUser = config.get('tests').defaultUser;
+    var adminUser = config.get('tests').adminUser;
     var now = moment.utc().toDate();
-    var userId = ObjectId(defaultUser._id);
+    var userId = ObjectId(adminUser._id);
     var item = {
         name: 'item3',
         description: 'Really cool item, that is about to be deleted',

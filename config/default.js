@@ -218,9 +218,14 @@ module.exports = {
         }
     },
     tests: {
-        defaultUser: {
+        adminUser: {
             _id: '580d9f45622d510b044fb6a8',
-            email: 'default@gmail.com',
+            email: 'admin@gmail.com',
+            password: '12345678'
+        },
+        normalUser: {
+            _id: '580d9f45622d510b044fb6a9',
+            email: 'normal@gmail.com',
             password: '12345678'
         }
     }

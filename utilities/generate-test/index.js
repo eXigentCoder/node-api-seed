@@ -17,7 +17,7 @@ var uuid = require('node-uuid');
     //     outputPath: './test/routes/users/index.integration.js',
     //     routePrefix: '/users',
     //     pathParameters: {
-    //         email: config.get('tests').defaultUser._id,
+    //         email: config.get('tests').adminUser._id,
     //         newStatusName: 'testStatus'
     //     }
     // };
@@ -27,7 +27,7 @@ var uuid = require('node-uuid');
         outputPath: './test/routes/users/items/index.integration.js',
         routePrefix: '/users/:email/items',
         pathParameters: {
-            email: config.get('tests').defaultUser._id,
+            email: config.get('tests').adminUser._id,
             name: 'item1'
         }
     };
