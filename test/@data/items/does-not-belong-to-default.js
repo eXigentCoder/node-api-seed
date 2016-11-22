@@ -3,15 +3,23 @@ var ObjectId = require('mongodb').ObjectId;
 var moment = require('moment');
 var uuid = require("node-uuid");
 
+var now = moment.utc().toDate();
+var userId = ObjectId('580d9f45622d510b044fb6a8');
 module.exports = {
     name: 'item2',
     description: 'Really cool item, that does not belong to default.',
-    owner: ObjectId('580d9f45622d510b044fb6a8'),
+    owner: userId,
+    ownerDate: now,
+    ownerLog: [{
+        owner: userId,
+        data: null,
+        ownerDate: now
+    }],
     versionInfo: {
-        dateCreated: moment.utc().toDate(),
+        dateCreated: now,
         versionTag: uuid.v4(),
-        dateUpdated: moment.utc().toDate(),
-        createdBy: ObjectId("580d9f45622d510b044fb6a8"),
-        lastUpdatedBy: ObjectId("580d9f45622d510b044fb6a8")
+        dateUpdated: now,
+        createdBy: userId,
+        lastUpdatedBy: userId
     }
 };
