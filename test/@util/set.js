@@ -1,5 +1,4 @@
 'use strict';
-var _ = require('lodash');
 var url = require('url');
 var authentication = require('../../src/authentication');
 

@@ -25,7 +25,7 @@ describe('Users', function () {
     describe('Get User By Email.', function () {
         it('Happy case', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({email: config.get('tests').adminUser._id}))
                 .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(200))
                 .expect(common.matchesSwaggerSchema)
@@ -33,7 +33,7 @@ describe('Users', function () {
         });
         it('No Authentication', function (done) {
             common.request.get('/users/:email')
-                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({email: config.get('tests').adminUser._id}))
                 .expect(common.error(401))
                 .expect(common.matchesSwaggerSchema)
                 .end(common.logResponse(done));
@@ -77,7 +77,7 @@ describe('Users', function () {
     describe('Updates a User By Email', function () {
         it('Happy case', function (done) {
             common.request.put('/users/:email')
-                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({email: config.get('tests').adminUser._id}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.update))
                 .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(204))
@@ -85,14 +85,14 @@ describe('Users', function () {
         });
         it('No Authentication', function (done) {
             common.request.put('/users/:email')
-                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({email: config.get('tests').adminUser._id}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.update))
                 .expect(common.error(401))
                 .end(common.logResponse(done));
         });
         it('No Data', function (done) {
             common.request.put('/users/:email')
-                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8"}))
+                .use(common.urlTemplate({email: config.get('tests').adminUser._id}))
                 .send({})
                 .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(400))
@@ -103,7 +103,7 @@ describe('Users', function () {
     describe('Updates the status of a User By Email', function () {
         it('Happy case', function (done) {
             common.request.put('/users/:email/:newStatusName')
-                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8", "newStatusName": "testStatus"}))
+                .use(common.urlTemplate({email: config.get('tests').adminUser._id, "newStatusName": "testStatus"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))
                 .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.success(204))
@@ -111,14 +111,14 @@ describe('Users', function () {
         });
         it('No Authentication', function (done) {
             common.request.put('/users/:email/:newStatusName')
-                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8", "newStatusName": "testStatus"}))
+                .use(common.urlTemplate({email: config.get('tests').adminUser._id, "newStatusName": "testStatus"}))
                 .send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))
                 .expect(common.error(401))
                 .end(common.logResponse(done));
         });
         it('No Data', function (done) {
             common.request.put('/users/:email/:newStatusName')
-                .use(common.urlTemplate({"email": "580d9f45622d510b044fb6a8", "newStatusName": "testStatus"}))
+                .use(common.urlTemplate({email: config.get('tests').adminUser._id, "newStatusName": "testStatus"}))
                 .send({})
                 .set(common.authentication({user: config.get('tests').adminUser}))
                 .expect(common.error(400))
