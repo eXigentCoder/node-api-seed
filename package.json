@@ -17,6 +17,7 @@
     "audit": "node_modules/.bin/nsp check",
     "secure": "node_modules/.bin/snyk wizard",
     "setDeploymentDate": "node ./utilities/set-deployment-date/index.js",
+    "ensureNoWildcards": "node ./utilities/check-dependencies-for-wildcards/index.js",
     "snyk-protect": "snyk protect"
   },
   "repository": {
@@ -80,7 +81,7 @@
     "glob": "7.1.1",
     "istanbul": "0.4.5",
     "mocha": "3.1.2",
-    "node-mocks-http": "^1.5.4",
+    "node-mocks-http": "1.5.4",
     "nodemon": "1.11.0",
     "npm-check": "5.4.0",
     "nsp": "2.6.2",
