@@ -54,9 +54,6 @@ function parseQueryWithDefaults(queryString, schema) {
     };
     setCastParamsFromSchema(agpOptions, schema.properties);
     var parsedQuery = aqp(queryString, agpOptions);
-    if (_.isObject(queryString)) {
-        coerceTypes(queryString, parsedQuery.filter);
-    }
     parsedQuery.projection = parsedQuery.projection || {};
     parsedQuery.skip = parsedQuery.skip || 0;
     parsedQuery.limit = parsedQuery.limit || 50;
@@ -79,17 +76,6 @@ function setCastParamsFromSchema(agpOptions, properties) {
         agpOptions.castParams[propertyName] = propertyValue.type;
     });
     return agpOptions;
-}
-
-function coerceTypes(inputObject, filter) {
-    Object.keys(filter).forEach(function (key) {
-        if (!inputObject[key]) {
-            return;
-        }
-        if (inputObject[key] instanceof mongo.ObjectId) {
-            filter[key] = mongo.ObjectId(filter[key]);
-        }
-    });
 }
 
 function findByIdentifier(metadata) {
