@@ -32,7 +32,7 @@ function description(metadata) {
         tags: [metadata.tag.name],
         parameters: [
             {
-                name: metadata.identifierName.toLowerCase(),
+                name: metadata.identifierName,
                 description: "The field to uniquely identify this " + metadata.title.toLowerCase() + ".",
                 required: true,
                 in: "path",
