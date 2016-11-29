@@ -1,6 +1,8 @@
 'use strict';
 var _ = require('lodash');
 var config = require('nconf');
+var util = require('util');
+var maxDepth = 10;
 module.exports = function formatArgs(args) {
     var argumentArray = Array.prototype.slice.call(args);
     argumentArray = argumentArray.map(mapArg);
@@ -9,29 +11,23 @@ module.exports = function formatArgs(args) {
 
 module.exports.mapArg = mapArg;
 function mapArg(arg) {
-    if (_.isObject(arg)) {
-        sanitiseObject(arg);
-        return arg;
-    }
+    deepReplace(arg, 0, arg);
     return arg;
 }
 
-function sanitiseObject(object) {
-    deepReplace(object);
-}
-
-function deepReplace(object) {
+function deepReplace(object, counter) {
+    counter = counter || 0;
+    counter++;
     if (!_.isObject(object)) {
         return;
     }
-    if (_.isArray(object)) {
-        object.forEach(function (item) {
-            deepReplace(item);
-        });
+    if (_.isFunction(object)) {
         return;
     }
     var replacements = config.get('logging').objectReplacements;
-    _.forIn(object, function (value, key) {
+    _.forOwn(object, replaceSensitiveDataForObjectProperty);
+
+    function replaceSensitiveDataForObjectProperty(value, key) {
         replacements.forEach(function (replacement) {
             if (key.toLowerCase() !== replacement.key.toLowerCase()) {
                 return;
@@ -43,7 +39,21 @@ function deepReplace(object) {
             object[key] = replacement.value;
         });
         if (_.isObject(value)) {
-            deepReplace(value);
+            if (counter >= maxDepth) {
+                object[key] = 'Object too deeply nested';
+                return;
+            }
+            if (_.isArray(value)) {
+                if (counter + 1 >= maxDepth) {
+                    object[key] = '[Array Object too deeply nested]';
+                    return;
+                }
+                value.forEach(function (item) {
+                    deepReplace(item, counter);
+                });
+                return;
+            }
+            deepReplace(value, counter);
         }
-    });
+    }
 }

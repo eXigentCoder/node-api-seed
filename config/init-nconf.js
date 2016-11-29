@@ -15,5 +15,5 @@ var envFilePath = './' + environment + '.js';
 var environmentConfig = require(envFilePath);
 _.merge(envDefault, defaultConfig, environmentConfig);
 nconf.defaults(envDefault);
-util.inspect.defaultOptions.showHidden = true;
+util.inspect.defaultOptions.showHidden = false;
 util.inspect.defaultOptions.depth = 10;
