@@ -50,6 +50,20 @@ function findRoutes(data) {
     writeRoutesAsTest(data);
 }
 
+function ensureAllFoldersExist(filePath) {
+    var folderPath = path.dirname(filePath);
+    var folders = folderPath.split('/');//.filter((part)=> part !== '.');
+    var pathToCheck = '';
+    folders.forEach(function (folder) {
+        pathToCheck = path.join(pathToCheck, folder);
+        //eslint-disable-next-line no-sync
+        if (!fs.existsSync(pathToCheck)) {
+            //eslint-disable-next-line no-sync
+            fs.mkdirSync(pathToCheck);
+        }
+    });
+}
+
 function writeRoutesAsTest(data) {
     var outputContent = "";
     var indent = 0;
@@ -72,6 +86,8 @@ function writeRoutesAsTest(data) {
     });
     indent--;
     addLine("});");
+    ensureAllFoldersExist(data.outputPath);
+
     //eslint-disable-next-line no-sync
     fs.writeFileSync(data.outputPath, outputContent, fileOptions);
 
