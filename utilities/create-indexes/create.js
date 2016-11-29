@@ -1,7 +1,9 @@
 'use strict';
 require('../../config/init-nconf');
 var async = require("async");
-var user = require('../../src/routes/users/user.json');
+var schemas = [
+    require('../../src/routes/users/user.json'),
+];
 var mongo = require('../../src/mongo');
 var pluralize = require('pluralize');
 var _ = require('lodash');
@@ -23,7 +25,6 @@ function connectToDb(callback) {
 }
 
 function processAllItems(callback) {
-    var schemas = [user];
     var itemsToIndex = [];
     schemas.forEach(function (item) {
         itemsToIndex.push(item);
