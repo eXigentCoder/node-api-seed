@@ -23,7 +23,7 @@ module.exports = function (metadata) {
 
 function query(metadata) {
     return function (req, res, next) {
-        var parsedQuery = parseQueryWithDefaults(req.query);
+        var parsedQuery = parseQueryWithDefaults(req.query, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .find(parsedQuery.filter)
             .skip(parsedQuery.skip)
@@ -42,7 +42,7 @@ function query(metadata) {
     };
 }
 
-function parseQueryWithDefaults(queryString) {
+function parseQueryWithDefaults(queryString, schema) {
     var agpOptions = {
         casters: {
             mongoId: val => mongo.ObjectId(val)
@@ -52,6 +52,7 @@ function parseQueryWithDefaults(queryString) {
             owner: 'mongoId'
         }
     };
+    setCastParamsFromSchema(agpOptions, schema.properties);
     var parsedQuery = aqp(queryString, agpOptions);
     if (_.isObject(queryString)) {
         coerceTypes(queryString, parsedQuery.filter);
@@ -61,6 +62,23 @@ function parseQueryWithDefaults(queryString) {
     parsedQuery.limit = parsedQuery.limit || 50;
     parsedQuery.sort = parsedQuery.sort || {};
     return parsedQuery;
+}
+
+function setCastParamsFromSchema(agpOptions, properties) {
+    Object.keys(properties).forEach(function (propertyName) {
+        var propertyValue = properties[propertyName];
+        if (!propertyValue.type) {
+            return;
+        }
+        if (propertyValue.type.toLowerCase() === 'object') {
+            return; //todo nested properties + queries, how do they work?
+        }
+        if (agpOptions.castParams[propertyName]) {
+            return; //don't override
+        }
+        agpOptions.castParams[propertyName] = propertyValue.type;
+    });
+    return agpOptions;
 }
 
 function coerceTypes(inputObject, filter) {
@@ -82,7 +100,7 @@ function findByIdentifier(metadata) {
         }
         var mongoQuery = getIdentifierQuery(identifier, metadata);
         mongoQuery = _.merge({}, req.query, mongoQuery);
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
+        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .findOne(parsedQuery.filter, dataRetrieved);
 
@@ -140,7 +158,7 @@ function updateStatus(metadata) {
         var options = {
             returnOriginal: true
         };
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
+        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .findOneAndUpdate(parsedQuery.filter, updateStatement, options, updateComplete);
         function updateComplete(err, result) {
@@ -164,7 +182,7 @@ function update(metadata) {
         var options = {
             returnOriginal: true
         };
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
+        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .findOneAndReplace(parsedQuery.filter, replacement, options, updateComplete);
         function updateComplete(err, result) {
@@ -201,7 +219,7 @@ function getExistingMetadata(metadata) {
         metadataFields.forEach(function (field) {
             options.fields[field] = 1;
         });
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
+        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .findOne(parsedQuery.filter, options, dataRetrieved);
         function dataRetrieved(err, document) {
@@ -231,7 +249,7 @@ function deleteByIdentifier(metadata) {
             return next(new Error("Object has no identifier"));
         }
         var mongoQuery = getIdentifierQuery(identifier, metadata);
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
+        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .deleteOne(parsedQuery.filter, documentDeleted);
 
