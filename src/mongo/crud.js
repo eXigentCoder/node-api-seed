@@ -90,9 +90,6 @@ function findByIdentifier(metadata) {
             if (err) {
                 return next(err);
             }
-            if (!document) {
-                return next(boom.notFound(util.format('A %s matching query %j was not found.', metadata.name, mongoQuery)));
-            }
             req.process[metadata.name] = document;
             return next();
         }
