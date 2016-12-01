@@ -40,7 +40,11 @@ function skip(morganConfig) {
         }
         morganConfig.skip.headers = morganConfig.skip.headers || [];
         var shouldSkip = morganConfig.skip.headers.some(function (ignoredHeader) {
-            return req.get(ignoredHeader.key).toLowerCase().indexOf(ignoredHeader.value.toLowerCase()) >= 0;
+            var header = req.get(ignoredHeader.key);
+            if (!header) {
+                return false;
+            }
+            return header.toLowerCase().indexOf(ignoredHeader.value.toLowerCase()) >= 0;
         });
         if (shouldSkip) {
             return true;

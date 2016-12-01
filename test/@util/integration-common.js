@@ -49,14 +49,17 @@ module.exports = {
     app: null,
     logResponse: function (done) {
         return function (err, res) {
+            if (err) {
+                return done(err);
+            }
             console.verbose({
                 statusCode: res.statusCode,
                 body: res.body
             });
-            return done(err);
+            return done();
         };
     },
-    generateDataFromSchema : generateDataFromSchema
+    generateDataFromSchema: generateDataFromSchema
 };
 
 Object.keys(expect).forEach(function (key) {
