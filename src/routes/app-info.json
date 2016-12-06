@@ -22,6 +22,10 @@
             "type": "string",
             "description": "The environment under which the application is running. Determins which settings the app will use."
         },
+        "uptime": {
+            "type": "number",
+            "description": "How long this instance has been online for"
+        },
         "swaggerUiUrl": {
             "type": "string",
             "format": "uri",

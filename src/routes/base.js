@@ -23,6 +23,7 @@ router.get('/', function (req, res) {
         version: packageJson.version,
         deploymentDate: packageJson.deploymentDate,
         environment: config.get('NODE_ENV'),
+        uptime: process.uptime(),
         swaggerUiUrl: fullUrl + 'apidocs'
     };
     if (config.get('swagger').hideUi) {
@@ -41,11 +42,12 @@ router.get('/', function (req, res) {
             model: "appInfo",
             description: "Returns the information about the application",
             examples: {
-                "appName": "node-api-seed",
-                "version": "0.0.0",
-                "deploymentDate": "2016-10-22T14:48:26.240Z",
-                "environment": "development",
-                "swaggerUiUrl": "http://localhost:10001/apidocs"
+                appName: "node-api-seed",
+                version: "0.0.1",
+                deploymentDate: "2016-10-22T14:48:26.240Z",
+                environment: "development",
+                uptime: "12.891",
+                swaggerUiUrl: "http://localhost:10001/apidocs"
             }
         }
     }
