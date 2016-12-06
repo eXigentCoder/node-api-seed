@@ -67,6 +67,14 @@ function setCastParamsFromSchema(agpOptions, properties) {
         if (!propertyValue.type) {
             return;
         }
+        if (_.isArray(propertyValue.type)) {
+            var types = propertyValue.type.filter((type)=> type.toLowerCase() !== 'null');
+            if (types.length === 1) {
+                agpOptions.castParams[propertyName] = types[0];
+                return;
+            }
+            return; //todo if can be a string or int, which do we cast too?
+        }
         if (propertyValue.type.toLowerCase() === 'object') {
             return; //todo nested properties + queries, how do they work?
         }
