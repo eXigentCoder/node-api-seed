@@ -5,16 +5,24 @@ var schemaKeys = Object.keys(require('swagger-spec-express/lib/schemas/schema.js
 schemaKeys.push('definitions');
 
 module.exports = function addModel(schema) {
-    var modelSchema = _.cloneDeep(_.pick(schema, schemaKeys));
-    filterProperties(modelSchema.properties);
-    if (modelSchema.definitions) {
-        Object.keys(modelSchema.definitions).forEach(function (definitionName) {
-            var definitionValue = modelSchema.definitions[definitionName];
-            filterProperties(definitionValue.properties);
+    var schemaCopy = _.cloneDeep(schema);
+    schemaCopy = cleanSchema(schemaCopy);
+    swagger.common.addModel(schemaCopy, {validation: 'warn'});
+};
+
+function cleanSchema(schema) {
+    schema = _.pick(schema, schemaKeys);
+    if (schema.properties) {
+        filterProperties(schema.properties);
+    }
+    if (schema.definitions) {
+        Object.keys(schema.definitions).forEach(function (definitionName) {
+            var definitionSchema = schema.definitions[definitionName];
+            schema.definitions[definitionName] = cleanSchema(definitionSchema);
         });
     }
-    swagger.common.addModel(modelSchema, {validation: 'warn'});
-};
+    return schema;
+}
 
 function filterProperties(properties) {
     Object.keys(properties).forEach(function (propertyName) {
@@ -26,6 +34,19 @@ function filterProperties(properties) {
             if (key.toLowerCase() === 'properties') {
                 filterProperties(propertyValue.properties);
             }
+            if (key.toLowerCase() === 'items') {
+                filterItems(propertyValue.items);
+            }
         });
     });
+}
+
+function filterItems(items) {
+    if (_.isArray(items)) {
+        items.forEach(function (item) {
+            cleanSchema(item);
+        });
+        return;
+    }
+    cleanSchema(items);
 }

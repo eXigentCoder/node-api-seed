@@ -70,6 +70,7 @@ function writeRoutesAsTest(data) {
     addLine("'use strict';");
     addLine("var common = require('" + relativePath(data.outputPath, './test/@util/integration-common.js') + "');");
     addLine("var router = require('" + relativePath(data.outputPath, data.routerPath) + "');");
+    addLine("var config = require('nconf');");
     addLine();
     addLine("describe('" + data.router.metadata.titlePlural + "', function () {");
     indent++;
