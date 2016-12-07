@@ -15,10 +15,10 @@ function ensureNotCoreId(schema, coreSchema, operation) {
     if (schema.id !== coreSchema.id) {
         return;
     }
-    if (_.endsWith(schema, '#')) {
+    if (_.endsWith(schema, '/')) {
         schema.id += operation;
     } else {
-        schema.id += "#" + operation;
+        schema.id += "/" + operation;
     }
 }
 
