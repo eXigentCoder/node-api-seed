@@ -238,14 +238,12 @@ function getExistingMetadata(metadata) {
 function deleteByIdentifier(metadata) {
     return function (req, res, next) {
         req.process.originalItem = req.process[metadata.name];
-        var identifier = req.params[metadata.identifierName];
-        if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+        if (!req.process.originalItem) {
+            return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, req.params[metadata.identifierName])));
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
-        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
+        var mongoQuery = {_id: req.process.originalItem._id};
         mongo.db.collection(metadata.collectionName)
-            .deleteOne(parsedQuery.filter, documentDeleted);
+            .deleteOne(mongoQuery, documentDeleted);
 
         function documentDeleted(err, result) {
             if (err) {
