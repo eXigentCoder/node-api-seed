@@ -17,6 +17,7 @@ module.exports = function initialiseSwagger(app, callback) {
     catch (err) {
         return callback(err, app);
     }
+    console.log("Swagger initialised");
     return callback(null, app);
 };
 

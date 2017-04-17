@@ -15,6 +15,7 @@ module.exports = function generateSwaggerJson(app, callback) {
     if (swaggerConfig.writeFile) {
         return writeSwaggerFileToDisk(app, callback);
     }
+    console.log("Swagger JSON generated");
     return callback(null, app);
 };
 

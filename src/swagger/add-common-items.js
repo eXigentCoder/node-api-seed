@@ -104,6 +104,10 @@ module.exports = function (app, callback) {
             $ref: "#/definitions/errorResponse"
         }
     });
+    swagger.common.addResponse({
+        "name": "204",
+        "description": "The server successfully processed the request, but is not returning any content."
+    });
     const correlationIdOptions = config.get('logging').correlationId;
     swagger.common.addResponseHeader({
         name: correlationIdOptions.resHeader,
@@ -149,6 +153,6 @@ module.exports = function (app, callback) {
         required: false,
         type: "string"
     });
-
+    console.log("Added common swagger items");
     return callback(null, app);
 };
