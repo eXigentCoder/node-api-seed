@@ -9,8 +9,7 @@ const _ = require('lodash');
 const boom = require('boom');
 const router = require('../../crud/router')({
     schemas: {
-        core: schema,
-        creation: _.merge({}, schema, require('./user-creation.json'))
+        core: schema
     }
 });
 router.crudMiddleware = require('../../mongo/crud')(router.metadata);
