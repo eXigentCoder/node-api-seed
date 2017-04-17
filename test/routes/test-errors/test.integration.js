@@ -1,7 +1,7 @@
 'use strict';
-var common = require('../../@util/integration-common');
-var uncaughtErrorMessage = require('../../../src/routes/test-errors')._uncaughtErrorMessage;
-var config = require('nconf');
+const common = require('../../@util/integration-common');
+const uncaughtErrorMessage = require('../../../src/routes/test-errors')._uncaughtErrorMessage;
+const config = require('nconf');
 
 describe('Test errors', function () {
     this.timeout(common.defaultTimeout);
@@ -18,7 +18,7 @@ describe('Test errors', function () {
             .end(done);
     });
     it('process', function (done) {
-        var listners = process.listeners('uncaughtException');
+        const listners = process.listeners('uncaughtException');
         process.removeAllListeners(["uncaughtException"]);
         process.once("uncaughtException", function (error) {
             listners.forEach(function (listner) {

@@ -1,11 +1,11 @@
 'use strict';
-var morgan = require('morgan');
-var config = require('nconf');
-var util = require('util');
-var _ = require('lodash');
+const morgan = require('morgan');
+const config = require('nconf');
+const util = require('util');
+const _ = require('lodash');
 
 module.exports = function configureMorgan(app) {
-    var morganConfig = config.get('logging').morgan;
+    const morganConfig = config.get('logging').morgan;
     if (morganConfig.disabled) {
         return;
     }
@@ -39,8 +39,8 @@ function skip(morganConfig) {
             return;
         }
         morganConfig.skip.headers = morganConfig.skip.headers || [];
-        var shouldSkip = morganConfig.skip.headers.some(function (ignoredHeader) {
-            var header = req.get(ignoredHeader.key);
+        let shouldSkip = morganConfig.skip.headers.some(function (ignoredHeader) {
+            let header = req.get(ignoredHeader.key);
             if (!header) {
                 return false;
             }

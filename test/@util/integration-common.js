@@ -1,13 +1,13 @@
 'use strict';
 require('./init.js');
-var createApp = require('../../src/app.js');
-var async = require('async');
-var request = require('supertest');
-var expect = require('./expect');
-var set = require('./set');
-var dropAndRecreate = require('../@data/drop-and-recreate');
-var initialised = false;
-var generateDataFromSchema = require('./generate-data-from-schema');
+const createApp = require('../../src/app.js');
+const async = require('async');
+const request = require('supertest');
+const expect = require('./expect');
+const set = require('./set');
+const dropAndRecreate = require('../@data/drop-and-recreate');
+let initialised = false;
+const generateDataFromSchema = require('./generate-data-from-schema');
 before(function (done) {
     if (initialised) {
         return process.nextTick(done);
@@ -32,7 +32,7 @@ before(function (done) {
 });
 
 function createDataObject(app, callback) {
-    var data = {
+    const data = {
         app: app
     };
     return callback(null, data);

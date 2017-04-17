@@ -1,14 +1,14 @@
 'use strict';
-var output = require('../output');
-var applyMaps = require('./shared/apply-maps');
-var ensureSchemaSet = require('./../metadata/ensure-schema-set');
-var getValidateFunction = require('./shared/get-validate-function');
-var addModel = require('../swagger/add-model');
-var _ = require('lodash');
-var schemaName = 'update';
-var versionInfo = require('../version-info');
-var config = require('nconf');
-var permissions = require('../permissions');
+const output = require('../output');
+const applyMaps = require('./shared/apply-maps');
+const ensureSchemaSet = require('./../metadata/ensure-schema-set');
+const getValidateFunction = require('./shared/get-validate-function');
+const addModel = require('../swagger/add-model');
+const _ = require('lodash');
+const schemaName = 'update';
+const versionInfo = require('../version-info');
+const config = require('nconf');
+const permissions = require('../permissions');
 
 module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
@@ -18,7 +18,7 @@ module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
 };
 
 function getSteps(router, crudMiddleware, maps) {
-    var steps = {
+    const steps = {
         validate: getValidateFunction(schemaName),
         getExistingMetadata: crudMiddleware.getExistingMetadata,
         checkPermissions: permissions.checkRoleAndOwner(router.metadata.namePlural, 'update', router.metadata.schemas.core.ownership),
@@ -32,7 +32,7 @@ function getSteps(router, crudMiddleware, maps) {
 
 function description(metadata) {
     addModel(metadata.schemas.output);
-    var correlationIdOptions = config.get('logging').correlationId;
+    const correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
         summary: "Updates " + metadata.aOrAn + " " + metadata.title + " By " + _.startCase(metadata.identifierName),

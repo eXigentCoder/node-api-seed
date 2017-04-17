@@ -1,6 +1,6 @@
 'use strict';
-var _ = require('lodash');
-var validator = require('../validate/validator');
+const _ = require('lodash');
+const validator = require('../validate/validator');
 
 module.exports = function ensureSchemaSet(metadata, operation, direction) {
     if (!metadata.schemas[operation]) {

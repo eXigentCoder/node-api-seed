@@ -1,14 +1,14 @@
 'use strict';
-var ObjectId = require('mongodb').ObjectId;
-var moment = require('moment');
-var uuid = require("node-uuid");
-var config = require('nconf');
+const ObjectId = require('mongodb').ObjectId;
+const moment = require('moment');
+const uuid = require("node-uuid");
+const config = require('nconf');
 
 module.exports = function (callback) {
-    var normalUser = config.get('tests').normalUser;
-    var now = moment.utc().toDate();
-    var userId = ObjectId(normalUser._id);
-    var item = {
+    const normalUser = config.get('tests').normalUser;
+    const now = moment.utc().toDate();
+    const userId = ObjectId(normalUser._id);
+    const item = {
         name: 'item6',
         description: 'Really cool item belonging to default.',
         owner: userId,

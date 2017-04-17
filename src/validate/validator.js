@@ -1,9 +1,9 @@
 'use strict';
-var _ = require('lodash');
-var jsonSchemaFilter = require('json-schema-filter');
-var customFormats = require('./custom-formats');
-var Ajv = require('ajv');
-var ajv = new Ajv({
+const _ = require('lodash');
+const jsonSchemaFilter = require('json-schema-filter');
+const customFormats = require('./custom-formats');
+const Ajv = require('ajv');
+const ajv = new Ajv({
     removeAdditional: 'failing',
     useDefaults: true,
     coerceTypes: true,
@@ -44,11 +44,11 @@ function addSchema(schema, key) {
     if (!_.isObject(schema)) {
         throw new Error("Schema must be an object");
     }
-    var schemaIdentifier = key || schema.id;
+    let schemaIdentifier = key || schema.id;
     if (!schemaIdentifier) {
         throw new Error("No key was provided and no id was set");
     }
-    var existingSchema = ajv.getSchema(schemaIdentifier);
+    const existingSchema = ajv.getSchema(schemaIdentifier);
     if (existingSchema) {
         console.warn("Already added schema with key " + schemaIdentifier);
         return;
@@ -78,9 +78,9 @@ function removeSchema(schemaKeyRef) {
  * @see {@link getErrorMessage}
  */
 function ensureValid(schemaKeyRef, data) {
-    var result = validate(schemaKeyRef, data);
+    const result = validate(schemaKeyRef, data);
     if (!result.valid) {
-        var error = new Error(result.message);
+        const error = new Error(result.message);
         error.errors = result.errors;
         throw error;
     }
@@ -93,7 +93,7 @@ function ensureValid(schemaKeyRef, data) {
  * @see Ajv.ajv.errorsText
  */
 function getErrorMessage(errors) {
-    var message = ajv.errorsText(errors);
+    let message = ajv.errorsText(errors);
     if (message.indexOf('should NOT have additional properties') < 0) {
         return message;
     }
@@ -119,12 +119,12 @@ function validate(schemaKeyRef, data) {
         throw new Error("schemaKeyRef cannot be an array");
     }
     if (_.isObject(schemaKeyRef) && schemaKeyRef.id) {
-        var existingSchema = ajv.getSchema(schemaKeyRef.id);
+        const existingSchema = ajv.getSchema(schemaKeyRef.id);
         if (existingSchema) {
             schemaKeyRef = schemaKeyRef.id;
         }
     }
-    var result = {};
+    const result = {};
     try {
         result.valid = ajv.validate(schemaKeyRef, data);
     }
@@ -167,7 +167,7 @@ function filterDataBySchema(schemaKeyRef, data) {
         throw new Error("Data must be an object.");
     }
     if (_.isString(schemaKeyRef)) {
-        var schemaFn = getSchema(schemaKeyRef);
+        const schemaFn = getSchema(schemaKeyRef);
         if (schemaFn && schemaFn.schema) {
             return jsonSchemaFilter(schemaFn.schema, data);
         }

@@ -1,7 +1,7 @@
 'use strict';
-var jsonSchemaFilter = require('json-schema-filter');
-var _ = require('lodash');
-var ensureExistsOnReq = require('./ensure-exists-on-req');
+const jsonSchemaFilter = require('json-schema-filter');
+const _ = require('lodash');
+const ensureExistsOnReq = require('./ensure-exists-on-req');
 
 module.exports = {
     filter: filterOutput,

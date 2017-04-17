@@ -1,10 +1,10 @@
 'use strict';
-var fs = require('fs');
-var path = './package.json';
-var options = {encoding: 'utf8'};
-var util = require('util');
-var moment = require('moment');
-var packageJson = fs.readFileSync(path, options);
+const fs = require('fs');
+const path = './package.json';
+const options = {encoding: 'utf8'};
+const util = require('util');
+const moment = require('moment');
+let packageJson = fs.readFileSync(path, options);
 try {
     packageJson = JSON.parse(packageJson);
 }

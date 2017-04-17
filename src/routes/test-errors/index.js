@@ -1,9 +1,9 @@
 'use strict';
-var express = require('express');
-var config = require('nconf');
-var routerOptions = config.get('expressApp').routerOptions;
-var router = express.Router(routerOptions);
-var boom = require('boom');
+const express = require('express');
+const config = require('nconf');
+const routerOptions = config.get('expressApp').routerOptions;
+const router = express.Router(routerOptions);
+const boom = require('boom');
 
 module.exports = router;
 

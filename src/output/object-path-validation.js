@@ -1,9 +1,9 @@
 'use strict';
-var _ = require('lodash');
-var os = require('os');
+const _ = require('lodash');
+const os = require('os');
 const eol = os.EOL;
 const checkTypes = ['truthy', 'falsy', 'nil', 'notNil', 'not-nil'];
-var util = require('util');
+const util = require('util');
 
 module.exports = {
     ensureExactly1Key: ensureExactly1Key,
@@ -27,7 +27,7 @@ function validate(object, paths, checkType, methodName) {
 
 function ensureExactly1Key(object, paths, checkType) {
     validate(object, paths, checkType, 'ensureExactly1KeyTruthy');
-    var found = false;
+    let found = false;
     paths.forEach(function (path) {
         let value = _.get(object, path);
         if (!valueValid(value, checkType)) {

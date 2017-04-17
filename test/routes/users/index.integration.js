@@ -1,7 +1,7 @@
 'use strict';
-var common = require('../../@util/integration-common.js');
-var router = require('../../../src/routes/users/index.js');
-var config = require('nconf');
+const common = require('../../@util/integration-common.js');
+const router = require('../../../src/routes/users/index.js');
+const config = require('nconf');
 
 describe('Users', function () {
     this.timeout(common.defaultTimeout);

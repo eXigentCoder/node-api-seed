@@ -1,21 +1,21 @@
 'use strict';
-var ObjectId = require('mongodb').ObjectId;
-var bcrypt = require('bcrypt');
-var config = require('nconf');
-var moment = require('moment');
-var uuid = require("node-uuid");
-var permissions = require('../../../src/permissions');
+const ObjectId = require('mongodb').ObjectId;
+const bcrypt = require('bcrypt');
+const config = require('nconf');
+const moment = require('moment');
+const uuid = require("node-uuid");
+const permissions = require('../../../src/permissions');
 module.exports = function (callback) {
-    var normalUser = config.get('tests').normalUser;
-    var adminUser = config.get('tests').adminUser;
+    const normalUser = config.get('tests').normalUser;
+    const adminUser = config.get('tests').adminUser;
     bcrypt.hash(normalUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
 
     function hashCalculated(hashErr, hash) {
         if (hashErr) {
             return callback(hashErr);
         }
-        var now = moment.utc().toDate();
-        var user = {
+        const now = moment.utc().toDate();
+        const user = {
             _id: ObjectId(normalUser._id),
             email: normalUser.email,
             firstName: 'Ryan',

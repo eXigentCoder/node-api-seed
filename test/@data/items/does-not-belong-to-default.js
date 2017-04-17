@@ -1,10 +1,10 @@
 'use strict';
-var ObjectId = require('mongodb').ObjectId;
-var moment = require('moment');
-var uuid = require("node-uuid");
+const ObjectId = require('mongodb').ObjectId;
+const moment = require('moment');
+const uuid = require("node-uuid");
 
-var now = moment.utc().toDate();
-var userId = ObjectId('580d9f45622d510b044fb6a8');
+const now = moment.utc().toDate();
+const userId = ObjectId('580d9f45622d510b044fb6a8');
 module.exports = {
     name: 'item2',
     description: 'Really cool item, that does not belong to default.',

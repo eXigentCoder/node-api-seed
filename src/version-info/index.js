@@ -1,7 +1,7 @@
 'use strict';
-var uuid = require('node-uuid');
-var moment = require('moment');
-var config = require('nconf');
+const uuid = require('node-uuid');
+const moment = require('moment');
+const config = require('nconf');
 
 module.exports = {
     add: add,
@@ -9,7 +9,7 @@ module.exports = {
 };
 
 function add(req, res, next) {
-    var correlationIdOptions = config.get('logging').correlationId;
+    const correlationIdOptions = config.get('logging').correlationId;
     req.body.versionInfo = {
         dateCreated: moment.utc().toDate(),
         versionTag: uuid.v4(),
@@ -22,7 +22,7 @@ function add(req, res, next) {
 }
 
 function update(req, res, next) {
-    var correlationIdOptions = config.get('logging').correlationId;
+    const correlationIdOptions = config.get('logging').correlationId;
     req.body.versionInfo.versionTag = uuid.v4();
     req.body.versionInfo.dateUpdated = moment.utc().toDate();
     req.body.versionInfo.lastUpdatedBy = req.user._id;

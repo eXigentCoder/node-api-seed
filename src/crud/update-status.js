@@ -1,15 +1,15 @@
 'use strict';
-var output = require('../output');
-var applyMaps = require('./shared/apply-maps');
-var getValidateFunction = require('./shared/get-validate-function');
-var versionInfo = require('../version-info');
-var schemaName = 'updateStatus';
-var _ = require('lodash');
-var config = require('nconf');
-var validator = require('../validate/validator');
-var boom = require('boom');
-var util = require('util');
-var permissions = require('../permissions');
+const output = require('../output');
+const applyMaps = require('./shared/apply-maps');
+const getValidateFunction = require('./shared/get-validate-function');
+const versionInfo = require('../version-info');
+const schemaName = 'updateStatus';
+const _ = require('lodash');
+const config = require('nconf');
+const validator = require('../validate/validator');
+const boom = require('boom');
+const util = require('util');
+const permissions = require('../permissions');
 
 module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
     if (!router.metadata.schemas.core.statuses) {
@@ -36,7 +36,7 @@ module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
 };
 
 function getSteps(router, crudMiddleware, maps) {
-    var steps = {
+    const steps = {
         validate: getValidateFunction(schemaName),
         ensureStatusAllowed: ensureStatusAllowed(router.metadata),
         getExistingMetadata: crudMiddleware.getExistingMetadata,
@@ -50,7 +50,7 @@ function getSteps(router, crudMiddleware, maps) {
 }
 
 function description(metadata) {
-    var correlationIdOptions = config.get('logging').correlationId;
+    const correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
         summary: "Updates the status of " + metadata.aOrAn + " " + metadata.title + " By " + _.startCase(metadata.identifierName),
@@ -95,10 +95,10 @@ function description(metadata) {
 
 function ensureStatusAllowed(metadata) {
     return function _ensureStatusAllowed(req, res, next) {
-        var statusNames = metadata.schemas.core.statuses.map(function (statusObj) {
+        const statusNames = metadata.schemas.core.statuses.map(function (statusObj) {
             return statusObj.name;
         });
-        var foundStatus = statusNames.some(function (statusName) {
+        let foundStatus = statusNames.some(function (statusName) {
             if (statusName.toLowerCase() === req.params.newStatusName.toLowerCase()) {
                 req.params.newStatusName = statusName;
                 return true;

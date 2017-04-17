@@ -1,10 +1,9 @@
 'use strict';
-var _ = require('lodash');
-var config = require('nconf');
-var util = require('util');
-var maxDepth = 10;
+const _ = require('lodash');
+const config = require('nconf');
+const maxDepth = 10;
 module.exports = function formatArgs(args) {
-    var argumentArray = Array.prototype.slice.call(args);
+    let argumentArray = Array.prototype.slice.call(args);
     argumentArray = argumentArray.map(mapArg);
     return argumentArray;
 };
@@ -24,7 +23,7 @@ function deepReplace(object, counter) {
     if (_.isFunction(object)) {
         return;
     }
-    var replacements = config.get('logging').objectReplacements;
+    const replacements = config.get('logging').objectReplacements;
     _.forOwn(object, replaceSensitiveDataForObjectProperty);
 
     function replaceSensitiveDataForObjectProperty(value, key) {

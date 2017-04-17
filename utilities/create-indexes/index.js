@@ -1,6 +1,6 @@
 'use strict';
-var createAllIndexes = require('./create');
-var mongo = require('../../src/mongo');
+const createAllIndexes = require('./create');
+const mongo = require('../../src/mongo');
 createAllIndexes(function (err) {
     if (err) {
         throw err;

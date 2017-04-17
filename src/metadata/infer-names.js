@@ -1,6 +1,6 @@
 'use strict';
-var _ = require('lodash');
-var pluralize = require('pluralize');
+const _ = require('lodash');
+const pluralize = require('pluralize');
 
 module.exports = function inferNames(metadata) {
     inferName(metadata);

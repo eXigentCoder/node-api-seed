@@ -1,7 +1,7 @@
 'use strict';
-var _ = require('lodash');
-var util = require('util');
-var paramNames = require('get-parameter-names');
+const _ = require('lodash');
+const util = require('util');
+const paramNames = require('get-parameter-names');
 
 module.exports = function applyMaps(maps, steps) {
     if (_.isNil(maps)) {
@@ -24,7 +24,7 @@ module.exports = function applyMaps(maps, steps) {
 };
 
 function convertStepsToArray(stepObject) {
-    var steps = [];
+    const steps = [];
     _.forIn(stepObject, function (value, key) {
         if (_.isNil(value)) {
             throw new Error(util.format("Step with name %s was null", key));
@@ -83,8 +83,8 @@ function _skip(options) {
 }
 
 function applyAfter(addAfter, steps, throwIfStepNotFound) {
-    var mapObjectName = paramNames(applyAfter)[0];
-    var addCounter = 0;
+    const mapObjectName = paramNames(applyAfter)[0];
+    let addCounter = 0;
     if (!_.isObject(steps)) {
         throw new Error("Steps must be an object");
     }
@@ -104,10 +104,10 @@ function applyAfter(addAfter, steps, throwIfStepNotFound) {
         add(addAfter.stepName, addAfter.add);
         return;
     }
-    var pairs = _.toPairs(addAfter);
+    const pairs = _.toPairs(addAfter);
     pairs.forEach(function (pair) {
-        var stepName = pair[0];
-        var functions = pair[1];
+        const stepName = pair[0];
+        let functions = pair[1];
         if (!_.isArray(functions) && !_.isFunction(functions)) {
             throw new Error(util.format("The value property in the %s object should have been a function or array of functions to add but was a %s with a value of %j", mapObjectName, typeof functions, functions));
         }
@@ -124,7 +124,7 @@ function applyAfter(addAfter, steps, throwIfStepNotFound) {
             }
             throw new Error("No step by the name of " + stepName + " was found, please check the spelling and try again");
         }
-        var addOnNext = false;
+        let addOnNext = false;
         _.forIn(steps, function (value, key) {
             delete steps[key];
             if (addOnNext) {
@@ -149,8 +149,8 @@ function applyAfter(addAfter, steps, throwIfStepNotFound) {
 }
 
 function applyBefore(addBefore, steps, throwIfStepNotFound) {
-    var mapObjectName = paramNames(applyBefore)[0];
-    var addCounter = 0;
+    const mapObjectName = paramNames(applyBefore)[0];
+    let addCounter = 0;
     if (!_.isObject(steps)) {
         throw new Error("Steps must be an object");
     }
@@ -170,10 +170,10 @@ function applyBefore(addBefore, steps, throwIfStepNotFound) {
         add(addBefore.stepName, addBefore.add);
         return;
     }
-    var pairs = _.toPairs(addBefore);
+    const pairs = _.toPairs(addBefore);
     pairs.forEach(function (pair) {
-        var stepName = pair[0];
-        var functions = pair[1];
+        const stepName = pair[0];
+        let functions = pair[1];
         if (!_.isArray(functions) && !_.isFunction(functions)) {
             throw new Error(util.format("The value property in the %s object should have been a function or array of functions to add but was a %s with a value of %j", mapObjectName, typeof functions, functions));
         }
@@ -207,8 +207,8 @@ function applyBefore(addBefore, steps, throwIfStepNotFound) {
 }
 
 function applyReplace(replaceWith, steps, throwIfStepNotFound) {
-    var mapObjectName = paramNames(applyReplace)[0];
-    var replaceCounter = 0;
+    const mapObjectName = paramNames(applyReplace)[0];
+    let replaceCounter = 0;
     if (!_.isObject(steps)) {
         throw new Error("Steps must be an object");
     }
@@ -228,10 +228,10 @@ function applyReplace(replaceWith, steps, throwIfStepNotFound) {
         replace(replaceWith.stepName, replaceWith.replacement);
         return;
     }
-    var pairs = _.toPairs(replaceWith);
+    const pairs = _.toPairs(replaceWith);
     pairs.forEach(function (pair) {
-        var stepName = pair[0];
-        var functions = pair[1];
+        const stepName = pair[0];
+        let functions = pair[1];
         if (!_.isArray(functions) && !_.isFunction(functions)) {
             throw new Error(util.format("The value property in the %s object should have been a function or array of functions to replace but was a %s with a value of %j", mapObjectName, typeof functions, functions));
         }

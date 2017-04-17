@@ -1,6 +1,6 @@
 'use strict';
-var swagger = require('swagger-spec-express');
-var config = require('nconf');
+const swagger = require('swagger-spec-express');
+const config = require('nconf');
 
 module.exports = function (app, callback) {
     swagger.common.parameters.addPath({
@@ -104,7 +104,7 @@ module.exports = function (app, callback) {
             $ref: "#/definitions/errorResponse"
         }
     });
-    var correlationIdOptions = config.get('logging').correlationId;
+    const correlationIdOptions = config.get('logging').correlationId;
     swagger.common.addResponseHeader({
         name: correlationIdOptions.resHeader,
         description: "A unique identifier that is used to track the request through the logs. Should be passed through in the request, but will be generated if one is not provided.",

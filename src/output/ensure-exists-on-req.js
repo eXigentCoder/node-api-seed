@@ -1,7 +1,7 @@
 'use strict';
-var _ = require('lodash');
-var objectPathValidation = require('./object-path-validation');
-var boom = require('boom');
+const _ = require('lodash');
+const objectPathValidation = require('./object-path-validation');
+const boom = require('boom');
 
 /**
  * Ensures that the value at the provided path on the req object is not Nil (undefined or null)
@@ -26,7 +26,7 @@ module.exports = function ensureExistsOnReq(path, options) {
             return next(boom.notFound(options.message));
         }
         if (options.metadata) {
-            var message = options.metadata.title + ' with the ' + options.metadata.identifierName
+            const message = options.metadata.title + ' with the ' + options.metadata.identifierName
                 + ' of ' + req.params[options.metadata.identifierName] + ' could not be found';
             return next(boom.notFound(message));
         }

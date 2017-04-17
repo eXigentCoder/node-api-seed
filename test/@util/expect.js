@@ -1,14 +1,14 @@
 'use strict';
 require('./init.js');
-var swagger = require('swagger-spec-express');
-var _ = require('lodash');
-var os = require('os');
+const swagger = require('swagger-spec-express');
+const _ = require('lodash');
+const os = require('os');
 const eol = os.EOL;
-var validator = require('../../src/validate/validator');
-var $RefParser = require('json-schema-ref-parser');
-var util = require('util');
+const validator = require('../../src/validate/validator');
+const $RefParser = require('json-schema-ref-parser');
+const util = require('util');
 
-var swaggerSpec;
+let swaggerSpec;
 module.exports = {
     initialise: initialise,
     success: success,
@@ -40,7 +40,7 @@ function success(code) {
         return checkSuccessfulResponse(code);
     }
     return function (res) {
-        var message = "Expected a status code of " + code + " but got " + res.statusCode + endMessageBody(res);
+        const message = "Expected a status code of " + code + " but got " + res.statusCode + endMessageBody(res);
         expect(res.statusCode, message).to.equal(code);
         checkSuccessfulResponse(res);
     };
@@ -64,7 +64,7 @@ function error(code) {
         return checkErrorResponse(code);
     }
     return function (res) {
-        var message = "Expected a status code of " + code + " but got " + res.statusCode + endMessageBody(res);
+        const message = "Expected a status code of " + code + " but got " + res.statusCode + endMessageBody(res);
         expect(res.statusCode, message).to.equal(code);
         checkErrorResponse(res);
     };
@@ -76,7 +76,7 @@ function checkErrorResponse(res) {
 }
 
 function matchesSwagger(res) {
-    var response = getSwaggerResponseObject(res);
+    const response = getSwaggerResponseObject(res);
     if (response.headers) {
         matchesSwaggerHeaders(res);
     }
@@ -86,7 +86,7 @@ function matchesSwagger(res) {
 }
 
 function matchesSwaggerHeaders(res) {
-    var response = getSwaggerResponseObject(res);
+    const response = getSwaggerResponseObject(res);
     if (!response.headers) {
         throw new Error("Swagger document does not have any headers for response with status code " + res.statusCode
             + " for operation " + operationString(res));
@@ -101,13 +101,13 @@ function matchesSwaggerHeader(res, headerName, headerDefinition) {
         throw new Error("Expected response to have header " + headerName + " but there were no headers. "
             + operationString(res));
     }
-    var superTestName = headerName.toLowerCase();
-    var headerValue = res.headers[superTestName];
+    const superTestName = headerName.toLowerCase();
+    let headerValue = res.headers[superTestName];
     if (!headerValue) {
         throw new Error("Expected response to have header " + headerName + " but it was missing. "
             + operationString(res));
     }
-    var actualType = typeof headerValue;
+    const actualType = typeof headerValue;
     if (headerDefinition.type.toLowerCase() !== actualType.toLowerCase()) {
         throw new Error("Expected response header " + headerName + " to have a value of type '" + headerDefinition.type
             + "' but was '" + actualType + "'" + operationString(res));
@@ -115,8 +115,8 @@ function matchesSwaggerHeader(res, headerName, headerDefinition) {
 }
 
 function matchesSwaggerSchema(res) {
-    var response = getSwaggerResponseObject(res);
-    var schema = response.schema;
+    const response = getSwaggerResponseObject(res);
+    let schema = response.schema;
     if (!schema) {
         throw new Error("Swagger document does not have a schema for response with status code " + res.statusCode
             + " for operation " + operationString(res));
@@ -133,7 +133,7 @@ function matchesSwaggerSchema(res) {
 }
 
 function getNameFrom$ref(res, $ref) {
-    var localDefinitionsString = '#/definitions/';
+    const localDefinitionsString = '#/definitions/';
     if ($ref.indexOf(localDefinitionsString) !== 0) {
         throw new Error("Incorrect or unsupported $ref value : " + $ref + " for response with status code "
             + res.statusCode + " for operation " + operationString(res));
@@ -154,7 +154,7 @@ function getDefinitionObject(res, name) {
 }
 
 function getSwaggerResponseObject(res) {
-    var operation = getSwaggerOperation(res);
+    const operation = getSwaggerOperation(res);
     if (!operation.responses) {
         throw new Error("Swagger document does not have any responses for operation " + operationString(res));
     }
@@ -170,9 +170,9 @@ function operationString(res) {
 }
 
 function getSwaggerOperation(res) {
-    var verb = res.req.method.toLowerCase();
-    var path = res.request.urlTemplate || res.req.path;
-    var queryStartIndex = path.indexOf("?");
+    const verb = res.req.method.toLowerCase();
+    let path = res.request.urlTemplate || res.req.path;
+    const queryStartIndex = path.indexOf("?");
     if (queryStartIndex >= 0) {
         path = path.substring(0, queryStartIndex);
     }

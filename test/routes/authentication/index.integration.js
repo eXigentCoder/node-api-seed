@@ -1,6 +1,6 @@
 'use strict';
-var common = require('../../@util/integration-common.js');
-var config = require('nconf');
+const common = require('../../@util/integration-common.js');
+const config = require('nconf');
 
 describe('Authentication', function() {
     describe('login', function() {

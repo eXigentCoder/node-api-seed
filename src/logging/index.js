@@ -1,16 +1,16 @@
 'use strict';
-var winston = require('winston');
-var packageJson = require('../../package.json');
+const winston = require('winston');
+const packageJson = require('../../package.json');
 require('winston-loggly');
 require('winston-daily-rotate-file');
-var WinstonGraylog2 = require('winston-graylog2');
-var config = require('nconf');
-var formatArgs = require('./format-args');
-var _ = require('lodash');
-var logSettings = config.get('logging');
-var fs = require('fs');
-var path = require('path');
-var logger = new winston.Logger({exitOnError: true});
+const WinstonGraylog2 = require('winston-graylog2');
+const config = require('nconf');
+const formatArgs = require('./format-args');
+const _ = require('lodash');
+const logSettings = config.get('logging');
+const fs = require('fs');
+const path = require('path');
+const logger = new winston.Logger({exitOnError: true});
 addConsoleLogging();
 addFileLogging();
 addLogglyLogging();
@@ -18,7 +18,7 @@ addGraylogLogging();
 overrideConsole();
 
 function addConsoleLogging() {
-    var consoleSettings = logSettings.console;
+    const consoleSettings = logSettings.console;
     if (consoleSettings.disabled) {
         return;
     }
@@ -26,11 +26,11 @@ function addConsoleLogging() {
 }
 
 function addFileLogging() {
-    var fileSettings = logSettings.file;
+    const fileSettings = logSettings.file;
     if (fileSettings.disabled) {
         return;
     }
-    var folder = path.dirname(fileSettings.datePattern);
+    const folder = path.dirname(fileSettings.datePattern);
     ensureLogFolderExists(folder);
     logger.add(winston.transports.DailyRotateFile, _.omit(fileSettings, 'disabled'));
 }
@@ -46,7 +46,7 @@ function ensureLogFolderExists(folder) {
 }
 
 function addLogglyLogging() {
-    var logglySettings = logSettings.loggly;
+    const logglySettings = logSettings.loggly;
     if (logglySettings.disabled) {
         return;
     }
@@ -63,7 +63,7 @@ function addLogglyLogging() {
 }
 
 function addGraylogLogging() {
-    var logglySettings = logSettings.graylog;
+    const logglySettings = logSettings.graylog;
     if (logglySettings.disabled) {
         return;
     }

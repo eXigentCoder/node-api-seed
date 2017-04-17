@@ -1,5 +1,5 @@
 'use strict';
-var common = require('../../@util/integration-common');
+const common = require('../../@util/integration-common');
 /* ----========[ end of test file setup ]========---- */
 
 describe('Root', function () {

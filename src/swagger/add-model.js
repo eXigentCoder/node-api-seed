@@ -1,11 +1,11 @@
 'use strict';
-var _ = require('lodash');
-var swagger = require('swagger-spec-express');
-var schemaKeys = Object.keys(require('swagger-spec-express/lib/schemas/schema.json').properties);
+const _ = require('lodash');
+const swagger = require('swagger-spec-express');
+const schemaKeys = Object.keys(require('swagger-spec-express/lib/schemas/schema.json').properties);
 schemaKeys.push('definitions');
 
 module.exports = function addModel(schema) {
-    var schemaCopy = _.cloneDeep(schema);
+    let schemaCopy = _.cloneDeep(schema);
     schemaCopy = cleanSchema(schemaCopy);
     swagger.common.addModel(schemaCopy, {validation: 'warn'});
 };
@@ -17,7 +17,7 @@ function cleanSchema(schema) {
     }
     if (schema.definitions) {
         Object.keys(schema.definitions).forEach(function (definitionName) {
-            var definitionSchema = schema.definitions[definitionName];
+            const definitionSchema = schema.definitions[definitionName];
             schema.definitions[definitionName] = cleanSchema(definitionSchema);
         });
     }
@@ -26,7 +26,7 @@ function cleanSchema(schema) {
 
 function filterProperties(properties) {
     Object.keys(properties).forEach(function (propertyName) {
-        var propertyValue = properties[propertyName];
+        const propertyValue = properties[propertyName];
         Object.keys(propertyValue).forEach(function (key) {
             if (schemaKeys.indexOf(key) < 0) {
                 delete propertyValue[key];

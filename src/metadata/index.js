@@ -1,8 +1,8 @@
 'use strict';
-var inferNames = require('./infer-names');
+const inferNames = require('./infer-names');
 const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
-var _ = require('lodash');
-var ensureSchemaSet = require('./ensure-schema-set');
+const _ = require('lodash');
+const ensureSchemaSet = require('./ensure-schema-set');
 
 module.exports = function Metadata(metadata) {
     validate(metadata);

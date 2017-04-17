@@ -1,14 +1,14 @@
 'use strict';
 require('../../config/init-nconf');
-var fs = require('fs');
-var getSwaggerDataFromRouteStack = require('./get-swagger-route-data');
-var eol = require('os').EOL;
-var fileOptions = {encoding: 'utf8'};
-var indentationTemplate = "    ";
-var path = require('path');
-var _ = require('lodash');
-var config = require('nconf');
-var uuid = require('node-uuid');
+const fs = require('fs');
+const getSwaggerDataFromRouteStack = require('./get-swagger-route-data');
+const eol = require('os').EOL;
+const fileOptions = {encoding: 'utf8'};
+const indentationTemplate = "    ";
+const path = require('path');
+const _ = require('lodash');
+const config = require('nconf');
+const uuid = require('node-uuid');
 
 (function setInputs() {
     // var data = {
@@ -21,7 +21,7 @@ var uuid = require('node-uuid');
     //         newStatusName: 'testStatus'
     //     }
     // };
-    var data = {
+    const data = {
         routerPath: './src/routes/users/items/index.js',
         tagsToGenerateFor: ['Item'],
         outputPath: './test/routes/users/items/index.integration.js',
@@ -39,7 +39,7 @@ var uuid = require('node-uuid');
 function findRoutes(data) {
     data.foundRoutes = getSwaggerDataFromRouteStack(data.router.stack);
     data.foundRoutes = data.foundRoutes.filter(function (route) {
-        var included = false;
+        let included = false;
         data.tagsToGenerateFor.forEach(function (tag) {
             if (route.tags.indexOf(tag) >= 0) {
                 included = true;
@@ -51,9 +51,9 @@ function findRoutes(data) {
 }
 
 function ensureAllFoldersExist(filePath) {
-    var folderPath = path.dirname(filePath);
-    var folders = folderPath.split('/');//.filter((part)=> part !== '.');
-    var pathToCheck = '';
+    const folderPath = path.dirname(filePath);
+    const folders = folderPath.split('/');//.filter((part)=> part !== '.');
+    let pathToCheck = '';
     folders.forEach(function (folder) {
         pathToCheck = path.join(pathToCheck, folder);
         //eslint-disable-next-line no-sync
@@ -65,8 +65,8 @@ function ensureAllFoldersExist(filePath) {
 }
 
 function writeRoutesAsTest(data) {
-    var outputContent = "";
-    var indent = 0;
+    let outputContent = "";
+    let indent = 0;
     addLine("'use strict';");
     addLine("var common = require('" + relativePath(data.outputPath, './test/@util/integration-common.js') + "');");
     addLine("var router = require('" + relativePath(data.outputPath, data.routerPath) + "');");
@@ -114,7 +114,7 @@ function writeRoutesAsTest(data) {
             addCreate(foundRoute);
         }
         if (foundRoute.verb === 'put') {
-            var newStausParam = foundRoute.parameters.some((param)=> {
+            const newStausParam = foundRoute.parameters.some((param) => {
                 return param.name === 'newStatusName';
             });
             if (newStausParam) {
@@ -439,7 +439,7 @@ function writeRoutesAsTest(data) {
     }
 
     function getFullPath(foundRoute) {
-        var url = (data.routePrefix || '') + foundRoute.path;
+        let url = (data.routePrefix || '') + foundRoute.path;
         if (_.endsWith(url, '/')) {
             url = url.substr(0, url.length - 1);
         }
@@ -449,24 +449,24 @@ function writeRoutesAsTest(data) {
     function getPathParameterObject(foundRoute, options) {
         options = options || {};
         foundRoute.parameters = foundRoute.parameters || [];
-        var pathParams = foundRoute.parameters.filter((param)=> {
+        const pathParams = foundRoute.parameters.filter((param) => {
             return param.in === 'path';
         });
         if (data.routePrefix.indexOf(':') >= 0) {
-            var urlParts = data.routePrefix.split('/').filter(function (urlPart) {
+            const urlParts = data.routePrefix.split('/').filter(function (urlPart) {
                 return urlPart.indexOf(':') >= 0;
             });
             urlParts.forEach(function (urlPart) {
                 pathParams.push({name: urlPart.replace(':', '')});
             });
         }
-        var result = {};
+        const result = {};
         pathParams.forEach(function (pathParam) {
             if (options.fake) {
                 result[pathParam.name] = uuid.v4();
                 return;
             }
-            var paramValue = data.pathParameters[pathParam.name];
+            const paramValue = data.pathParameters[pathParam.name];
             if (paramValue) {
                 result[pathParam.name] = paramValue;
             } else {
@@ -483,9 +483,9 @@ function relativePath(from, to) {
 }
 
 function addLineWithIndent(line, indentLevel) {
-    var outputContent = "";
+    let outputContent = "";
     indentLevel = indentLevel || 0;
-    for (var i = 0; i < indentLevel; i++) {
+    for (let i = 0; i < indentLevel; i++) {
         outputContent += indentationTemplate;
     }
     outputContent += line + eol;

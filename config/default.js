@@ -1,13 +1,13 @@
 'use strict';
-var passportJWT = require("passport-jwt");
-var ExtractJwt = passportJWT.ExtractJwt;
-var util = require('util');
-var config = require('nconf');
-var host = 'localhost';
-var port = 10001;
-var reqCorrelationHeaderName = 'X-Request-ID';
-var resCorrelationHeaderName = reqCorrelationHeaderName;
-var pacakgeJson = require('../package.json');
+const passportJWT = require("passport-jwt");
+const ExtractJwt = passportJWT.ExtractJwt;
+const util = require('util');
+const config = require('nconf');
+const host = 'localhost';
+const port = 10001;
+const reqCorrelationHeaderName = 'X-Request-ID';
+const resCorrelationHeaderName = reqCorrelationHeaderName;
+const pacakgeJson = require('../package.json');
 module.exports = {
     PORT: port, // The port the app runs on and listens on for inbound requests.
     host: host, // The host value for the currently running app e.g. my-application.com

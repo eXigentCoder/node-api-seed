@@ -1,9 +1,9 @@
 'use strict';
-var ensureExistsOnReq = require('../output/ensure-exists-on-req');
-var applyMaps = require('./shared/apply-maps');
-var util = require('util');
-var _ = require('lodash');
-var permissions = require('../permissions');
+const ensureExistsOnReq = require('../output/ensure-exists-on-req');
+const applyMaps = require('./shared/apply-maps');
+const util = require('util');
+const _ = require('lodash');
+const permissions = require('../permissions');
 
 module.exports = function addGetByIdAndUseRoute(router, path, routerOrMiddleware, crudMiddleware, maps) {
     if (_.isObject(path)) {
@@ -19,13 +19,13 @@ module.exports = function addGetByIdAndUseRoute(router, path, routerOrMiddleware
     if (!_.isObject(crudMiddleware)) {
         throw new Error(util.format("crudMiddleware must be an object but was of type %s with a value of %j", typeof crudMiddleware, crudMiddleware));
     }
-    var steps = getByIdAndUseSteps(router, routerOrMiddleware, crudMiddleware, maps);
+    const steps = getByIdAndUseSteps(router, routerOrMiddleware, crudMiddleware, maps);
     router.use('/:' + router.metadata.identifierName + path, steps);
     return router;
 };
 
 function getByIdAndUseSteps(router, routerOrMiddleware, crudMiddleware, maps) {
-    var steps = {
+    const steps = {
         checkPermissions: permissions.checkRoleAndOwnerToSetQuery(router.metadata.namePlural, 'getById', router.metadata.schemas.core.ownership),
         findByIdentifier: crudMiddleware.findByIdentifier,
         ensureExistsOnReq: ensureExistsOnReq('process.' + router.metadata.name, {metadata: router.metadata})

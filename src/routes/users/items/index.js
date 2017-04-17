@@ -1,7 +1,7 @@
 'use strict';
-var _ = require('lodash');
-var schema = require('./item.json');
-var router = require('../../../crud/router')({
+const _ = require('lodash');
+const schema = require('./item.json');
+const router = require('../../../crud/router')({
     schemas: {
         core: schema,
         output: _.merge({}, schema, require('./item-output.json'))
@@ -11,7 +11,7 @@ router.crudMiddleware = require('../../../mongo/crud')(router.metadata);
 require('../../../crud/router/add-standard-routes')(router);
 module.exports = router;
 
-var filterOwnerMap = {
+const filterOwnerMap = {
     addBeforeIfExists: {
         'query': filterOwner,
         'findByIdentifier': filterOwner

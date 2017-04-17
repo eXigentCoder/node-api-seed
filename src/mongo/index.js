@@ -1,11 +1,11 @@
 'use strict';
-var mongo = require('mongodb');
-var ObjectId = mongo.ObjectId;
-var config = require('nconf');
-var MongoClient = mongo.MongoClient;
-var util = require('util');
+const mongo = require('mongodb');
+const ObjectId = mongo.ObjectId;
+const config = require('nconf');
+const MongoClient = mongo.MongoClient;
+const util = require('util');
 
-var state = {
+const state = {
     connect: connectToDb,
     db: null,
     ObjectId: ObjectId,
@@ -50,7 +50,7 @@ function connectToDb(app, callback) {
             callback(null, app);
         });
     }
-    var mongodbConfig = config.get('mongodb');
+    const mongodbConfig = config.get('mongodb');
     MongoClient.connect(mongodbConfig.url, mongodbConfig.options, connected);
     function connected(err, db) {
         if (err) {

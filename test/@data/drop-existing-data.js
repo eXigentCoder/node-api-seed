@@ -1,7 +1,7 @@
 'use strict';
-var mongo = require('../../src/mongo/index');
-var async = require('async');
-var util = require('util');
+const mongo = require('../../src/mongo/index');
+const async = require('async');
+const util = require('util');
 module.exports = function findCollections(callback) {
     console.log("Loading collections...");
     mongo.db.collections(collectionsRetrieved);
@@ -14,10 +14,10 @@ module.exports = function findCollections(callback) {
         return async.each(collections, clearItemsInCollection, callback);
     }
 };
-var collectionsToSkipWhenClearing = ['system.indexes'];
+const collectionsToSkipWhenClearing = ['system.indexes'];
 
 function clearItemsInCollection(item, callback) {
-    var name = item.s.name;
+    const name = item.s.name;
     if (collectionsToSkipWhenClearing.indexOf(name) >= 0) {
         return callback();
     }

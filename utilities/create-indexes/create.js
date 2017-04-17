@@ -1,12 +1,12 @@
 'use strict';
 require('../../config/init-nconf');
-var async = require("async");
-var schemas = [
+const async = require("async");
+const schemas = [
     require('../../src/routes/users/user.json'),
 ];
-var mongo = require('../../src/mongo');
-var pluralize = require('pluralize');
-var _ = require('lodash');
+const mongo = require('../../src/mongo');
+const pluralize = require('pluralize');
+const _ = require('lodash');
 
 module.exports = function createAll(callback) {
     async.waterfall([
@@ -25,7 +25,7 @@ function connectToDb(callback) {
 }
 
 function processAllItems(callback) {
-    var itemsToIndex = [];
+    const itemsToIndex = [];
     schemas.forEach(function (item) {
         itemsToIndex.push(item);
         if (item.trackHistory) {
@@ -36,7 +36,7 @@ function processAllItems(callback) {
 }
 
 function createHistoryIndexItem(item) {
-    var newItem = {
+    const newItem = {
         namePlural: (item.namePlural || pluralize.plural(item.name)) + '-history',
         indexes: [{
             name: 'historyId',
@@ -73,7 +73,7 @@ function ensureCollectionExists(item, callback) {
 }
 
 function processIndex(item, indexToCreate, callback) {
-    var indexOptions = {};
+    const indexOptions = {};
     if (!_.isNil(indexToCreate.background)) {
         indexOptions.background = indexToCreate.background;
     } else {
@@ -94,7 +94,7 @@ function processIndex(item, indexToCreate, callback) {
     if (indexToCreate.dropDups) {
         indexOptions.dropDups = indexToCreate.dropDups;
     }
-    var existingIndex = findExistingIndex(indexToCreate, item.existingIndexes);
+    let existingIndex = findExistingIndex(indexToCreate, item.existingIndexes);
     if (!existingIndex) {
         return mongo.db.collection(item.collectionName)
             .createIndex(indexToCreate.fields, indexOptions, callback);
@@ -112,7 +112,7 @@ function processIndex(item, indexToCreate, callback) {
 }
 
 function findExistingIndex(indexToCreate, existingIndexes) {
-    var foundIndex = null;
+    let foundIndex = null;
     existingIndexes.some(function (existingIndex) {
         if (_.isEqual(existingIndex.key, indexToCreate.fields)) {
             foundIndex = existingIndex;

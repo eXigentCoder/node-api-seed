@@ -1,12 +1,12 @@
 'use strict';
-var mongo = require('./index');
-var aqp = require('api-query-params').default;
-var boom = require('boom');
-var _ = require('lodash');
-var util = require('util');
-var moment = require('moment');
+const mongo = require('./index');
+const aqp = require('api-query-params').default;
+const boom = require('boom');
+const _ = require('lodash');
+const util = require('util');
+const moment = require('moment');
 //fields that need to exist in the system but should not be directly settable via PUT
-var metadataFields = ['versionInfo', 'passwordHash', 'status', 'statusDate', 'statusLog', 'owner', 'ownerDate', 'ownerLog'];
+const metadataFields = ['versionInfo', 'passwordHash', 'status', 'statusDate', 'statusLog', 'owner', 'ownerDate', 'ownerLog'];
 
 module.exports = function (metadata) {
     return {
@@ -23,7 +23,7 @@ module.exports = function (metadata) {
 
 function query(metadata) {
     return function (req, res, next) {
-        var parsedQuery = parseQueryWithDefaults(req.query, metadata.schemas.core);
+        const parsedQuery = parseQueryWithDefaults(req.query, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .find(parsedQuery.filter)
             .skip(parsedQuery.skip)
@@ -43,7 +43,7 @@ function query(metadata) {
 }
 
 function parseQueryWithDefaults(queryString, schema) {
-    var agpOptions = {
+    const agpOptions = {
         casters: {
             mongoId: val => mongo.ObjectId(val)
         },
@@ -53,7 +53,7 @@ function parseQueryWithDefaults(queryString, schema) {
         }
     };
     setCastParamsFromSchema(agpOptions, schema.properties);
-    var parsedQuery = aqp(queryString, agpOptions);
+    const parsedQuery = aqp(queryString, agpOptions);
     parsedQuery.projection = parsedQuery.projection || {};
     parsedQuery.skip = parsedQuery.skip || 0;
     parsedQuery.limit = parsedQuery.limit || 50;
@@ -63,12 +63,12 @@ function parseQueryWithDefaults(queryString, schema) {
 
 function setCastParamsFromSchema(agpOptions, properties) {
     Object.keys(properties).forEach(function (propertyName) {
-        var propertyValue = properties[propertyName];
+        const propertyValue = properties[propertyName];
         if (!propertyValue.type) {
             return;
         }
         if (_.isArray(propertyValue.type)) {
-            var types = propertyValue.type.filter((type)=> type.toLowerCase() !== 'null');
+            const types = propertyValue.type.filter((type) => type.toLowerCase() !== 'null');
             if (types.length === 1) {
                 agpOptions.castParams[propertyName] = types[0];
                 return;
@@ -88,13 +88,13 @@ function setCastParamsFromSchema(agpOptions, properties) {
 
 function findByIdentifier(metadata) {
     return function (req, res, next) {
-        var identifier = req.params[metadata.identifierName];
+        const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
+        let mongoQuery = getIdentifierQuery(identifier, metadata);
         mongoQuery = _.merge({}, req.query, mongoQuery);
-        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
+        const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .findOne(parsedQuery.filter, dataRetrieved);
 
@@ -112,7 +112,7 @@ function getIdentifierQuery(identifier, metadata) {
     if (mongo.isValidObjectId(identifier)) {
         return {_id: identifier};
     }
-    var identifierQuery = {};
+    const identifierQuery = {};
     identifierQuery[metadata.identifierName] = identifier;
     return identifierQuery;
 }
@@ -129,13 +129,13 @@ function create(metadata) {
 
 function updateStatus(metadata) {
     return function (req, res, next) {
-        var identifier = req.params[metadata.identifierName];
+        const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
-        var now = moment.utc().toDate();
-        var updateStatement = {
+        const mongoQuery = getIdentifierQuery(identifier, metadata);
+        const now = moment.utc().toDate();
+        const updateStatement = {
             $set: {
                 status: req.params.newStatusName,
                 statusDate: now,
@@ -149,10 +149,10 @@ function updateStatus(metadata) {
                 }
             }
         };
-        var options = {
+        const options = {
             returnOriginal: true
         };
-        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
+        const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .findOneAndUpdate(parsedQuery.filter, updateStatement, options, updateComplete);
         function updateComplete(err, result) {
@@ -167,16 +167,16 @@ function updateStatus(metadata) {
 
 function update(metadata) {
     return function (req, res, next) {
-        var identifier = req.params[metadata.identifierName];
+        const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
-        var replacement = req.body;
-        var options = {
+        const mongoQuery = getIdentifierQuery(identifier, metadata);
+        const replacement = req.body;
+        const options = {
             returnOriginal: true
         };
-        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
+        const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .findOneAndReplace(parsedQuery.filter, replacement, options, updateComplete);
         function updateComplete(err, result) {
@@ -202,18 +202,18 @@ function writeHistoryItem(metadata) {
 
 function getExistingMetadata(metadata) {
     return function (req, res, next) {
-        var identifier = req.params[metadata.identifierName];
+        const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
-        var options = {
+        const mongoQuery = getIdentifierQuery(identifier, metadata);
+        const options = {
             fields: {}
         };
         metadataFields.forEach(function (field) {
             options.fields[field] = 1;
         });
-        var parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
+        const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .findOne(parsedQuery.filter, options, dataRetrieved);
         function dataRetrieved(err, document) {
@@ -241,7 +241,7 @@ function deleteByIdentifier(metadata) {
         if (!req.process.originalItem) {
             return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, req.params[metadata.identifierName])));
         }
-        var mongoQuery = {_id: req.process.originalItem._id};
+        const mongoQuery = {_id: req.process.originalItem._id};
         mongo.db.collection(metadata.collectionName)
             .deleteOne(mongoQuery, documentDeleted);
 

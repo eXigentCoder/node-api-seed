@@ -1,5 +1,5 @@
 'use strict';
-var mongo = require('../mongo');
+const mongo = require('../mongo');
 module.exports = {
     addAllToAjv: addAllFormatsToAjv,
     addAllToJsf: addAllToJsf
@@ -24,7 +24,7 @@ function validateAndCoerceToMongoId(isMongoId, input, schema, currentDataPath, p
     if (!isMongoId) {
         return input;
     }
-    var valid = isValidMongoId(input);
+    const valid = isValidMongoId(input);
     if (valid) {
         parentDataObject[propName] = mongo.ObjectId(input);
     }

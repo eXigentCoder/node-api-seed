@@ -1,10 +1,10 @@
 'use strict';
-var NodeAcl = require('acl');
-var boom = require('boom');
-var mongo = require('../mongo');
-var nodeAcl = null;
-var util = require('util');
-var _ = require('lodash');
+const NodeAcl = require('acl');
+const boom = require('boom');
+const mongo = require('../mongo');
+let nodeAcl = null;
+const util = require('util');
+const _ = require('lodash');
 const messageTemplate = 'User %s does not have all of the required permissions %j to perform this action on the "%s" resource.';
 module.exports = {
     initialise: initialise,
@@ -20,10 +20,10 @@ function initialise(app, callback) {
             callback(null, app);
         });
     }
-    var prefix = 'acl-';
+    const prefix = 'acl-';
     nodeAcl = new NodeAcl(new NodeAcl.mongodbBackend(mongo.db, prefix));
     module.exports.nodeAcl = nodeAcl;
-    var aclRules = [
+    let aclRules = [
         {
             roles: ['member'],
             allows: [
@@ -53,7 +53,7 @@ function checkRoleOnly(resource, permissions) {
         if (!_.isArray(permissions)) {
             permissions = [permissions];
         }
-        var userIdString = req.user._id.toString();
+        const userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
 
         function roleChecked(err, isAllowed) {
@@ -73,7 +73,7 @@ function checkRoleAndOwner(resource, permissions, ownership) {
         if (!_.isArray(permissions)) {
             permissions = [permissions];
         }
-        var userIdString = req.user._id.toString();
+        const userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
         const message = util.format(messageTemplate, userIdString, permissions, resource);
 
@@ -105,7 +105,7 @@ function checkRoleAndOwnerToSetQuery(resource, permissions, ownership) {
         if (!_.isArray(permissions)) {
             permissions = [permissions];
         }
-        var userIdString = req.user._id.toString();
+        const userIdString = req.user._id.toString();
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
         const message = util.format(messageTemplate, userIdString, permissions, resource);
 

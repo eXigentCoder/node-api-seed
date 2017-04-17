@@ -1,12 +1,12 @@
 'use strict';
-var _ = require('lodash');
-var create = require('../create');
-var getById = require('../get-by-id');
-var query = require('../query');
-var update = require('../update');
-var updateStatus = require('../update-status');
-var getByIdAndUse = require('../get-by-id-and-use');
-var deleteById = require('../delete-by-id');
+const _ = require('lodash');
+const create = require('../create');
+const getById = require('../get-by-id');
+const query = require('../query');
+const update = require('../update');
+const updateStatus = require('../update-status');
+const getByIdAndUse = require('../get-by-id-and-use');
+const deleteById = require('../delete-by-id');
 module.exports = function addStandardRoutes(router) {
     if (!_.isObject(router.metadata)) {
         throw new Error("Router.metadata must be set!");

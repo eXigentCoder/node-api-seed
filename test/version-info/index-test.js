@@ -1,15 +1,15 @@
 'use strict';
 
 require('../@util/init.js');
-var httpMocks = require('node-mocks-http');
-var uuid = require('node-uuid');
-var versionMiddleware = require('../../src/version-info');
-var config = require('nconf');
+const httpMocks = require('node-mocks-http');
+const uuid = require('node-uuid');
+const versionMiddleware = require('../../src/version-info');
+const config = require('nconf');
 
 describe('when setting the version info of requests', function () {
-    var request;
-    var response;
-    var validUUIDRegexPattern = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/, 'i');
+    let request;
+    let response;
+    const validUUIDRegexPattern = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/, 'i');
 
     beforeEach(function () {
         response = httpMocks.createResponse();
@@ -17,8 +17,8 @@ describe('when setting the version info of requests', function () {
 
     describe('when processing an add request', function () {
         beforeEach(function () {
-            var correlationIdOptions = config.get('logging').correlationId;
-            var reqOptions = {
+            const correlationIdOptions = config.get('logging').correlationId;
+            const reqOptions = {
                 method: 'POST',
                 url: '/user',
                 headers: {},
@@ -55,12 +55,12 @@ describe('when setting the version info of requests', function () {
     });
 
     describe('when processing an update request', function () {
-        var existingVersionTag = uuid.v4();
-        var existingUpdatedDate = new Date(2016, 11, 5);
+        const existingVersionTag = uuid.v4();
+        const existingUpdatedDate = new Date(2016, 11, 5);
 
         beforeEach(function () {
-            var correlationIdOptions = config.get('logging').correlationId;
-            var reqOptions = {
+            const correlationIdOptions = config.get('logging').correlationId;
+            const reqOptions = {
                 method: 'POST',
                 url: '/user',
                 headers: {},

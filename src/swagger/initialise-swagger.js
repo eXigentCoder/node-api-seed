@@ -1,13 +1,13 @@
 'use strict';
-var config = require('nconf');
-var packageJson = require('../../package.json');
-var swagger = require('swagger-spec-express');
-var _ = require('lodash');
+const config = require('nconf');
+const packageJson = require('../../package.json');
+const swagger = require('swagger-spec-express');
+const _ = require('lodash');
 
 module.exports = function initialiseSwagger(app, callback) {
-    var swaggerConfig = config.get('swagger');
-    var baseDocument = swaggerConfig.baseDocument || buildBaseDocument(swaggerConfig);
-    var options = {
+    const swaggerConfig = config.get('swagger');
+    const baseDocument = swaggerConfig.baseDocument || buildBaseDocument(swaggerConfig);
+    const options = {
         document: baseDocument,
         defaultSecurity: swaggerConfig.defaultSecurity
     };
@@ -21,11 +21,11 @@ module.exports = function initialiseSwagger(app, callback) {
 };
 
 function buildBaseDocument(swaggerConfig) {
-    var host = config.get('host');
+    let host = config.get('host');
     if (swaggerConfig.appendPortToHost) {
         host += ":" + config.get('PORT');
     }
-    var contactInfo = getContactInfoFromPackage();
+    const contactInfo = getContactInfoFromPackage();
     contactInfo.name = _.get(swaggerConfig, 'contact.name') || contactInfo.name;
     contactInfo.url = _.get(swaggerConfig, 'contact.url') || contactInfo.url;
     contactInfo.email = _.get(swaggerConfig, 'contact.email') || contactInfo.email;
@@ -52,9 +52,9 @@ function buildBaseDocument(swaggerConfig) {
 }
 
 function getContactInfoFromPackage() {
-    var authorName, authorEmail, authorSite;
+    let authorName, authorEmail, authorSite;
     if (packageJson.author.indexOf('<') >= 0) {
-        var parts = packageJson.author.split('<');
+        let parts = packageJson.author.split('<');
         if (parts.length > 2) {
             throw new Error('package.json.author should be in the format "name <email> (website)" with email and website being optional');
         }

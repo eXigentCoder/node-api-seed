@@ -1,21 +1,21 @@
 'use strict';
-var async = require('async');
-var express = require('express');
-var bodyParser = require('body-parser');
-var cors = require('cors');
-var config = require('nconf');
-var routes = require('./routes');
-var configureMorgan = require('./logging/configure-morgan');
-var configureRequestId = require('./logging/configure-request-id');
-var error = require('./error/index.js');
-var initialiseSwagger = require('./swagger/initialise-swagger');
-var addCommonSwaggerItems = require('./swagger/add-common-items');
-var generateSwaggerJson = require('./swagger/generate-swagger-json');
-var mongo = require('./mongo');
-var helmet = require('helmet');
-var rateLimit = require('./rate-limit');
-var authentication = require('./authentication');
-var permissions = require('./permissions');
+const async = require('async');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const config = require('nconf');
+const routes = require('./routes');
+const configureMorgan = require('./logging/configure-morgan');
+const configureRequestId = require('./logging/configure-request-id');
+const error = require('./error/index.js');
+const initialiseSwagger = require('./swagger/initialise-swagger');
+const addCommonSwaggerItems = require('./swagger/add-common-items');
+const generateSwaggerJson = require('./swagger/generate-swagger-json');
+const mongo = require('./mongo');
+const helmet = require('helmet');
+const rateLimit = require('./rate-limit');
+const authentication = require('./authentication');
+const permissions = require('./permissions');
 
 module.exports = function initialise(callback) {
     async.waterfall([
@@ -32,8 +32,8 @@ module.exports = function initialise(callback) {
 };
 
 function createApp(callback) {
-    var appSettings = config.get('expressApp');
-    var app = express();
+    const appSettings = config.get('expressApp');
+    const app = express();
     app.set('json spaces', appSettings.jsonSpaces);
     app.set('trust proxy', appSettings.trustProxy);
     app.use(helmet(appSettings.helmetOptions));

@@ -1,9 +1,9 @@
 'use strict';
-var swagger = require('swagger-spec-express');
-var express = require('express');
-var buildMetadata = require('../../metadata/index');
-var config = require('nconf');
-var _ = require('lodash');
+const swagger = require('swagger-spec-express');
+const express = require('express');
+const buildMetadata = require('../../metadata/index');
+const config = require('nconf');
+const _ = require('lodash');
 
 module.exports = function Router(options) {
     options = buildMetadata(options);
@@ -24,8 +24,8 @@ function setTag(options) {
 }
 
 function createRouter(options) {
-    var routerOptions = config.get('expressApp').routerOptions;
-    var router = new express.Router(routerOptions);
+    const routerOptions = config.get('expressApp').routerOptions;
+    const router = new express.Router(routerOptions);
     swagger.swaggerize(router);
     router.metadata = options;
     addCommonMiddleware(router);

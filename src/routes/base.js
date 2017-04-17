@@ -1,15 +1,15 @@
 'use strict';
-var express = require('express');
-var config = require('nconf');
-var routerOptions = config.get('expressApp').routerOptions;
-var router = express.Router(routerOptions);
-var packageJson = require('../../package.json');
-var testErrors = require('../routes/test-errors');
-var path = require('path');
-var boom = require('boom');
-var swagger = require('swagger-spec-express');
+const express = require('express');
+const config = require('nconf');
+const routerOptions = config.get('expressApp').routerOptions;
+const router = express.Router(routerOptions);
+const packageJson = require('../../package.json');
+const testErrors = require('../routes/test-errors');
+const path = require('path');
+const boom = require('boom');
+const swagger = require('swagger-spec-express');
 swagger.swaggerise(router);
-var appInfoSchema = require('./app-info.json');
+const appInfoSchema = require('./app-info.json');
 swagger.common.addTag({
     name: "Info",
     description: "Info about the api"
@@ -17,8 +17,8 @@ swagger.common.addTag({
 swagger.common.addModel(appInfoSchema);
 
 router.get('/', function (req, res) {
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    var appInfo = {
+    const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    const appInfo = {
         appName: packageJson.name,
         version: packageJson.version,
         deploymentDate: packageJson.deploymentDate,
