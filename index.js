@@ -1,7 +1,6 @@
 'use strict';
 require('./config/init-nconf');
 require('./src/logging/index');
-require("nodejs-dashboard");
 const util = require('util');
 const config = require('nconf');
 const packageJson = require('./package.json');

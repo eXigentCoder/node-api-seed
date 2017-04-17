@@ -6,7 +6,7 @@
   "description": "The seed for pretty much any api I write in node.js",
   "main": "index.js",
   "scripts": {
-    "start": "nodejs-dashboard node index.js",
+    "start": "node .",
     "watch": "nodemon .",
     "test": "snyk test && node_modules/.bin/istanbul --include-all-sources cover -x \"public/**\" -x \"report/**\" -x \"utilities/**\" node_modules/mocha/bin/_mocha \"test/**/*.js\"",
     "mocha": "node_modules/.bin/_mocha \"test/**/*.js\"",
@@ -61,7 +61,6 @@
     "nconf": "0.8.4",
     "node-glob-loader": "0.0.15",
     "node-uuid": "1.4.8",
-    "nodejs-dashboard": "0.4.1",
     "passport": "0.3.2",
     "passport-jwt": "2.2.1",
     "password-generator": "2.1.0",
