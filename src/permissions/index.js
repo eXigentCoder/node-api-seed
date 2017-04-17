@@ -91,11 +91,6 @@ function checkRoleAndOwner(resource, permissions, ownership) {
             if (userIdString !== owner.toString()) {
                 return next(boom.forbidden(missingPermissionsErrorMessage));
             }
-
-            if (!isAllowed) {
-                return next(boom.forbidden(missingPermissionsErrorMessage));
-            }
-
             return next();
         }
     };
