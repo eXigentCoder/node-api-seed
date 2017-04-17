@@ -11,6 +11,8 @@ const ajv = new Ajv({
     verbose: true,
     format: 'full'
 });
+const jsf = require('json-schema-faker');
+customFormats.addAllToJsf(jsf);
 customFormats.addAllToAjv(ajv);
 
 module.exports = {
@@ -80,9 +82,8 @@ function removeSchema(schemaKeyRef) {
 function ensureValid(schemaKeyRef, data) {
     const result = validate(schemaKeyRef, data);
     if (!result.valid) {
-        const error = new Error(result.message);
-        error.errors = result.errors;
-        throw error;
+        result.inputData = data;
+        throw new Error(JSON.stringify(result, null, 4));
     }
 }
 
@@ -102,7 +103,6 @@ function getErrorMessage(errors) {
     });
     return message;
 }
-
 
 /**
  * Validate data using schema
