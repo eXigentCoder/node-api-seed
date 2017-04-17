@@ -48,6 +48,7 @@
     "express": "4.15.2",
     "express-brute": "1.0.1",
     "express-brute-mongo": "1.0.0",
+    "express-sanitize-escape": "^1.1.0",
     "get-parameter-names": "0.3.0",
     "helmet": "3.5.0",
     "json-schema-faker": "0.4.1",

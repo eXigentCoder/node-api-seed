@@ -16,6 +16,7 @@ const helmet = require('helmet');
 const rateLimit = require('./rate-limit');
 const authentication = require('./authentication');
 const permissions = require('./permissions');
+const expressSanitized = require('express-sanitize-escape');
 
 module.exports = function initialise(callback) {
     async.waterfall([
@@ -42,12 +43,14 @@ function createApp(callback) {
         type: ['json', 'application/csp-report']
     }));
     app.use(bodyParser.urlencoded({extended: true}));
+    app.use(expressSanitized.middleware());
     configureRequestId(app);
     configureMorgan(app);
     app.use(function (req, res, next) {
         req.process = {};
         next();
     });
+    console.log("App Created on " + app.settings.env);
     callback(null, app);
 }
 
