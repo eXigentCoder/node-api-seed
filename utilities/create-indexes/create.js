@@ -3,6 +3,7 @@ require('../../config/init-nconf');
 const async = require("async");
 const schemas = [
     require('../../src/routes/users/user.json'),
+    require('../../src/routes/leads/lead.json')
 ];
 const mongo = require('../../src/mongo');
 const pluralize = require('pluralize');
@@ -32,7 +33,7 @@ function processAllItems(callback) {
             itemsToIndex.push(createHistoryIndexItem(item));
         }
     });
-    async.each(itemsToIndex, ensureCollectionExists, callback);
+    async.eachSeries(itemsToIndex, ensureCollectionExists, callback);
 }
 
 function createHistoryIndexItem(item) {
