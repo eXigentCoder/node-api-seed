@@ -17,6 +17,7 @@ module.exports = {
             initialise('loginUsername'),
             initialise('loginIp')
         ], function (err) {
+            console.log("Rate limits initialised");
             return callback(err, app);
         });
     },

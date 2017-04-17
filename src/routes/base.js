@@ -9,27 +9,40 @@ const path = require('path');
 const boom = require('boom');
 const swagger = require('swagger-spec-express');
 swagger.swaggerise(router);
+const moment = require('moment');
 const appInfoSchema = require('./app-info.json');
 swagger.common.addTag({
     name: "Info",
     description: "Info about the api"
 });
 swagger.common.addModel(appInfoSchema);
+let commitHash = "Unknown";
+module.exports = router;
+
+require('child_process').exec('git rev-parse HEAD', function (err, stdout) {
+    if (err) {
+        console.error(err);
+    }
+    commitHash = stdout.trim();
+});
 
 router.get('/', function (req, res) {
     const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    const humanReadableUptime = moment.utc().subtract(process.uptime(), 'seconds').fromNow();
     const appInfo = {
         appName: packageJson.name,
         version: packageJson.version,
+        versionHash: commitHash,
         deploymentDate: packageJson.deploymentDate,
         environment: config.get('NODE_ENV'),
         uptime: process.uptime(),
+        humanReadableUptime: humanReadableUptime,
         swaggerUiUrl: fullUrl + 'apidocs'
     };
     if (config.get('swagger').hideUi) {
         delete appInfo.swaggerUiUrl;
     }
-    res.status(200).json(appInfo);
+    return res.status(200).json(appInfo);
 }).describe({
     security: false,
     summary: "Get API Details",
@@ -58,6 +71,10 @@ router.use('/apidocs', function (req, res, next) {
         return next(boom.forbidden("Swagger ui is not allowed for this environment."));
     }
     return express.static(path.join(__dirname, '../../public'))(req, res, next);
+});
+
+router.use('/favicon.ico', function (req, res, next) {
+    return express.static(path.join(__dirname, '../../public/favicon.ico'))(req, res, next);
 });
 
 router.post('/report-violation', function logCspViolation(req, res) {
@@ -95,5 +112,3 @@ router.get("/apidocs.json", function getApiDocument(req, res, next) {
 if (config.get('errorHandling').exposeErrorRoutes) {
     router.use('/error', testErrors);
 }
-
-module.exports = router;
