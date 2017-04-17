@@ -1,5 +1,5 @@
 'use strict';
-const mongo = require('./index');
+const mongo = require('./');
 const aqp = require('api-query-params').default;
 const boom = require('boom');
 const _ = require('lodash');
@@ -20,6 +20,7 @@ module.exports = function (metadata) {
         deleteByIdentifier: deleteByIdentifier(metadata)
     };
 };
+module.exports.getExistingMetadata = getExistingMetadata;
 
 function query(metadata) {
     return function (req, res, next) {
@@ -92,8 +93,7 @@ function findByIdentifier(metadata) {
         if (_.isNil(identifier)) {
             return next(new Error("Object has no identifier"));
         }
-        let mongoQuery = getIdentifierQuery(identifier, metadata);
-        mongoQuery = _.merge({}, req.query, mongoQuery);
+        const mongoQuery = getIdentifierQuery(identifier, metadata);
         const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
         mongo.db.collection(metadata.collectionName)
             .findOne(parsedQuery.filter, dataRetrieved);
@@ -157,7 +157,7 @@ function updateStatus(metadata) {
             .findOneAndUpdate(parsedQuery.filter, updateStatement, options, updateComplete);
         function updateComplete(err, result) {
             if (err) {
-                return next();
+                return next(err);
             }
             req.process.originalItem = result.value;
             return next();
@@ -181,7 +181,7 @@ function update(metadata) {
             .findOneAndReplace(parsedQuery.filter, replacement, options, updateComplete);
         function updateComplete(err, result) {
             if (err) {
-                return next();
+                return next(err);
             }
             req.process.originalItem = result.value;
             return next();
@@ -200,7 +200,8 @@ function writeHistoryItem(metadata) {
     };
 }
 
-function getExistingMetadata(metadata) {
+//todo rk this should actually be split out, it gets metadata and sets it on the req.body, should be on process.
+function getExistingMetadata(metadata, targetObjectPath) {
     return function (req, res, next) {
         const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
@@ -227,7 +228,17 @@ function getExistingMetadata(metadata) {
 
             metadataFields.forEach(function (field) {
                 if (document[field]) {
-                    req.body[field] = document[field];
+                    if (targetObjectPath) {
+                        let obj = _.get(req, targetObjectPath);
+                        if (!obj) {
+                            //todo if targetObjectPath contains . need to check that each sub-object exists
+                            _.set(req, targetObjectPath, {});
+                            obj = _.get(req, targetObjectPath);
+                        }
+                        obj[field] = document[field];
+                    } else {
+                        req.body[field] = document[field];
+                    }
                 }
             });
             return next();

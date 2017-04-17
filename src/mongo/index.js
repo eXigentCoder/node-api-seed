@@ -57,6 +57,7 @@ function connectToDb(app, callback) {
             return callback(err);
         }
         state.db = db;
+        console.log("Mongodb connected");
         callback(null, app);
     }
 }
