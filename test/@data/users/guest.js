@@ -33,7 +33,9 @@ module.exports = function (callback) {
             statusLog: [
                 {
                     status: "active",
-                    data: {},
+                    data: {
+                        reason: "testing"
+                    },
                     statusDate: now
                 }
             ]

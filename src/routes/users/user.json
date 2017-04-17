@@ -22,13 +22,13 @@
     "updateStatusSchema": {
         "type": "object",
         "properties": {
-            "comment": {
+            "reason": {
                 "type": "string",
                 "minLength": 1
             }
         },
         "required": [
-            "comment"
+            "reason"
         ],
         "additionalProperties": true
     },

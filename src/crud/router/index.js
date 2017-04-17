@@ -1,7 +1,7 @@
 'use strict';
 const swagger = require('swagger-spec-express');
 const express = require('express');
-const buildMetadata = require('../../metadata/index');
+const buildMetadata = require('../../metadata');
 const config = require('nconf');
 const _ = require('lodash');
 

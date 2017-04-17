@@ -1,7 +1,8 @@
 'use strict';
 const output = require('../output');
 const applyMaps = require('./shared/apply-maps');
-const ensureSchemaSet = require('./../metadata/ensure-schema-set');
+const ensureSchemaSet = require('../metadata/ensure-schema-set');
+const filterPropertiesForCreation = require('../metadata/filter-properties-for-creation');
 const getValidateFunction = require('./shared/get-validate-function');
 const addModel = require('../swagger/add-model');
 const versionInfo = require('../version-info');
@@ -13,12 +14,16 @@ const boom = require('boom');
 const util = require('util');
 const _ = require('lodash');
 
-module.exports = function addCreateRoute(router, crudMiddleware, maps) {
+function addCreateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
+    filterPropertiesForCreation(router.metadata.schemas[schemaName]);
     router.post('/', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.creationDescription || description(router.metadata));
     return router;
-};
+}
+addCreateRoute.setStatusIfApplicable = setStatusIfApplicable;
+addCreateRoute.setOwnerIfApplicable = setOwnerIfApplicable;
+module.exports = addCreateRoute;
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
@@ -93,7 +98,9 @@ function setStatusIfApplicable(metadata) {
         req.body.statusDate = moment.utc().toDate();
         req.body.statusLog = [{
             status: req.body.status,
-            data: null,
+            data: {
+                reason: "Initial Status" //todo need to set this logically somehow
+            },
             statusDate: req.body.statusDate
         }];
         return next();
@@ -117,7 +124,9 @@ function setOwnerIfApplicable(metadata) {
         req.body.ownerDate = moment.utc().toDate();
         req.body.ownerLog = [{
             owner: req.body.owner,
-            data: null,
+            data: {
+                reason: "Initial Owner" //todo from schema?
+            },
             ownerDate: req.body.ownerDate
         }];
         return next();

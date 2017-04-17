@@ -3,10 +3,16 @@ const inferNames = require('./infer-names');
 const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
 const _ = require('lodash');
 const ensureSchemaSet = require('./ensure-schema-set');
-
+const hydrateSchema = require('./hydrate-schema');
+const filterPropertiesForOutput = require('./filter-properties-for-output');
 module.exports = function Metadata(metadata) {
+    metadata.schemas = _.cloneDeep(metadata.schemas);
     validate(metadata);
+    Object.keys(metadata.schemas).forEach(function (key) {
+        hydrateSchema(metadata.schemas[key]);
+    });
     ensureSchemaSet(metadata, 'output', 'Output');
+    filterPropertiesForOutput(metadata.schemas.output);
     inferNames(metadata);
     setAOrAn(metadata);
     setIdentifierInfo(metadata);

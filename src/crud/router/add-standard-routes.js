@@ -7,6 +7,7 @@ const update = require('../update');
 const updateStatus = require('../update-status');
 const getByIdAndUse = require('../get-by-id-and-use');
 const deleteById = require('../delete-by-id');
+
 module.exports = function addStandardRoutes(router) {
     if (!_.isObject(router.metadata)) {
         throw new Error("Router.metadata must be set!");
@@ -68,4 +69,3 @@ module.exports = function addStandardRoutes(router) {
         return getByIdAndUse(router, path, routerOrMiddleware, crudMiddleware, maps);
     };
 };
-

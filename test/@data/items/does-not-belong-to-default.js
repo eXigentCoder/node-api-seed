@@ -12,7 +12,9 @@ module.exports = {
     ownerDate: now,
     ownerLog: [{
         owner: userId,
-        data: null,
+        data: {
+            reason: "testing"
+        },
         ownerDate: now
     }],
     versionInfo: {

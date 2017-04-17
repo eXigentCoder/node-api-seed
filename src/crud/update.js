@@ -1,7 +1,8 @@
 'use strict';
 const output = require('../output');
 const applyMaps = require('./shared/apply-maps');
-const ensureSchemaSet = require('./../metadata/ensure-schema-set');
+const ensureSchemaSet = require('../metadata/ensure-schema-set');
+const filterPropertiesForUpdate = require('../metadata/filter-properties-for-update');
 const getValidateFunction = require('./shared/get-validate-function');
 const addModel = require('../swagger/add-model');
 const _ = require('lodash');
@@ -12,8 +13,14 @@ const permissions = require('../permissions');
 
 module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
-    router.put('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
-        .describe(router.metadata.updateDescription || description(router.metadata));
+    filterPropertiesForUpdate(router.metadata.schemas[schemaName]);
+    const routeName = '/:' + router.metadata.identifierName;
+    const routeAction = getSteps(router, crudMiddleware, maps);
+    const routeDescription = router.metadata.updateDescription || description(router.metadata);
+
+    router.put(routeName, routeAction).describe(_.cloneDeep(routeDescription));
+    router.patch(routeName, routeAction).describe(_.cloneDeep(routeDescription));
+
     return router;
 };
 
@@ -47,7 +54,6 @@ function description(metadata) {
             }
         ],
         common: {
-
             responses: ["500", "400", "401", "404", '403'],
             parameters: {
                 header: [correlationIdOptions.reqHeader]
