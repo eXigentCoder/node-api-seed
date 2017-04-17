@@ -1,10 +1,8 @@
 'use strict';
-const _ = require('lodash');
 const schema = require('./item.json');
 const router = require('../../../crud/router')({
     schemas: {
-        core: schema,
-        output: _.merge({}, schema, require('./item-output.json'))
+        core: schema
     }
 });
 router.crudMiddleware = require('../../../mongo/crud')(router.metadata);

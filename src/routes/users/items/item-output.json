@@ -1,9 +1,0 @@
-{
-    "properties": {
-        "owner": {
-            "type": "string",
-            "format": "mongoId",
-            "mongoId": false
-        }
-    }
-}
