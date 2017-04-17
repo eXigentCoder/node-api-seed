@@ -6,6 +6,7 @@ let nodeAcl = null;
 const util = require('util');
 const _ = require('lodash');
 const messageTemplate = 'User %s does not have all of the required permissions %j to perform this action on the "%s" resource.';
+const rules = require('./rules.json');
 module.exports = {
     initialise: initialise,
     checkRoleOnly: checkRoleOnly,
@@ -23,27 +24,12 @@ function initialise(app, callback) {
     const prefix = 'acl-';
     nodeAcl = new NodeAcl(new NodeAcl.mongodbBackend(mongo.db, prefix));
     module.exports.nodeAcl = nodeAcl;
-    let aclRules = [
-        {
-            roles: ['member'],
-            allows: [
-                {resources: ['items'], permissions: ['query', 'getById']},
-                {resources: ['users'], permissions: ['query', 'getById']}
-            ]
-        }, {
-            roles: 'admin',
-            allows: [
-                {resources: ['users', 'items'], permissions: '*'}
-            ]
-        }, {
-            roles: 'guest',
-            allows: []
-        }
-    ];
-    if (app.aclRules) {
+    let aclRules = rules;
+    if (app && app.aclRules) {
         aclRules = app.aclRules;
     }
     nodeAcl.allow(aclRules, function (err) {
+        console.log("Permissions initialised");
         return callback(err, app);
     });
 }
@@ -74,8 +60,8 @@ function checkRoleAndOwner(resource, permissions, ownership) {
             permissions = [permissions];
         }
         const userIdString = req.user._id.toString();
+        const missingPermissionsErrorMessage = util.format(messageTemplate, userIdString, permissions, resource);
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
-        const message = util.format(messageTemplate, userIdString, permissions, resource);
 
         function roleChecked(err, isAllowed) {
             if (err) {
@@ -85,16 +71,31 @@ function checkRoleAndOwner(resource, permissions, ownership) {
                 return next();
             }
             if (!ownership || ownership.doNotTrack || !ownership.permissions) {
-                return next(boom.forbidden(message));
+                return next(boom.forbidden(missingPermissionsErrorMessage));
             }
+            //check if ownership confers the permission:
             permissions.forEach(function (permission) {
                 if (ownership.permissions.indexOf(permission) < 0) {
-                    return next(boom.forbidden(message));
+                    return next(boom.forbidden(missingPermissionsErrorMessage));
                 }
             });
-            if (userIdString !== req.body.owner.toString()) {
-                return next(boom.forbidden(message));
+            //ensure there is an owner
+            let owner = req.body.owner;
+            if (req.process.metadataFields) {
+                owner = req.process.metadataFields.owner;
             }
+            if (!owner) {
+                return next(boom.badImplementation("Owner was null, make sure you have called getExistingMetadata first"));
+            }
+            //check if owner matches current user
+            if (userIdString !== owner.toString()) {
+                return next(boom.forbidden(missingPermissionsErrorMessage));
+            }
+
+            if (!isAllowed) {
+                return next(boom.forbidden(missingPermissionsErrorMessage));
+            }
+
             return next();
         }
     };
