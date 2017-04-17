@@ -3,7 +3,7 @@ require('../../config/init-nconf');
 const async = require("async");
 const schemas = [
     require('../../src/routes/users/user.json'),
-    require('../../src/routes/leads/lead.json')
+    require('../../src/routes/users/items/item.json')
 ];
 const mongo = require('../../src/mongo');
 const pluralize = require('pluralize');
