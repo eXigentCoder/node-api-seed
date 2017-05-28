@@ -1,5 +1,7 @@
-version: v1.5.2
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.7.1
 ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:moment:20161019':
     - express-brute-mongo > moment:
@@ -7,3 +9,44 @@ patch:
   'npm:request:20160119':
     - nodejs-dashboard > blessed-contrib > picture-tube > request:
         patched: '2016-11-18T11:48:06.051Z'
+  'npm:ms:20170412':
+    - nodejs-dashboard > socketio > socket.io > engine.io > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - api-query-params > ava > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io-client > socket.io-parser > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socketio > socket.io > socket.io-parser > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io > socket.io-adapter > socket.io-parser > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socketio > socket.io > socket.io-adapter > socket.io-parser > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io > socket.io-client > socket.io-parser > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socketio > socket.io > socket.io-client > socket.io-parser > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io > engine.io > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io > socket.io-parser > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io > socket.io-adapter > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socketio > socket.io > socket.io-adapter > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io > socket.io-client > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socketio > socket.io > socket.io-client > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io-client > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io-client > engine.io-client > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socket.io > socket.io-client > engine.io-client > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socketio > socket.io > socket.io-client > engine.io-client > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
+    - nodejs-dashboard > socketio > socket.io > debug > ms:
+        patched: '2017-05-28T06:28:10.510Z'
