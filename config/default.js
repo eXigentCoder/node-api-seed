@@ -40,7 +40,7 @@ module.exports = function(options) {
                 showLevel: true,
                 zippedArchive: true,
                 handleExceptions: true,
-                datePattern: './logs/ddd-HH',
+                datePattern: `./logs/${options.source}/ddd-HH`,
                 prepend: true
             },
             loggly: {
@@ -55,7 +55,7 @@ module.exports = function(options) {
                     username: '',
                     password: ''
                 },
-                tags: [],
+                tags: [options.source],
                 handleExceptions: true
             },
             morgan: {
