@@ -2,7 +2,7 @@
 const chai = require('chai');
 const dirtyChai = require('dirty-chai');
 chai.use(dirtyChai);
-require('../../config/init-nconf');
+require('../../config/init-nconf')('Tests');
 require('../../src/logging/index');
 
 global.chai = chai;

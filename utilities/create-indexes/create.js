@@ -1,5 +1,5 @@
 'use strict';
-require('../../config/init-nconf');
+require('../../config/init-nconf')('Script-CreateIndexes');
 const async = require('async');
 const schemas = [
     require('../../src/routes/users/user.json'),

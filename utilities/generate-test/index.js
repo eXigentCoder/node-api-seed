@@ -1,5 +1,5 @@
 'use strict';
-require('../../config/init-nconf');
+require('../../config/init-nconf')('Script-GenerateTests');
 const fs = require('fs');
 const getSwaggerDataFromRouteStack = require('./get-swagger-route-data');
 const eol = require('os').EOL;
