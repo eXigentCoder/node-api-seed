@@ -39,14 +39,14 @@ function parseId(id) {
 
 function closeConnection(callback) {
     if (!state.db) {
-        return callback(new Error("db was null when calling close, may already be closed"));
+        return callback(new Error('db was null when calling close, may already be closed'));
     }
     state.db.close(callback);
 }
 
 function connectToDb(app, callback) {
     if (state.db) {
-        return process.nextTick(function () {
+        return process.nextTick(function() {
             callback(null, app);
         });
     }
@@ -57,7 +57,7 @@ function connectToDb(app, callback) {
             return callback(err);
         }
         state.db = db;
-        console.log("Mongodb connected");
+        console.log('Mongodb connected');
         callback(null, app);
     }
 }

@@ -33,26 +33,28 @@ module.exports = {
  */
 function addSchema(schema, key) {
     if (!schema) {
-        throw new Error("Schema is required");
+        throw new Error('Schema is required');
     }
     if (_.isArray(schema)) {
         if (key) {
-            throw new Error("Cannot call add schema with an array of schemas and a key. Id from each schema will be used as the key");
+            throw new Error(
+                'Cannot call add schema with an array of schemas and a key. Id from each schema will be used as the key'
+            );
         }
-        return schema.forEach(function (schemaItem) {
+        return schema.forEach(function(schemaItem) {
             addSchema(schemaItem, null);
         });
     }
     if (!_.isObject(schema)) {
-        throw new Error("Schema must be an object");
+        throw new Error('Schema must be an object');
     }
     let schemaIdentifier = key || schema.id;
     if (!schemaIdentifier) {
-        throw new Error("No key was provided and no id was set");
+        throw new Error('No key was provided and no id was set');
     }
     const existingSchema = ajv.getSchema(schemaIdentifier);
     if (existingSchema) {
-        console.warn("Already added schema with key " + schemaIdentifier);
+        console.warn('Already added schema with key ' + schemaIdentifier);
         return;
     }
     ajv.addSchema(schema, key);
@@ -98,7 +100,7 @@ function getErrorMessage(errors) {
     if (message.indexOf('should NOT have additional properties') < 0) {
         return message;
     }
-    errors.forEach(function (error) {
+    errors.forEach(function(error) {
         message += '. Property : ' + error.params.additionalProperty;
     });
     return message;
@@ -113,10 +115,10 @@ function getErrorMessage(errors) {
  */
 function validate(schemaKeyRef, data) {
     if (!schemaKeyRef) {
-        throw new Error("schemaKeyRef is required");
+        throw new Error('schemaKeyRef is required');
     }
     if (_.isArray(schemaKeyRef)) {
-        throw new Error("schemaKeyRef cannot be an array");
+        throw new Error('schemaKeyRef cannot be an array');
     }
     if (_.isObject(schemaKeyRef) && schemaKeyRef.id) {
         const existingSchema = ajv.getSchema(schemaKeyRef.id);
@@ -127,8 +129,7 @@ function validate(schemaKeyRef, data) {
     const result = {};
     try {
         result.valid = ajv.validate(schemaKeyRef, data);
-    }
-    catch (err) {
+    } catch (err) {
         result.valid = false;
         result.errors = [err];
         result.message = err.message;
@@ -158,24 +159,27 @@ function getSchema(keyRef) {
  */
 function filterDataBySchema(schemaKeyRef, data) {
     if (!schemaKeyRef) {
-        throw new Error("SchemaKeyRef is required.");
+        throw new Error('SchemaKeyRef is required.');
     }
     if (!data) {
-        throw new Error("Data is required.");
+        throw new Error('Data is required.');
     }
     if (!_.isObject(data)) {
-        throw new Error("Data must be an object.");
+        throw new Error('Data must be an object.');
     }
     if (_.isString(schemaKeyRef)) {
         const schemaFn = getSchema(schemaKeyRef);
         if (schemaFn && schemaFn.schema) {
             return jsonSchemaFilter(schemaFn.schema, data);
         }
-        throw new Error("Can't map data by schema key when the schema has not yet been added. Key : " + schemaKeyRef
-            + ". Either call addSchema first or pass in the schema object.");
+        throw new Error(
+            "Can't map data by schema key when the schema has not yet been added. Key : " +
+                schemaKeyRef +
+                '. Either call addSchema first or pass in the schema object.'
+        );
     }
     if (!_.isObject(schemaKeyRef)) {
-        throw new Error("schemaKeyRef must be an object or string.");
+        throw new Error('schemaKeyRef must be an object or string.');
     }
     return jsonSchemaFilter(schemaKeyRef, data);
 }

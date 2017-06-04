@@ -4,11 +4,8 @@ const async = require('async');
 const path = require('path');
 const _ = require('lodash');
 
-module.exports = function (callback) {
-    async.waterfall([
-        findCollections,
-        findDataForAllCollections
-    ], callback);
+module.exports = function(callback) {
+    async.waterfall([findCollections, findDataForAllCollections], callback);
 };
 
 function findCollections(callback) {
@@ -22,7 +19,7 @@ function findCollections(callback) {
         const data = {
             collections: []
         };
-        results.forEach(function (result) {
+        results.forEach(function(result) {
             data.collections.push({
                 name: path.basename(result),
                 globPath: result
@@ -66,7 +63,7 @@ function getFileData(collection, result, callback) {
     return callback();
 }
 function loadFileDataAsync(collection, loadFunction, result, callback) {
-    loadFunction(function (err, data) {
+    loadFunction(function(err, data) {
         if (err) {
             return callback(err);
         }

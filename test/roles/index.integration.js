@@ -9,13 +9,10 @@ const resource = 'items';
 const permissionsToAssign = ['getById'];
 const role = 'member';
 
-describe('Test access control lists', function () {
+describe('Test access control lists', function() {
     this.timeout(common.defaultTimeout);
-    it('Happy - Should be allowed', function (done) {
-        async.waterfall([
-            addUserRoles,
-            checkAllowed
-        ], done);
+    it('Happy - Should be allowed', function(done) {
+        async.waterfall([addUserRoles, checkAllowed], done);
 
         function addUserRoles(callback) {
             permissions.nodeAcl.addUserRoles(userId, role, callback);
@@ -29,7 +26,7 @@ describe('Test access control lists', function () {
                 }
             };
             const res = {};
-            const next = function (err) {
+            const next = function(err) {
                 return callback(err);
             };
             middleware(req, res, next);

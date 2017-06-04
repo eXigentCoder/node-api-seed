@@ -1,6 +1,6 @@
 'use strict';
 require('../../config/init-nconf');
-const async = require("async");
+const async = require('async');
 const schemas = [
     require('../../src/routes/users/user.json'),
     require('../../src/routes/users/items/item.json')
@@ -10,24 +10,21 @@ const pluralize = require('pluralize');
 const _ = require('lodash');
 
 module.exports = function createAll(callback) {
-    async.waterfall([
-        connectToDb,
-        processAllItems
-    ], callback);
+    async.waterfall([connectToDb, processAllItems], callback);
 };
 
 function connectToDb(callback) {
     if (mongo.db) {
         return callback();
     }
-    mongo.connect(null, function (err) {
+    mongo.connect(null, function(err) {
         return callback(err);
     });
 }
 
 function processAllItems(callback) {
     const itemsToIndex = [];
-    schemas.forEach(function (item) {
+    schemas.forEach(function(item) {
         itemsToIndex.push(item);
         if (item.trackHistory) {
             itemsToIndex.push(createHistoryIndexItem(item));
@@ -39,14 +36,16 @@ function processAllItems(callback) {
 function createHistoryIndexItem(item) {
     const newItem = {
         namePlural: (item.namePlural || pluralize.plural(item.name)) + '-history',
-        indexes: [{
-            name: 'historyId',
-            fields: {historyId: 1},
-            background: true,
-            unique: false
-        }]
+        indexes: [
+            {
+                name: 'historyId',
+                fields: { historyId: 1 },
+                background: true,
+                unique: false
+            }
+        ]
     };
-    item.indexes.forEach(function (index) {
+    item.indexes.forEach(function(index) {
         if (!index.includeInHistory) {
             return;
         }
@@ -63,7 +62,7 @@ function ensureCollectionExists(item, callback) {
         if (err) {
             return callback(err);
         }
-        mongo.db.collection(item.collectionName).indexes(function (getIndexErr, indexes) {
+        mongo.db.collection(item.collectionName).indexes(function(getIndexErr, indexes) {
             if (getIndexErr) {
                 return callback(getIndexErr);
             }
@@ -97,24 +96,26 @@ function processIndex(item, indexToCreate, callback) {
     }
     let existingIndex = findExistingIndex(indexToCreate, item.existingIndexes);
     if (!existingIndex) {
-        return mongo.db.collection(item.collectionName)
+        return mongo.db
+            .collection(item.collectionName)
             .createIndex(indexToCreate.fields, indexOptions, callback);
     }
     if (!shouldDropAndCreate(indexToCreate, item.existingIndexes)) {
         return callback();
     }
-    mongo.db.collection(item.collectionName).dropIndex(existingIndex.name, function (err) {
+    mongo.db.collection(item.collectionName).dropIndex(existingIndex.name, function(err) {
         if (err) {
             return callback(err);
         }
-        return mongo.db.collection(item.collectionName)
+        return mongo.db
+            .collection(item.collectionName)
             .createIndex(indexToCreate.fields, indexOptions, callback);
     });
 }
 
 function findExistingIndex(indexToCreate, existingIndexes) {
     let foundIndex = null;
-    existingIndexes.some(function (existingIndex) {
+    existingIndexes.some(function(existingIndex) {
         if (_.isEqual(existingIndex.key, indexToCreate.fields)) {
             foundIndex = existingIndex;
             return true;

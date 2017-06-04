@@ -7,11 +7,18 @@ const packageJson = require('./package.json');
 const port = config.get('PORT');
 const createApp = require('./src/app.js');
 
-createApp(function (err, app) {
+createApp(function(err, app) {
     if (err) {
         throw err;
     }
-    app.listen(port, function () {
-        console.info(util.format('%s is listening at http://%s:%s', packageJson.name, config.get('host'), port));
+    app.listen(port, function() {
+        console.info(
+            util.format(
+                '%s is listening at http://%s:%s',
+                packageJson.name,
+                config.get('host'),
+                port
+            )
+        );
     });
 });

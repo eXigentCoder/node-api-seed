@@ -14,7 +14,7 @@ const boom = require('boom');
  */
 module.exports = function ensureExistsOnReq(path, options) {
     validate(path, options);
-    return function (req, res, next) {
+    return function(req, res, next) {
         if (!_.isNil(_.get(req, path))) {
             return next();
         }
@@ -26,24 +26,30 @@ module.exports = function ensureExistsOnReq(path, options) {
             return next(boom.notFound(options.message));
         }
         if (options.metadata) {
-            const message = options.metadata.title + ' with the ' + options.metadata.identifierName
-                + ' of ' + req.params[options.metadata.identifierName] + ' could not be found';
+            const message =
+                options.metadata.title +
+                ' with the ' +
+                options.metadata.identifierName +
+                ' of ' +
+                req.params[options.metadata.identifierName] +
+                ' could not be found';
             return next(boom.notFound(message));
         }
-        throw new Error("Should not be possible due to the ensureExactly1KeyTruthy method in validate, called above");
+        throw new Error(
+            'Should not be possible due to the ensureExactly1KeyTruthy method in validate, called above'
+        );
     };
 };
 
 function validate(path, options) {
     if (!options || !_.isObject(options)) {
-        throw new Error("Options must be an object when calling ensureExistsOn");
+        throw new Error('Options must be an object when calling ensureExistsOn');
     }
     if (!_.isString(path)) {
-        throw new Error("Keys must be provided as a string when calling ensureExistsOn");
+        throw new Error('Keys must be provided as a string when calling ensureExistsOn');
     }
     objectPathValidation.ensureExactly1Key(options, ['default', 'message', 'metadata'], 'truthy');
     if (options.metadata) {
         objectPathValidation.ensureAllKeys(options.metadata, ['title', 'identifierName'], 'truthy');
     }
 }
-

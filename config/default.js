@@ -1,5 +1,5 @@
 'use strict';
-const passportJWT = require("passport-jwt");
+const passportJWT = require('passport-jwt');
 const ExtractJwt = passportJWT.ExtractJwt;
 const util = require('util');
 const config = require('nconf');
@@ -42,7 +42,8 @@ module.exports = {
             datePattern: './logs/ddd-HH',
             prepend: true
         },
-        loggly: { //todo, configure or remove
+        loggly: {
+            //todo, configure or remove
             // Logs to the remote loggly service. See https://www.loggly.com/
             disabled: true, // controls if this method of logging is disabled or not
             level: 'silly',
@@ -61,17 +62,23 @@ module.exports = {
             disabled: false, // controls if this method of logging is disabled or not
             skip: {
                 paths: ['/public/', '/favicon.ico', '/apidocs/'],
-                headers: [{key: 'user-agent', value: 'AlwaysOn'}]
+                headers: [{ key: 'user-agent', value: 'AlwaysOn' }]
             },
             loggers: [
                 {
-                    format: util.format('[Start] :method ":url" :body RequestId-:req[%s] ":user-agent"', reqCorrelationHeaderName.toLowerCase()),
+                    format: util.format(
+                        '[Start] :method ":url" :body RequestId-:req[%s] ":user-agent"',
+                        reqCorrelationHeaderName.toLowerCase()
+                    ),
                     options: {
                         immediate: true
                     }
                 },
                 {
-                    format: util.format('[End] :method ":url" :status :response-time RequestId-:res[%s] ":user-agent"', resCorrelationHeaderName.toLowerCase()),
+                    format: util.format(
+                        '[End] :method ":url" :status :response-time RequestId-:res[%s] ":user-agent"',
+                        resCorrelationHeaderName.toLowerCase()
+                    ),
                     options: {
                         immediate: false
                     }
@@ -86,19 +93,19 @@ module.exports = {
         },
         objectReplacements: [
             // replaces values in objects to be logged. key must be a string, value can either be a value to replace with or a function that takes in the existing value as its only argument.
-            {key: 'password', value: '****'}
+            { key: 'password', value: '****' }
         ],
         graylog: {
             disabled: true,
-            name: "web-endpoint",
+            name: 'web-endpoint',
             level: 'silly',
             handleExceptions: true,
             graylog: {
-                servers: [{host: '127.0.0.1', port: 12201}],
+                servers: [{ host: '127.0.0.1', port: 12201 }],
                 facility: pacakgeJson.name,
                 bufferSize: 1400
             },
-            staticMeta: {env: config.get('NODE_ENV')}
+            staticMeta: { env: config.get('NODE_ENV') }
         }
     },
     errorHandling: {
@@ -111,44 +118,47 @@ module.exports = {
         writeFile: false, // Controls if the constructed swagger.json file is written to disk. Useful if you need to distribute it or debug.
         appendPortToHost: false, // If you are running on localhost for example, you would want this to be true so that requests will go to localhost:port however it may be useful in other environments too.
         schemes: ['http'],
-        security: [{jwt: []}],
+        security: [{ jwt: [] }],
         defaultSecurity: 'jwt',
         securityDefinitions: {
             jwt: {
-                type: "oauth2",
+                type: 'oauth2',
                 // description: "Json web tokens, see",
                 // name: "Authorization",
                 // in: 'header',
                 flow: 'password',
                 tokenUrl: '/authentication/application',
                 scopes: {
-                    "write:users": "modify users in the system",
-                    "read:pets": "read users in the system"
+                    'write:users': 'modify users in the system',
+                    'read:pets': 'read users in the system'
                 }
             }
         }
     },
     expressApp: {
-        trustProxy: false,// todo Used for if you're behind a reverse proxy (Heroku, Bluemix, AWS if you use an ELB, custom Nginx setup, etc). See https://expressjs.com/en/guide/behind-proxies.html
+        trustProxy: false, // todo Used for if you're behind a reverse proxy (Heroku, Bluemix, AWS if you use an ELB, custom Nginx setup, etc). See https://expressjs.com/en/guide/behind-proxies.html
         jsonSpaces: 0, // when you do res.json({...}) this value controls the spacing when stringifying.
         routerOptions: {
             mergeParams: true // Allows routers to inherit parameters from their ancestor routes.
         },
         corsOptions: {
-            origin: [host + ':' + port],// todo If you need CORS for other origins, set that up here. See https://www.npmjs.com/package/cors for info.
+            origin: [host + ':' + port], // todo If you need CORS for other origins, set that up here. See https://www.npmjs.com/package/cors for info.
             preflightContinue: false // don't call next() for the preflight OPTIONS verb.
         },
-        helmetOptions: { //todo setup security options, see https://www.npmjs.com/package/helmet
-            contentSecurityPolicy: {// loading resources
+        helmetOptions: {
+            //todo setup security options, see https://www.npmjs.com/package/helmet
+            contentSecurityPolicy: {
+                // loading resources
                 directives: {
-                    defaultSrc: ["'self'"],//todo only allow resources (css, js, html, etc) from our api.
-                    styleSrc: ["'self'", "'unsafe-inline'"],// inline css and css sections in headers.
+                    defaultSrc: ["'self'"], //todo only allow resources (css, js, html, etc) from our api.
+                    styleSrc: ["'self'", "'unsafe-inline'"], // inline css and css sections in headers.
                     imgSrc: ["'self'", 'data:'],
                     scriptSrc: ["'self'", "'unsafe-inline'"],
                     reportUri: '/report-violation' // CSP violations will be posted here (server) from the browser.
                 }
             },
-            frameguard: { // iframe related security
+            frameguard: {
+                // iframe related security
                 action: 'sameorigin' //todo only allows iframes from the same domain with this option
             },
             // hpkp: { // todo pins the public key of your https cert to prevent man-in-the-middle attacks
@@ -159,7 +169,7 @@ module.exports = {
             // hsts: { //todo tells the browser to stick to  https, set this once you have https setup
             //     maxAge: 5184000 // sixtyDaysInSeconds
             // },
-            noCache: false//set to true to ensure the browser doesn't cache things, can prevent old stale code from not refreshing on deploy
+            noCache: false //set to true to ensure the browser doesn't cache things, can prevent old stale code from not refreshing on deploy
         },
         rateLimits: {
             // Rate limits and throttling using https://www.npmjs.com/package/express-brute
@@ -178,23 +188,23 @@ module.exports = {
         }
     },
     mongodb: {
-        url: "mongodb://localhost:27017/node-api-seed",
+        url: 'mongodb://localhost:27017/node-api-seed',
         options: {
-            "server": {
-                "socketOptions": {
-                    "keepAlive": 1
+            server: {
+                socketOptions: {
+                    keepAlive: 1
                 },
-                "auto_reconnect": true,
-                "autoReconnect": true,
-                "sslValidate": false
+                auto_reconnect: true,
+                autoReconnect: true,
+                sslValidate: false
             },
-            "replSet": {
-                "socketOptions": {
-                    "keepAlive": 1
+            replSet: {
+                socketOptions: {
+                    keepAlive: 1
                 },
-                "auto_reconnect": true,
-                "autoReconnect": true,
-                "sslValidate": false
+                auto_reconnect: true,
+                autoReconnect: true,
+                sslValidate: false
             }
         },
         allowDropData: false
@@ -205,9 +215,9 @@ module.exports = {
         },
         jwt: {
             jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
-            secretOrKey: "GBfwT74YaHUYyfqH",
+            secretOrKey: 'GBfwT74YaHUYyfqH',
             issuer: host,
-            algorithms: ["HS384"],
+            algorithms: ['HS384'],
             ignoreExpiration: false,
             passReqToCallback: true,
             sign: {

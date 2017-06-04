@@ -18,7 +18,7 @@ function ensureNotCoreId(schema, coreSchema, operation) {
     if (_.endsWith(schema, '/')) {
         schema.id += operation;
     } else {
-        schema.id += "/" + operation;
+        schema.id += '/' + operation;
     }
 }
 

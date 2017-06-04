@@ -3,11 +3,15 @@ const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const config = require('nconf');
 const moment = require('moment');
-const uuid = require("node-uuid");
+const uuid = require('node-uuid');
 const permissions = require('../../../src/permissions');
-module.exports = function (callback) {
+module.exports = function(callback) {
     const adminUser = config.get('tests').adminUser;
-    bcrypt.hash(adminUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
+    bcrypt.hash(
+        adminUser.password,
+        config.get('authenticationOptions').password.saltRounds,
+        hashCalculated
+    );
 
     function hashCalculated(hashErr, hash) {
         if (hashErr) {
@@ -24,22 +28,22 @@ module.exports = function (callback) {
                 dateCreated: now,
                 versionTag: uuid.v4(),
                 dateUpdated: now,
-                createdBy: ObjectId("580d9f45622d510b044fb6a8"),
-                lastUpdatedBy: ObjectId("580d9f45622d510b044fb6a8")
+                createdBy: ObjectId('580d9f45622d510b044fb6a8'),
+                lastUpdatedBy: ObjectId('580d9f45622d510b044fb6a8')
             },
-            status: "active",
+            status: 'active',
             statusDate: now,
             statusLog: [
                 {
-                    status: "active",
+                    status: 'active',
                     data: {
-                        reason: "testing"
+                        reason: 'testing'
                     },
                     statusDate: now
                 }
             ]
         };
-        permissions.nodeAcl.addUserRoles(user._id.toString(), 'admin', function (addRoleErr) {
+        permissions.nodeAcl.addUserRoles(user._id.toString(), 'admin', function(addRoleErr) {
             return callback(addRoleErr, user);
         });
     }

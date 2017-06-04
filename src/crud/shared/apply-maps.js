@@ -8,7 +8,13 @@ module.exports = function applyMaps(maps, steps) {
         return convertStepsToArray(steps);
     }
     if (!_.isObject(maps)) {
-        throw new Error(util.format('The passed in map must be an object or null if no mapping is required. Type : "%s". Value : "%j"', typeof maps, maps));
+        throw new Error(
+            util.format(
+                'The passed in map must be an object or null if no mapping is required. Type : "%s". Value : "%j"',
+                typeof maps,
+                maps
+            )
+        );
     }
     applySkip(maps.skip, steps);
     applySkipIfExists(maps.skipIfExists, steps);
@@ -25,9 +31,9 @@ module.exports = function applyMaps(maps, steps) {
 
 function convertStepsToArray(stepObject) {
     const steps = [];
-    _.forIn(stepObject, function (value, key) {
+    _.forIn(stepObject, function(value, key) {
         if (_.isNil(value)) {
-            throw new Error(util.format("Step with name %s was null", key));
+            throw new Error(util.format('Step with name %s was null', key));
         }
         steps.push(value);
     });
@@ -49,16 +55,16 @@ module.exports._applyEnd = applyEnd;
  * @returns {void}
  */
 function applySkip(skip, steps) {
-    _skip({skip: skip, steps: steps, throw: true});
+    _skip({ skip: skip, steps: steps, throw: true });
 }
 
 function applySkipIfExists(skip, steps) {
-    _skip({skip: skip, steps: steps, throw: false});
+    _skip({ skip: skip, steps: steps, throw: false });
 }
 
 function _skip(options) {
     if (!_.isObject(options.steps)) {
-        throw new Error("Steps must be an object");
+        throw new Error('Steps must be an object');
     }
     if (_.isNil(options.skip)) {
         return;
@@ -68,15 +74,21 @@ function _skip(options) {
         return;
     }
     if (_.isArray(options.skip)) {
-        options.skip.forEach(function (item) {
-            _skip({skip: item, steps: options.steps, throw: options.throw});
+        options.skip.forEach(function(item) {
+            _skip({ skip: item, steps: options.steps, throw: options.throw });
         });
         return;
     }
-    throw new Error("Unsupported format, should either be a string with the step name, or an array of strings with the step names");
+    throw new Error(
+        'Unsupported format, should either be a string with the step name, or an array of strings with the step names'
+    );
     function skipStep(stepName) {
         if (!options.steps[stepName] && options.throw) {
-            throw new Error("No step by the name of " + stepName + " was found, please check the spelling and try again");
+            throw new Error(
+                'No step by the name of ' +
+                    stepName +
+                    ' was found, please check the spelling and try again'
+            );
         }
         delete options.steps[stepName];
     }
@@ -86,16 +98,16 @@ function applyAfter(addAfter, steps, throwIfStepNotFound) {
     const mapObjectName = paramNames(applyAfter)[0];
     let addCounter = 0;
     if (!_.isObject(steps)) {
-        throw new Error("Steps must be an object");
+        throw new Error('Steps must be an object');
     }
     if (_.isNil(addAfter)) {
         return;
     }
     if (!_.isObject(addAfter)) {
-        throw new Error("addAfter must be an object or array of objects");
+        throw new Error('addAfter must be an object or array of objects');
     }
     if (_.isArray(addAfter)) {
-        addAfter.forEach(function (item) {
+        addAfter.forEach(function(item) {
             applyAfter(item, steps, throwIfStepNotFound);
         });
         return;
@@ -105,11 +117,18 @@ function applyAfter(addAfter, steps, throwIfStepNotFound) {
         return;
     }
     const pairs = _.toPairs(addAfter);
-    pairs.forEach(function (pair) {
+    pairs.forEach(function(pair) {
         const stepName = pair[0];
         let functions = pair[1];
         if (!_.isArray(functions) && !_.isFunction(functions)) {
-            throw new Error(util.format("The value property in the %s object should have been a function or array of functions to add but was a %s with a value of %j", mapObjectName, typeof functions, functions));
+            throw new Error(
+                util.format(
+                    'The value property in the %s object should have been a function or array of functions to add but was a %s with a value of %j',
+                    mapObjectName,
+                    typeof functions,
+                    functions
+                )
+            );
         }
         add(stepName, functions);
     });
@@ -122,10 +141,14 @@ function applyAfter(addAfter, steps, throwIfStepNotFound) {
             if (throwIfStepNotFound === false) {
                 return;
             }
-            throw new Error("No step by the name of " + stepName + " was found, please check the spelling and try again");
+            throw new Error(
+                'No step by the name of ' +
+                    stepName +
+                    ' was found, please check the spelling and try again'
+            );
         }
         let addOnNext = false;
-        _.forIn(steps, function (value, key) {
+        _.forIn(steps, function(value, key) {
             delete steps[key];
             if (addOnNext) {
                 addFunctions();
@@ -139,7 +162,7 @@ function applyAfter(addAfter, steps, throwIfStepNotFound) {
             addFunctions();
         }
         function addFunctions() {
-            functions.forEach(function (functionToAdd) {
+            functions.forEach(function(functionToAdd) {
                 addCounter++;
                 steps['added' + addCounter] = functionToAdd;
             });
@@ -152,16 +175,16 @@ function applyBefore(addBefore, steps, throwIfStepNotFound) {
     const mapObjectName = paramNames(applyBefore)[0];
     let addCounter = 0;
     if (!_.isObject(steps)) {
-        throw new Error("Steps must be an object");
+        throw new Error('Steps must be an object');
     }
     if (_.isNil(addBefore)) {
         return;
     }
     if (!_.isObject(addBefore)) {
-        throw new Error("addBefore must be an object or array of objects");
+        throw new Error('addBefore must be an object or array of objects');
     }
     if (_.isArray(addBefore)) {
-        addBefore.forEach(function (item) {
+        addBefore.forEach(function(item) {
             applyBefore(item, steps, throwIfStepNotFound);
         });
         return;
@@ -171,11 +194,18 @@ function applyBefore(addBefore, steps, throwIfStepNotFound) {
         return;
     }
     const pairs = _.toPairs(addBefore);
-    pairs.forEach(function (pair) {
+    pairs.forEach(function(pair) {
         const stepName = pair[0];
         let functions = pair[1];
         if (!_.isArray(functions) && !_.isFunction(functions)) {
-            throw new Error(util.format("The value property in the %s object should have been a function or array of functions to add but was a %s with a value of %j", mapObjectName, typeof functions, functions));
+            throw new Error(
+                util.format(
+                    'The value property in the %s object should have been a function or array of functions to add but was a %s with a value of %j',
+                    mapObjectName,
+                    typeof functions,
+                    functions
+                )
+            );
         }
         add(stepName, functions);
     });
@@ -188,9 +218,13 @@ function applyBefore(addBefore, steps, throwIfStepNotFound) {
             if (throwIfStepNotFound === false) {
                 return;
             }
-            throw new Error("No step by the name of " + stepName + " was found, please check the spelling and try again");
+            throw new Error(
+                'No step by the name of ' +
+                    stepName +
+                    ' was found, please check the spelling and try again'
+            );
         }
-        _.forIn(steps, function (value, key) {
+        _.forIn(steps, function(value, key) {
             delete steps[key];
             if (key === stepName) {
                 addFunctions();
@@ -198,7 +232,7 @@ function applyBefore(addBefore, steps, throwIfStepNotFound) {
             steps[key] = value;
         });
         function addFunctions() {
-            functions.forEach(function (functionToAdd) {
+            functions.forEach(function(functionToAdd) {
                 addCounter++;
                 steps['added' + addCounter] = functionToAdd;
             });
@@ -210,16 +244,16 @@ function applyReplace(replaceWith, steps, throwIfStepNotFound) {
     const mapObjectName = paramNames(applyReplace)[0];
     let replaceCounter = 0;
     if (!_.isObject(steps)) {
-        throw new Error("Steps must be an object");
+        throw new Error('Steps must be an object');
     }
     if (_.isNil(replaceWith)) {
         return;
     }
     if (!_.isObject(replaceWith)) {
-        throw new Error("replaceWith must be an object or array of objects");
+        throw new Error('replaceWith must be an object or array of objects');
     }
     if (_.isArray(replaceWith)) {
-        replaceWith.forEach(function (item) {
+        replaceWith.forEach(function(item) {
             applyReplace(item, steps, throwIfStepNotFound);
         });
         return;
@@ -229,11 +263,18 @@ function applyReplace(replaceWith, steps, throwIfStepNotFound) {
         return;
     }
     const pairs = _.toPairs(replaceWith);
-    pairs.forEach(function (pair) {
+    pairs.forEach(function(pair) {
         const stepName = pair[0];
         let functions = pair[1];
         if (!_.isArray(functions) && !_.isFunction(functions)) {
-            throw new Error(util.format("The value property in the %s object should have been a function or array of functions to replace but was a %s with a value of %j", mapObjectName, typeof functions, functions));
+            throw new Error(
+                util.format(
+                    'The value property in the %s object should have been a function or array of functions to replace but was a %s with a value of %j',
+                    mapObjectName,
+                    typeof functions,
+                    functions
+                )
+            );
         }
         replace(stepName, functions);
     });
@@ -246,9 +287,13 @@ function applyReplace(replaceWith, steps, throwIfStepNotFound) {
             if (throwIfStepNotFound === false) {
                 return;
             }
-            throw new Error("No step by the name of " + stepName + " was found, please check the spelling and try again");
+            throw new Error(
+                'No step by the name of ' +
+                    stepName +
+                    ' was found, please check the spelling and try again'
+            );
         }
-        _.forIn(steps, function (value, key) {
+        _.forIn(steps, function(value, key) {
             delete steps[key];
             if (key === stepName) {
                 replaceFunctions();
@@ -257,7 +302,7 @@ function applyReplace(replaceWith, steps, throwIfStepNotFound) {
             }
         });
         function replaceFunctions() {
-            functions.forEach(function (functionToAdd) {
+            functions.forEach(function(functionToAdd) {
                 replaceCounter++;
                 steps['replaced' + replaceCounter] = functionToAdd;
             });
@@ -267,7 +312,7 @@ function applyReplace(replaceWith, steps, throwIfStepNotFound) {
 
 function applyStart(startWith, steps) {
     if (!_.isObject(steps)) {
-        throw new Error("Steps must be an object");
+        throw new Error('Steps must be an object');
     }
     if (_.isNil(startWith)) {
         return;
@@ -276,7 +321,7 @@ function applyStart(startWith, steps) {
 
 function applyEnd(endWith, steps) {
     if (!_.isObject(steps)) {
-        throw new Error("Steps must be an object");
+        throw new Error('Steps must be an object');
     }
     if (_.isNil(endWith)) {
         return;

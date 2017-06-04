@@ -5,7 +5,7 @@ const _ = require('lodash');
 const config = require('nconf');
 
 module.exports = {
-    errorHandler: function (err, req, res, next) {
+    errorHandler: function(err, req, res, next) {
         if (err.isBoom) {
             return next(err);
         }
@@ -19,7 +19,7 @@ module.exports = {
         return next(boom.create(statusCode, 'Error', err));
     },
     // eslint-disable-next-line no-unused-vars
-    boomErrorHandler: function (err, req, res, next) {
+    boomErrorHandler: function(err, req, res, next) {
         const correlationIdOptions = config.get('logging').correlationId;
         const requestId = req[correlationIdOptions.paramName] || 'unknown';
         if (err.isServer) {
@@ -39,33 +39,33 @@ module.exports = {
         }
         res.status(err.output.statusCode).set(err.output.headers).json(err.output.payload);
     },
-    notFound: function (req, res) {
-        res.status(404).json({message: 'Route not found : ' + req.originalUrl});
+    notFound: function(req, res) {
+        res.status(404).json({ message: 'Route not found : ' + req.originalUrl });
     }
 };
 
 function exitProcess() {
-    setTimeout(function () {
+    setTimeout(function() {
         // eslint-disable-next-line no-process-exit
         process.exit(1);
     }, 1000);
 }
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', function(err) {
     console.error('Unhandled Error on process : ', err);
     exitProcess();
 });
 
-process.on('exit', function () {
+process.on('exit', function() {
     console.log(packageJson.name + ' is exiting');
 });
 
-process.on("SIGTERM", function () {
-    console.log("SIGTERM received stopping processing.");
+process.on('SIGTERM', function() {
+    console.log('SIGTERM received stopping processing.');
     exitProcess();
 });
 
-process.on("SIGINT", function () {
-    console.log("SIGINT received stopping processing.");
+process.on('SIGINT', function() {
+    console.log('SIGINT received stopping processing.');
     exitProcess();
 });

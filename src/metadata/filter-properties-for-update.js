@@ -2,7 +2,7 @@
 
 module.exports = function filterPropertiesForUpdate(schema) {
     if (!schema) {
-        throw new Error("Schema is a required field");
+        throw new Error('Schema is a required field');
     }
     delete schema.properties._id;
     removeRequiredFieldIfExists(schema.required, '_id');

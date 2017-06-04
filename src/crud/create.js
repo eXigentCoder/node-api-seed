@@ -17,7 +17,8 @@ const _ = require('lodash');
 function addCreateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
     filterPropertiesForCreation(router.metadata.schemas[schemaName]);
-    router.post('/', getSteps(router, crudMiddleware, maps))
+    router
+        .post('/', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.creationDescription || description(router.metadata));
     return router;
 }
@@ -31,7 +32,11 @@ function getSteps(router, crudMiddleware, maps) {
         addVersionInfo: versionInfo.add,
         setStatusIfApplicable: setStatusIfApplicable(router.metadata),
         setOwnerIfApplicable: setOwnerIfApplicable(router.metadata),
-        checkPermissions: permissions.checkRoleAndOwner(router.metadata.namePlural, 'create', router.metadata.schemas.core.ownership),
+        checkPermissions: permissions.checkRoleAndOwner(
+            router.metadata.namePlural,
+            'create',
+            router.metadata.schemas.core.ownership
+        ),
         create: crudMiddleware.create,
         filterOutput: output.filter,
         sendCreateResult: sendCreateResult(router.metadata)
@@ -40,7 +45,7 @@ function getSteps(router, crudMiddleware, maps) {
 }
 
 function sendCreateResult(metadata) {
-    return function (req, res) {
+    return function(req, res) {
         let fullUrl;
         const id = req.process.output[metadata.identifierName];
         if (metadata.createdItemLocationHeader) {
@@ -49,9 +54,7 @@ function sendCreateResult(metadata) {
             fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
         }
         fullUrl += '/' + id;
-        return res.status(201)
-            .location(fullUrl)
-            .json(req.process.output);
+        return res.status(201).location(fullUrl).json(req.process.output);
     };
 }
 
@@ -61,10 +64,10 @@ function description(metadata) {
     const correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
-        summary: "Posts Through " + metadata.aOrAn + " " + metadata.title + " To Be Created.",
+        summary: 'Posts Through ' + metadata.aOrAn + ' ' + metadata.title + ' To Be Created.',
         tags: [metadata.tag.name],
         common: {
-            responses: ["500", "400", "401", '403'],
+            responses: ['500', '400', '401', '403'],
             parameters: {
                 header: [correlationIdOptions.reqHeader]
             }
@@ -72,15 +75,17 @@ function description(metadata) {
         parameters: [
             {
                 name: metadata.name,
-                description: "The " + metadata.title.toLowerCase() + " to be created.",
+                description: 'The ' + metadata.title.toLowerCase() + ' to be created.',
                 required: true,
-                in: "body",
+                in: 'body',
                 model: metadata.schemas[schemaName].name
             }
         ],
         responses: {
-            "201": {
-                description: 'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
+            '201': {
+                description: 'Informs the caller that the ' +
+                    metadata.title.toLowerCase() +
+                    ' was successfully created.',
                 commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }
@@ -96,13 +101,15 @@ function setStatusIfApplicable(metadata) {
         }
         req.body.status = statuses[0].name;
         req.body.statusDate = moment.utc().toDate();
-        req.body.statusLog = [{
-            status: req.body.status,
-            data: {
-                reason: "Initial Status" //todo need to set this logically somehow
-            },
-            statusDate: req.body.statusDate
-        }];
+        req.body.statusLog = [
+            {
+                status: req.body.status,
+                data: {
+                    reason: 'Initial Status' //todo need to set this logically somehow
+                },
+                statusDate: req.body.statusDate
+            }
+        ];
         return next();
     };
 }
@@ -116,19 +123,28 @@ function setOwnerIfApplicable(metadata) {
         if (ownership.setOwnerExpression) {
             req.body.owner = _.get(req, ownership.setOwnerExpression);
             if (!req.body.owner) {
-                return next(boom.badRequest(util.format('Owner from expression "%s" was blank', ownership.setOwnerExpression)));
+                return next(
+                    boom.badRequest(
+                        util.format(
+                            'Owner from expression "%s" was blank',
+                            ownership.setOwnerExpression
+                        )
+                    )
+                );
             }
         } else {
             req.body.owner = req.user._id;
         }
         req.body.ownerDate = moment.utc().toDate();
-        req.body.ownerLog = [{
-            owner: req.body.owner,
-            data: {
-                reason: "Initial Owner" //todo from schema?
-            },
-            ownerDate: req.body.ownerDate
-        }];
+        req.body.ownerLog = [
+            {
+                owner: req.body.owner,
+                data: {
+                    reason: 'Initial Owner' //todo from schema?
+                },
+                ownerDate: req.body.ownerDate
+            }
+        ];
         return next();
     };
 }

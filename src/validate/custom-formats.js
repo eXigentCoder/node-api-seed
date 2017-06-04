@@ -22,7 +22,14 @@ function isValidMongoId(input) {
     return mongo.isValidObjectId(input);
 }
 
-function validateAndCoerceToMongoId(isMongoId, input, schema, currentDataPath, parentDataObject, propName) {
+function validateAndCoerceToMongoId(
+    isMongoId,
+    input,
+    schema,
+    currentDataPath,
+    parentDataObject,
+    propName
+) {
     if (!isMongoId) {
         return true;
     }
@@ -33,21 +40,49 @@ function validateAndCoerceToMongoId(isMongoId, input, schema, currentDataPath, p
     return valid;
 }
 
-function validateAndCoerceFromDateFormat(dateFormat, input, schema, currentDataPath, parentDataObject, propName) {
+function validateAndCoerceFromDateFormat(
+    dateFormat,
+    input,
+    schema,
+    currentDataPath,
+    parentDataObject,
+    propName
+) {
     dateFormat = dateFormat.toLowerCase();
     const allowedValues = ['date', 'time'];
     if (allowedValues.indexOf(dateFormat) < 0) {
         return false;
     }
     if (dateFormat === 'date') {
-        return validateAndCoerceToDate(dateFormat, input, schema, currentDataPath, parentDataObject, propName);
+        return validateAndCoerceToDate(
+            dateFormat,
+            input,
+            schema,
+            currentDataPath,
+            parentDataObject,
+            propName
+        );
     }
     if (dateFormat === 'time') {
-        return validateAndCoerceToTime(dateFormat, input, schema, currentDataPath, parentDataObject, propName);
+        return validateAndCoerceToTime(
+            dateFormat,
+            input,
+            schema,
+            currentDataPath,
+            parentDataObject,
+            propName
+        );
     }
 }
 
-function validateAndCoerceToDate(dateFormat, input, schema, currentDataPath, parentDataObject, propName) {
+function validateAndCoerceToDate(
+    dateFormat,
+    input,
+    schema,
+    currentDataPath,
+    parentDataObject,
+    propName
+) {
     const format = 'YYYY-MM-DD';
     const dateValue = moment.utc(new Date(input));
     const valid = dateValue.isValid();
@@ -57,21 +92,27 @@ function validateAndCoerceToDate(dateFormat, input, schema, currentDataPath, par
     return valid;
 }
 
-function validateAndCoerceToTime(dateFormat, input, schema, currentDataPath, parentDataObject, propName) {
+function validateAndCoerceToTime(
+    dateFormat,
+    input,
+    schema,
+    currentDataPath,
+    parentDataObject,
+    propName
+) {
     const dateValue = moment.utc(new Date(input));
     const valid = dateValue.isValid();
     if (valid) {
-        dateValue.set({'year': 1900, month: 0, date: 1});
+        dateValue.set({ year: 1900, month: 0, date: 1 });
         parentDataObject[propName] = dateValue.toDate();
     }
     return valid;
 }
 
-
 function addAllToJsf(jsf) {
     jsf.format('mongoId', generateMongoId);
     jsf.format('date', generateDate);
-    jsf.format('uuid', ()=> {
+    jsf.format('uuid', () => {
         return uuuid.v4();
     });
 }
@@ -81,7 +122,7 @@ function generateMongoId() {
 }
 
 function generateDate() {
-    return moment.utc(randomDate(new Date('1950-01-01'), new Date())).format("YYYY-MM-DD");
+    return moment.utc(randomDate(new Date('1950-01-01'), new Date())).format('YYYY-MM-DD');
 }
 
 function randomDate(start, end) {

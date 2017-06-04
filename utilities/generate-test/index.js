@@ -3,8 +3,8 @@ require('../../config/init-nconf');
 const fs = require('fs');
 const getSwaggerDataFromRouteStack = require('./get-swagger-route-data');
 const eol = require('os').EOL;
-const fileOptions = {encoding: 'utf8'};
-const indentationTemplate = "    ";
+const fileOptions = { encoding: 'utf8' };
+const indentationTemplate = '    ';
 const path = require('path');
 const _ = require('lodash');
 const config = require('nconf');
@@ -34,13 +34,13 @@ const uuid = require('node-uuid');
     //eslint-disable-next-line global-require
     data.router = require(relativePath(__filename, data.routerPath));
     findRoutes(data);
-}());
+})();
 
 function findRoutes(data) {
     data.foundRoutes = getSwaggerDataFromRouteStack(data.router.stack);
-    data.foundRoutes = data.foundRoutes.filter(function (route) {
+    data.foundRoutes = data.foundRoutes.filter(function(route) {
         let included = false;
-        data.tagsToGenerateFor.forEach(function (tag) {
+        data.tagsToGenerateFor.forEach(function(tag) {
             if (route.tags.indexOf(tag) >= 0) {
                 included = true;
             }
@@ -52,9 +52,9 @@ function findRoutes(data) {
 
 function ensureAllFoldersExist(filePath) {
     const folderPath = path.dirname(filePath);
-    const folders = folderPath.split('/');//.filter((part)=> part !== '.');
+    const folders = folderPath.split('/'); //.filter((part)=> part !== '.');
     let pathToCheck = '';
-    folders.forEach(function (folder) {
+    folders.forEach(function(folder) {
         pathToCheck = path.join(pathToCheck, folder);
         //eslint-disable-next-line no-sync
         if (!fs.existsSync(pathToCheck)) {
@@ -65,28 +65,32 @@ function ensureAllFoldersExist(filePath) {
 }
 
 function writeRoutesAsTest(data) {
-    let outputContent = "";
+    let outputContent = '';
     let indent = 0;
     addLine("'use strict';");
-    addLine("var common = require('" + relativePath(data.outputPath, './test/@util/integration-common.js') + "');");
+    addLine(
+        "var common = require('" +
+            relativePath(data.outputPath, './test/@util/integration-common.js') +
+            "');"
+    );
     addLine("var router = require('" + relativePath(data.outputPath, data.routerPath) + "');");
     addLine("var config = require('nconf');");
     addLine();
     addLine("describe('" + data.router.metadata.titlePlural + "', function () {");
     indent++;
-    addLine("this.timeout(common.defaultTimeout);");
-    data.foundRoutes.forEach(function (foundRoute, index) {
+    addLine('this.timeout(common.defaultTimeout);');
+    data.foundRoutes.forEach(function(foundRoute, index) {
         addLine("describe('" + foundRoute.summary + "', function () {");
         indent++;
         addRoute(foundRoute);
         indent--;
-        addLine("});");
+        addLine('});');
         if (index < data.foundRoutes.length - 1) {
             addLine();
         }
     });
     indent--;
-    addLine("});");
+    addLine('});');
     ensureAllFoldersExist(data.outputPath);
 
     //eslint-disable-next-line no-sync
@@ -114,7 +118,7 @@ function writeRoutesAsTest(data) {
             addCreate(foundRoute);
         }
         if (foundRoute.verb === 'put') {
-            const newStausParam = foundRoute.parameters.some((param) => {
+            const newStausParam = foundRoute.parameters.some(param => {
                 return param.name === 'newStatusName';
             });
             if (newStausParam) {
@@ -136,16 +140,16 @@ function writeRoutesAsTest(data) {
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.success(200))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".expect(common.hasResults)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.success(200))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.expect(common.hasResults)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNoAuth() {
@@ -154,14 +158,14 @@ function writeRoutesAsTest(data) {
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".expect(common.error(401))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.error(401))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
     }
 
@@ -175,15 +179,15 @@ function writeRoutesAsTest(data) {
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.success(200))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.success(200))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNoAuth() {
@@ -192,14 +196,14 @@ function writeRoutesAsTest(data) {
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".expect(common.error(401))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.error(401))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNotFound() {
@@ -207,14 +211,18 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute, {fake: true})) + "))");
+            addLine(
+                '.use(common.urlTemplate(' +
+                    JSON.stringify(getPathParameterObject(foundRoute, { fake: true })) +
+                    '))'
+            );
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.error(404))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.error(404))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
     }
 
@@ -228,16 +236,16 @@ function writeRoutesAsTest(data) {
             addLine("common.request.post('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.creation))");
+            addLine('.send(common.generateDataFromSchema(router.metadata.schemas.creation))');
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.success(201))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.success(201))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNoAuth() {
@@ -246,15 +254,15 @@ function writeRoutesAsTest(data) {
             addLine("common.request.post('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.creation))");
-            addLine(".expect(common.error(401))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.send(common.generateDataFromSchema(router.metadata.schemas.creation))');
+            addLine('.expect(common.error(401))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNoData() {
@@ -263,16 +271,16 @@ function writeRoutesAsTest(data) {
             addLine("common.request.post('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".send({})");
+            addLine('.send({})');
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.error(400))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.error(400))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
     }
 
@@ -286,15 +294,15 @@ function writeRoutesAsTest(data) {
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.update))");
+            addLine('.send(common.generateDataFromSchema(router.metadata.schemas.update))');
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.success(204))");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.success(204))');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNoAuth() {
@@ -303,14 +311,14 @@ function writeRoutesAsTest(data) {
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.update))");
-            addLine(".expect(common.error(401))");
-            addLine(".end(common.logResponse(done));");
+            addLine('.send(common.generateDataFromSchema(router.metadata.schemas.update))');
+            addLine('.expect(common.error(401))');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNoData() {
@@ -319,15 +327,15 @@ function writeRoutesAsTest(data) {
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".send({})");
+            addLine('.send({})');
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.error(400))");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.error(400))');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
     }
 
@@ -341,15 +349,15 @@ function writeRoutesAsTest(data) {
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))");
+            addLine('.send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))');
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.success(204))");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.success(204))');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNoAuth() {
@@ -358,14 +366,14 @@ function writeRoutesAsTest(data) {
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))");
-            addLine(".expect(common.error(401))");
-            addLine(".end(common.logResponse(done));");
+            addLine('.send(common.generateDataFromSchema(router.metadata.schemas.updateStatus))');
+            addLine('.expect(common.error(401))');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNoData() {
@@ -374,15 +382,15 @@ function writeRoutesAsTest(data) {
             addLine("common.request.put('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".send({})");
+            addLine('.send({})');
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.error(400))");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.error(400))');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
     }
 
@@ -396,14 +404,14 @@ function writeRoutesAsTest(data) {
             addLine("common.request.delete('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.success(204))");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.success(204))');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNoAuth() {
@@ -412,14 +420,14 @@ function writeRoutesAsTest(data) {
             addLine("common.request.delete('" + foundRoute.fullPath + "')");
             indent++;
             if (foundRoute.hasPathParameters) {
-                addLine(".use(common.urlTemplate(" + foundRoute.pathParameterString + "))");
+                addLine('.use(common.urlTemplate(' + foundRoute.pathParameterString + '))');
             }
-            addLine(".expect(common.error(401))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.error(401))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
 
         function addNotFound() {
@@ -427,14 +435,18 @@ function writeRoutesAsTest(data) {
             indent++;
             addLine("common.request.delete('" + foundRoute.fullPath + "')");
             indent++;
-            addLine(".use(common.urlTemplate(" + JSON.stringify(getPathParameterObject(foundRoute, {fake: true})) + "))");
+            addLine(
+                '.use(common.urlTemplate(' +
+                    JSON.stringify(getPathParameterObject(foundRoute, { fake: true })) +
+                    '))'
+            );
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
-            addLine(".expect(common.error(404))");
-            addLine(".expect(common.matchesSwaggerSchema)");
-            addLine(".end(common.logResponse(done));");
+            addLine('.expect(common.error(404))');
+            addLine('.expect(common.matchesSwaggerSchema)');
+            addLine('.end(common.logResponse(done));');
             indent--;
             indent--;
-            addLine("});");
+            addLine('});');
         }
     }
 
@@ -449,19 +461,19 @@ function writeRoutesAsTest(data) {
     function getPathParameterObject(foundRoute, options) {
         options = options || {};
         foundRoute.parameters = foundRoute.parameters || [];
-        const pathParams = foundRoute.parameters.filter((param) => {
+        const pathParams = foundRoute.parameters.filter(param => {
             return param.in === 'path';
         });
         if (data.routePrefix.indexOf(':') >= 0) {
-            const urlParts = data.routePrefix.split('/').filter(function (urlPart) {
+            const urlParts = data.routePrefix.split('/').filter(function(urlPart) {
                 return urlPart.indexOf(':') >= 0;
             });
-            urlParts.forEach(function (urlPart) {
-                pathParams.push({name: urlPart.replace(':', '')});
+            urlParts.forEach(function(urlPart) {
+                pathParams.push({ name: urlPart.replace(':', '') });
             });
         }
         const result = {};
-        pathParams.forEach(function (pathParam) {
+        pathParams.forEach(function(pathParam) {
             if (options.fake) {
                 result[pathParam.name] = uuid.v4();
                 return;
@@ -472,7 +484,6 @@ function writeRoutesAsTest(data) {
             } else {
                 result[pathParam.name] = 'todo';
             }
-
         });
         return result;
     }
@@ -483,7 +494,7 @@ function relativePath(from, to) {
 }
 
 function addLineWithIndent(line, indentLevel) {
-    let outputContent = "";
+    let outputContent = '';
     indentLevel = indentLevel || 0;
     for (let i = 0; i < indentLevel; i++) {
         outputContent += indentationTemplate;

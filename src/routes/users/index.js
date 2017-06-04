@@ -1,11 +1,10 @@
 'use strict';
 const schema = require('./user.json');
 const bcrypt = require('bcrypt');
-const config = require("nconf");
+const config = require('nconf');
 const items = require('./items');
 const generatePassword = require('password-generator');
 const permissions = require('../../permissions');
-const _ = require('lodash');
 const boom = require('boom');
 const router = require('../../crud/router')({
     schemas: {
@@ -16,12 +15,13 @@ router.crudMiddleware = require('../../mongo/crud')(router.metadata);
 require('../../crud/router/add-standard-routes')(router);
 module.exports = router;
 
-router.getByIdAndUse('/items', items)
+router
+    .getByIdAndUse('/items', items)
     .query()
     .getById()
     .create({
         addAfter: {
-            'addVersionInfo': [createPassword, addUserRoles]
+            addVersionInfo: [createPassword, addUserRoles]
         }
     })
     .update()
@@ -52,7 +52,7 @@ function addUserRoles(req, res, next) {
             return next(err);
         }
         if (!hasRole) {
-            return next(boom.forbidden("Only admins can add other admin users."));
+            return next(boom.forbidden('Only admins can add other admin users.'));
         }
         permissions.nodeAcl.addUserRoles(req.user._id.toString(), roleToSet, next);
     }

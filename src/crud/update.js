@@ -28,7 +28,11 @@ function getSteps(router, crudMiddleware, maps) {
     const steps = {
         validate: getValidateFunction(schemaName),
         getExistingMetadata: crudMiddleware.getExistingMetadata,
-        checkPermissions: permissions.checkRoleAndOwner(router.metadata.namePlural, 'update', router.metadata.schemas.core.ownership),
+        checkPermissions: permissions.checkRoleAndOwner(
+            router.metadata.namePlural,
+            'update',
+            router.metadata.schemas.core.ownership
+        ),
         updateVersionInfo: versionInfo.update,
         update: crudMiddleware.update,
         writeHistoryItem: crudMiddleware.writeHistoryItem,
@@ -42,26 +46,33 @@ function description(metadata) {
     const correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
-        summary: "Updates " + metadata.aOrAn + " " + metadata.title + " By " + _.startCase(metadata.identifierName),
+        summary: 'Updates ' +
+            metadata.aOrAn +
+            ' ' +
+            metadata.title +
+            ' By ' +
+            _.startCase(metadata.identifierName),
         tags: [metadata.tag.name],
         parameters: [
             {
                 name: metadata.identifierName,
-                description: "The field to uniquely identify this " + metadata.title.toLowerCase() + ".",
+                description: 'The field to uniquely identify this ' +
+                    metadata.title.toLowerCase() +
+                    '.',
                 required: true,
-                in: "path",
-                type: "string"
+                in: 'path',
+                type: 'string'
             }
         ],
         common: {
-            responses: ["500", "400", "401", "404", '403'],
+            responses: ['500', '400', '401', '404', '403'],
             parameters: {
                 header: [correlationIdOptions.reqHeader]
             }
         },
         responses: {
-            "204": {
-                description: "Shows that the update request was successfully carried out",
+            '204': {
+                description: 'Shows that the update request was successfully carried out',
                 commonHeaders: [correlationIdOptions.resHeader]
             }
         }

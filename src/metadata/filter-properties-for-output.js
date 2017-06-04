@@ -3,14 +3,14 @@
 module.exports = function filterPropertiesForOutput(schema) {
     clearProperties(schema);
     if (schema.definitions) {
-        Object.keys(schema.definitions).forEach(function (definitionName) {
+        Object.keys(schema.definitions).forEach(function(definitionName) {
             clearProperties(schema.definitions[definitionName]);
         });
     }
 };
 
 function clearProperties(schema) {
-    Object.keys(schema.properties).forEach(function (propertyName) {
+    Object.keys(schema.properties).forEach(function(propertyName) {
         const property = schema.properties[propertyName];
         if (property.excludeOnOutput === true) {
             delete schema.properties[propertyName];

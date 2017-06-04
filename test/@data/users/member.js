@@ -3,12 +3,16 @@ const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const config = require('nconf');
 const moment = require('moment');
-const uuid = require("node-uuid");
+const uuid = require('node-uuid');
 const permissions = require('../../../src/permissions');
-module.exports = function (callback) {
+module.exports = function(callback) {
     const normalUser = config.get('tests').normalUser;
     const adminUser = config.get('tests').adminUser;
-    bcrypt.hash(normalUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
+    bcrypt.hash(
+        normalUser.password,
+        config.get('authenticationOptions').password.saltRounds,
+        hashCalculated
+    );
 
     function hashCalculated(hashErr, hash) {
         if (hashErr) {
@@ -28,19 +32,19 @@ module.exports = function (callback) {
                 createdBy: ObjectId(adminUser._id),
                 lastUpdatedBy: ObjectId(adminUser._id)
             },
-            status: "active",
+            status: 'active',
             statusDate: now,
             statusLog: [
                 {
-                    status: "active",
+                    status: 'active',
                     data: {
-                        reason: "testing"
+                        reason: 'testing'
                     },
                     statusDate: now
                 }
             ]
         };
-        permissions.nodeAcl.addUserRoles(user._id.toString(), 'member', function (addRoleErr) {
+        permissions.nodeAcl.addUserRoles(user._id.toString(), 'member', function(addRoleErr) {
             return callback(addRoleErr, user);
         });
     }

@@ -8,16 +8,10 @@ const bcrypt = require('bcrypt');
 const authentication = require('../../authentication');
 module.exports = router;
 
-
-router.post("/login", [
-    rateLimit.loginIp,
-    rateLimit.loginUsername,
-    findUser,
-    comparePassword
-]);
+router.post('/login', [rateLimit.loginIp, rateLimit.loginUsername, findUser, comparePassword]);
 
 function findUser(req, res, next) {
-    const query = {email: req.body.username};
+    const query = { email: req.body.username };
     mongo.db.collection('users').findOne(query, dataRetrieved);
     function dataRetrieved(err, user) {
         if (err) {

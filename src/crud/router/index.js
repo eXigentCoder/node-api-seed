@@ -34,7 +34,7 @@ function createRouter(options) {
 
 function addCommonMiddleware(router) {
     if (!_.isObject(router.metadata.schemas)) {
-        throw new Error("Schemas must be an object when calling setSchemas");
+        throw new Error('Schemas must be an object when calling setSchemas');
     }
     router.use(commonMiddleware);
 

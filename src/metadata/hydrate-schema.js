@@ -9,14 +9,14 @@ module.exports = function hydrateOutputSchema(schema) {
 
 function addId(schema) {
     const defaultIdField = {
-        type: "string",
-        format: "mongoId",
+        type: 'string',
+        format: 'mongoId',
         mongoId: true,
         minLength: 24,
         maxLength: 24
     };
     schema.properties._id = Object.assign({}, defaultIdField, schema.properties._id);
-    schema.required.push("_id");
+    schema.required.push('_id');
 }
 
 function addStatusInfo(schema) {
@@ -24,39 +24,37 @@ function addStatusInfo(schema) {
         return;
     }
     if (!schema.updateStatusSchema) {
-        throw new Error("Cannot have statuses array specified on the schema but not provide an updateStatusSchema property");
+        throw new Error(
+            'Cannot have statuses array specified on the schema but not provide an updateStatusSchema property'
+        );
     }
-    const statusNames = schema.statuses.map((status) => status.name);
+    const statusNames = schema.statuses.map(status => status.name);
     schema.properties.status = {
-        type: "string",
+        type: 'string',
         enum: statusNames
     };
     schema.properties.statusDate = {
-        type: "string",
-        format: "date-time",
-        faker: "date.past"
+        type: 'string',
+        format: 'date-time',
+        faker: 'date.past'
     };
     schema.properties.statusLog = {
-        type: "array",
+        type: 'array',
         items: {
-            type: "object",
+            type: 'object',
             properties: {
                 status: schema.properties.status,
                 statusDate: schema.properties.statusDate,
                 data: schema.updateStatusSchema
             },
-            required: [
-                'status',
-                'statusDate',
-                'data'
-            ],
+            required: ['status', 'statusDate', 'data'],
             additionalProperties: false
         },
         additionalItems: false
     };
-    schema.required.push("status");
-    schema.required.push("statusDate");
-    schema.required.push("statusLog");
+    schema.required.push('status');
+    schema.required.push('statusDate');
+    schema.required.push('statusLog');
 }
 
 function addOwnerInfo(schema) {
@@ -64,38 +62,34 @@ function addOwnerInfo(schema) {
         return;
     }
     schema.properties.owner = {
-        type: "string",
-        format: "mongoId",
+        type: 'string',
+        format: 'mongoId',
         mongoId: true,
         minLength: 24,
         maxLength: 24
     };
     schema.properties.ownerDate = {
-        type: "string",
-        format: "date-time",
-        faker: "date.past"
+        type: 'string',
+        format: 'date-time',
+        faker: 'date.past'
     };
     schema.properties.ownerLog = {
-        type: "array",
+        type: 'array',
         items: {
-            type: "object",
+            type: 'object',
             properties: {
                 owner: schema.properties.owner,
                 ownerDate: schema.properties.ownerDate,
                 data: {
-                    type: ["object", "string"] //todo?
+                    type: ['object', 'string'] //todo?
                 }
             },
-            required: [
-                'owner',
-                'ownerDate',
-                'data'
-            ],
+            required: ['owner', 'ownerDate', 'data'],
             additionalProperties: false
         },
         additionalItems: false
     };
-    schema.required.push("owner");
-    schema.required.push("ownerDate");
-    schema.required.push("ownerLog");
+    schema.required.push('owner');
+    schema.required.push('ownerDate');
+    schema.required.push('ownerLog');
 }

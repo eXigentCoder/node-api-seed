@@ -6,9 +6,18 @@ const _ = require('lodash');
 const util = require('util');
 const moment = require('moment');
 //fields that need to exist in the system but should not be directly settable via PUT
-const metadataFields = ['versionInfo', 'passwordHash', 'status', 'statusDate', 'statusLog', 'owner', 'ownerDate', 'ownerLog'];
+const metadataFields = [
+    'versionInfo',
+    'passwordHash',
+    'status',
+    'statusDate',
+    'statusLog',
+    'owner',
+    'ownerDate',
+    'ownerLog'
+];
 
-module.exports = function (metadata) {
+module.exports = function(metadata) {
     return {
         query: query(metadata),
         findByIdentifier: findByIdentifier(metadata),
@@ -23,9 +32,10 @@ module.exports = function (metadata) {
 module.exports.getExistingMetadata = getExistingMetadata;
 
 function query(metadata) {
-    return function (req, res, next) {
+    return function(req, res, next) {
         const parsedQuery = parseQueryWithDefaults(req.query, metadata.schemas.core);
-        mongo.db.collection(metadata.collectionName)
+        mongo.db
+            .collection(metadata.collectionName)
             .find(parsedQuery.filter)
             .skip(parsedQuery.skip)
             .limit(parsedQuery.limit)
@@ -63,13 +73,13 @@ function parseQueryWithDefaults(queryString, schema) {
 }
 
 function setCastParamsFromSchema(agpOptions, properties) {
-    Object.keys(properties).forEach(function (propertyName) {
+    Object.keys(properties).forEach(function(propertyName) {
         const propertyValue = properties[propertyName];
         if (!propertyValue.type) {
             return;
         }
         if (_.isArray(propertyValue.type)) {
-            const types = propertyValue.type.filter((type) => type.toLowerCase() !== 'null');
+            const types = propertyValue.type.filter(type => type.toLowerCase() !== 'null');
             if (types.length === 1) {
                 agpOptions.castParams[propertyName] = types[0];
                 return;
@@ -88,15 +98,14 @@ function setCastParamsFromSchema(agpOptions, properties) {
 }
 
 function findByIdentifier(metadata) {
-    return function (req, res, next) {
+    return function(req, res, next) {
         const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+            return next(new Error('Object has no identifier'));
         }
         const mongoQuery = getIdentifierQuery(identifier, metadata);
         const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
-        mongo.db.collection(metadata.collectionName)
-            .findOne(parsedQuery.filter, dataRetrieved);
+        mongo.db.collection(metadata.collectionName).findOne(parsedQuery.filter, dataRetrieved);
 
         function dataRetrieved(err, document) {
             if (err) {
@@ -110,7 +119,7 @@ function findByIdentifier(metadata) {
 
 function getIdentifierQuery(identifier, metadata) {
     if (mongo.isValidObjectId(identifier)) {
-        return {_id: identifier};
+        return { _id: identifier };
     }
     const identifierQuery = {};
     identifierQuery[metadata.identifierName] = identifier;
@@ -118,7 +127,7 @@ function getIdentifierQuery(identifier, metadata) {
 }
 
 function create(metadata) {
-    return function (req, res, next) {
+    return function(req, res, next) {
         mongo.db.collection(metadata.collectionName).insertOne(req.body, inserted);
         function inserted(err) {
             req.process.output = req.body;
@@ -128,10 +137,10 @@ function create(metadata) {
 }
 
 function updateStatus(metadata) {
-    return function (req, res, next) {
+    return function(req, res, next) {
         const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+            return next(new Error('Object has no identifier'));
         }
         const mongoQuery = getIdentifierQuery(identifier, metadata);
         const now = moment.utc().toDate();
@@ -153,7 +162,8 @@ function updateStatus(metadata) {
             returnOriginal: true
         };
         const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
-        mongo.db.collection(metadata.collectionName)
+        mongo.db
+            .collection(metadata.collectionName)
             .findOneAndUpdate(parsedQuery.filter, updateStatement, options, updateComplete);
         function updateComplete(err, result) {
             if (err) {
@@ -166,10 +176,10 @@ function updateStatus(metadata) {
 }
 
 function update(metadata) {
-    return function (req, res, next) {
+    return function(req, res, next) {
         const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+            return next(new Error('Object has no identifier'));
         }
         const mongoQuery = getIdentifierQuery(identifier, metadata);
         const replacement = req.body;
@@ -177,7 +187,8 @@ function update(metadata) {
             returnOriginal: true
         };
         const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
-        mongo.db.collection(metadata.collectionName)
+        mongo.db
+            .collection(metadata.collectionName)
             .findOneAndReplace(parsedQuery.filter, replacement, options, updateComplete);
         function updateComplete(err, result) {
             if (err) {
@@ -196,37 +207,49 @@ function writeHistoryItem(metadata) {
         }
         req.process.originalItem.historyId = req.process.originalItem._id;
         delete req.process.originalItem._id;
-        mongo.db.collection(metadata.collectionName + '-history').insertOne(req.process.originalItem, next);
+        mongo.db
+            .collection(metadata.collectionName + '-history')
+            .insertOne(req.process.originalItem, next);
     };
 }
 
 //todo rk this should actually be split out, it gets metadata and sets it on the req.body, should be on process.
 function getExistingMetadata(metadata, targetObjectPath) {
-    return function (req, res, next) {
+    return function(req, res, next) {
         const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+            return next(new Error('Object has no identifier'));
         }
         const mongoQuery = getIdentifierQuery(identifier, metadata);
         const options = {
             fields: {}
         };
-        metadataFields.forEach(function (field) {
+        metadataFields.forEach(function(field) {
             options.fields[field] = 1;
         });
         const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
-        mongo.db.collection(metadata.collectionName)
+        mongo.db
+            .collection(metadata.collectionName)
             .findOne(parsedQuery.filter, options, dataRetrieved);
         function dataRetrieved(err, document) {
             if (err) {
                 return next(err);
             }
             if (!document) {
-                return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, identifier)));
+                return next(
+                    boom.notFound(
+                        util.format(
+                            'A %s with the "%s" field of "%s" was not found.',
+                            metadata.name,
+                            metadata.identifierName,
+                            identifier
+                        )
+                    )
+                );
             }
             req.params[metadata.identifierName] = document._id;
 
-            metadataFields.forEach(function (field) {
+            metadataFields.forEach(function(field) {
                 if (document[field]) {
                     if (targetObjectPath) {
                         let obj = _.get(req, targetObjectPath);
@@ -247,21 +270,36 @@ function getExistingMetadata(metadata, targetObjectPath) {
 }
 
 function deleteByIdentifier(metadata) {
-    return function (req, res, next) {
+    return function(req, res, next) {
         req.process.originalItem = req.process[metadata.name];
         if (!req.process.originalItem) {
-            return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, req.params[metadata.identifierName])));
+            return next(
+                boom.notFound(
+                    util.format(
+                        'A %s with the "%s" field of "%s" was not found.',
+                        metadata.name,
+                        metadata.identifierName,
+                        req.params[metadata.identifierName]
+                    )
+                )
+            );
         }
-        const mongoQuery = {_id: req.process.originalItem._id};
-        mongo.db.collection(metadata.collectionName)
-            .deleteOne(mongoQuery, documentDeleted);
+        const mongoQuery = { _id: req.process.originalItem._id };
+        mongo.db.collection(metadata.collectionName).deleteOne(mongoQuery, documentDeleted);
 
         function documentDeleted(err, result) {
             if (err) {
                 return next(err);
             }
             if (result.deletedCount !== 1) {
-                console.warn(util.format('Expected 1 item to be deleted, but result was %s. Query : %j. Original Item : %j', result.deletedCount, mongoQuery, req.process.originalItem));
+                console.warn(
+                    util.format(
+                        'Expected 1 item to be deleted, but result was %s. Query : %j. Original Item : %j',
+                        result.deletedCount,
+                        mongoQuery,
+                        req.process.originalItem
+                    )
+                );
             }
             return next();
         }

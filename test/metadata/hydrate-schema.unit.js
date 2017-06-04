@@ -2,19 +2,19 @@
 require('../@util/init.js');
 const hydrateSchema = require('../../src/metadata/hydrate-schema');
 
-describe('hydrateSchema spec', function () {
-    describe('_id property', function () {
-        it("should add the property if it doesn't exist", function () {
+describe('hydrateSchema spec', function() {
+    describe('_id property', function() {
+        it("should add the property if it doesn't exist", function() {
             const schema = {};
             hydrateSchema(schema);
             expect(schema.properties._id).to.be.ok();
             expect(schema.properties._id).to.be.an('object');
         });
-        it("should merge the property if it does exist", function () {
+        it('should merge the property if it does exist', function() {
             const schema = {
                 properties: {
                     _id: {
-                        format: "",
+                        format: '',
                         mongoId: false,
                         myCoolExtraProperty: true
                     }

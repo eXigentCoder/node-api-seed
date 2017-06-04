@@ -19,17 +19,20 @@ const permissions = require('./permissions');
 const expressSanitized = require('express-sanitize-escape');
 
 module.exports = function initialise(callback) {
-    async.waterfall([
-        createApp,
-        initialiseSwagger,
-        addRoutes,
-        addCommonSwaggerItems,
-        generateSwaggerJson,
-        mongo.connect,
-        rateLimit.initialise,
-        authentication.initialise,
-        permissions.initialise
-    ], callback);
+    async.waterfall(
+        [
+            createApp,
+            initialiseSwagger,
+            addRoutes,
+            addCommonSwaggerItems,
+            generateSwaggerJson,
+            mongo.connect,
+            rateLimit.initialise,
+            authentication.initialise,
+            permissions.initialise
+        ],
+        callback
+    );
 };
 
 function createApp(callback) {
@@ -39,18 +42,20 @@ function createApp(callback) {
     app.set('trust proxy', appSettings.trustProxy);
     app.use(helmet(appSettings.helmetOptions));
     app.use(cors(appSettings.corsOptions));
-    app.use(bodyParser.json({
-        type: ['json', 'application/csp-report']
-    }));
-    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(
+        bodyParser.json({
+            type: ['json', 'application/csp-report']
+        })
+    );
+    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(expressSanitized.middleware());
     configureRequestId(app);
     configureMorgan(app);
-    app.use(function (req, res, next) {
+    app.use(function(req, res, next) {
         req.process = {};
         next();
     });
-    console.log("App Created on " + app.settings.env);
+    console.log('App Created on ' + app.settings.env);
     callback(null, app);
 }
 
@@ -61,4 +66,3 @@ function addRoutes(app, callback) {
     app.use(error.boomErrorHandler);
     return callback(null, app);
 }
-

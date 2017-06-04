@@ -7,7 +7,7 @@ const base = require('./base');
 const authentication = require('./authentication');
 const users = require('./users');
 const rateLimit = require('../rate-limit');
-const passport = require("passport");
+const passport = require('passport');
 const boom = require('boom');
 module.exports = router;
 
@@ -18,7 +18,7 @@ router.use(authenticate);
 router.use('/users', users);
 
 function authenticate(req, res, next) {
-    passport.authenticate('jwt', {session: false}, authenticationCallback)(req, res);
+    passport.authenticate('jwt', { session: false }, authenticationCallback)(req, res);
     function authenticationCallback(err, user) {
         if (err) {
             return next(err);

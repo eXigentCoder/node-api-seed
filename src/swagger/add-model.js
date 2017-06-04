@@ -7,7 +7,7 @@ schemaKeys.push('definitions');
 module.exports = function addModel(schema) {
     let schemaCopy = _.cloneDeep(schema);
     schemaCopy = cleanSchema(schemaCopy);
-    swagger.common.addModel(schemaCopy, {validation: 'warn'});
+    swagger.common.addModel(schemaCopy, { validation: 'warn' });
 };
 
 function cleanSchema(schema) {
@@ -16,7 +16,7 @@ function cleanSchema(schema) {
         filterProperties(schema.properties);
     }
     if (schema.definitions) {
-        Object.keys(schema.definitions).forEach(function (definitionName) {
+        Object.keys(schema.definitions).forEach(function(definitionName) {
             const definitionSchema = schema.definitions[definitionName];
             schema.definitions[definitionName] = cleanSchema(definitionSchema);
         });
@@ -25,9 +25,9 @@ function cleanSchema(schema) {
 }
 
 function filterProperties(properties) {
-    Object.keys(properties).forEach(function (propertyName) {
+    Object.keys(properties).forEach(function(propertyName) {
         const propertyValue = properties[propertyName];
-        Object.keys(propertyValue).forEach(function (key) {
+        Object.keys(propertyValue).forEach(function(key) {
             if (schemaKeys.indexOf(key) < 0) {
                 delete propertyValue[key];
             }
@@ -43,7 +43,7 @@ function filterProperties(properties) {
 
 function filterItems(items) {
     if (_.isArray(items)) {
-        items.forEach(function (item) {
+        items.forEach(function(item) {
             cleanSchema(item);
         });
         return;

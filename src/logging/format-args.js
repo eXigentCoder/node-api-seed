@@ -27,7 +27,7 @@ function deepReplace(object, counter) {
     _.forOwn(object, replaceSensitiveDataForObjectProperty);
 
     function replaceSensitiveDataForObjectProperty(value, key) {
-        replacements.forEach(function (replacement) {
+        replacements.forEach(function(replacement) {
             if (key.toLowerCase() !== replacement.key.toLowerCase()) {
                 return;
             }
@@ -47,7 +47,7 @@ function deepReplace(object, counter) {
                     object[key] = '[Array Object too deeply nested]';
                     return;
                 }
-                value.forEach(function (item) {
+                value.forEach(function(item) {
                     deepReplace(item, counter);
                 });
                 return;

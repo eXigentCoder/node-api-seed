@@ -1,5 +1,5 @@
 'use strict';
-const mongo = require("../../src/mongo/index");
+const mongo = require('../../src/mongo/index');
 const async = require('async');
 
 module.exports = function insertData(data, callback) {
