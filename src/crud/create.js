@@ -83,9 +83,10 @@ function description(metadata) {
         ],
         responses: {
             '201': {
-                description: 'Informs the caller that the ' +
-                    metadata.title.toLowerCase() +
-                    ' was successfully created.',
+                description:
+                    'Informs the caller that the ' +
+                        metadata.title.toLowerCase() +
+                        ' was successfully created.',
                 commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }

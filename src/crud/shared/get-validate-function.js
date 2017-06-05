@@ -11,7 +11,7 @@ module.exports = function getValidateFunction(schemaName) {
         if (!req.process.metadata.schemas[schemaName]) {
             return next(new Error('req.process.metadata.schemas.' + schemaName + ' must be set'));
         }
-        if (!req.process.metadata.schemas[schemaName].id) {
+        if (!req.process.metadata.schemas[schemaName].$id) {
             return next(
                 new Error(
                     util.format(
@@ -23,7 +23,7 @@ module.exports = function getValidateFunction(schemaName) {
                 )
             );
         }
-        const result = validator.validate(req.process.metadata.schemas[schemaName].id, req.body);
+        const result = validator.validate(req.process.metadata.schemas[schemaName].$id, req.body);
         if (!result.valid) {
             return next(boom.badRequest(result.message, result.errors));
         }

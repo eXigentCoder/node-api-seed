@@ -26,7 +26,7 @@ module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
             router.metadata.schemas.updateStatus = _.cloneDeep(
                 router.metadata.schemas.core.updateStatusSchema
             );
-            router.metadata.schemas.updateStatus.id = router.metadata.schemas.core.id.replace(
+            router.metadata.schemas.updateStatus.$id = router.metadata.schemas.core.$id.replace(
                 '.json',
                 '-updateStatus.json'
             );
@@ -66,12 +66,13 @@ function description(metadata) {
     const correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
-        summary: 'Updates the status of ' +
-            metadata.aOrAn +
-            ' ' +
-            metadata.title +
-            ' By ' +
-            _.startCase(metadata.identifierName),
+        summary:
+            'Updates the status of ' +
+                metadata.aOrAn +
+                ' ' +
+                metadata.title +
+                ' By ' +
+                _.startCase(metadata.identifierName),
         tags: [metadata.tag.name],
         parameters: [
             {

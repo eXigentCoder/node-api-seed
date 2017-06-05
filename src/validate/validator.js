@@ -48,7 +48,7 @@ function addSchema(schema, key) {
     if (!_.isObject(schema)) {
         throw new Error('Schema must be an object');
     }
-    let schemaIdentifier = key || schema.id;
+    let schemaIdentifier = key || schema.$id;
     if (!schemaIdentifier) {
         throw new Error('No key was provided and no id was set');
     }
@@ -120,10 +120,10 @@ function validate(schemaKeyRef, data) {
     if (_.isArray(schemaKeyRef)) {
         throw new Error('schemaKeyRef cannot be an array');
     }
-    if (_.isObject(schemaKeyRef) && schemaKeyRef.id) {
-        const existingSchema = ajv.getSchema(schemaKeyRef.id);
+    if (_.isObject(schemaKeyRef) && schemaKeyRef.$id) {
+        const existingSchema = ajv.getSchema(schemaKeyRef.$id);
         if (existingSchema) {
-            schemaKeyRef = schemaKeyRef.id;
+            schemaKeyRef = schemaKeyRef.$id;
         }
     }
     const result = {};
@@ -144,7 +144,7 @@ function validate(schemaKeyRef, data) {
 
 /**
  * Get compiled schema from the instance by `key` or `ref`.
- * @param  {String} keyRef `key` that was passed to `addSchema` or full schema reference (`schema.id` or resolved id).
+ * @param  {String} keyRef `key` that was passed to `addSchema` or full schema reference (`schema.$id` or resolved id).
  * @return {Function} schema validating function (with property `schema`).
  */
 function getSchema(keyRef) {

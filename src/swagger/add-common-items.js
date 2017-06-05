@@ -106,12 +106,14 @@ module.exports = function(app, callback) {
     });
     swagger.common.addResponse({
         name: '204',
-        description: 'The server successfully processed the request, but is not returning any content.'
+        description:
+            'The server successfully processed the request, but is not returning any content.'
     });
     const correlationIdOptions = config.get('logging').correlationId;
     swagger.common.addResponseHeader({
         name: correlationIdOptions.resHeader,
-        description: 'A unique identifier that is used to track the request through the logs. Should be passed through in the request, but will be generated if one is not provided.',
+        description:
+            'A unique identifier that is used to track the request through the logs. Should be passed through in the request, but will be generated if one is not provided.',
         type: 'string'
     });
 
@@ -149,7 +151,8 @@ module.exports = function(app, callback) {
     });
     swagger.common.parameters.addHeader({
         name: correlationIdOptions.reqHeader,
-        description: 'A unique identifier that is used to track the request through the logs. Should be passed through in the request, but will be generated if one is not provided.',
+        description:
+            'A unique identifier that is used to track the request through the logs. Should be passed through in the request, but will be generated if one is not provided.',
         required: false,
         type: 'string'
     });

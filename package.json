@@ -39,7 +39,7 @@
   "homepage": "https://github.com/eXigentCoder/node-api-seed#readme",
   "dependencies": {
     "acl": "0.4.10",
-    "ajv": "4.11.6",
+    "ajv": "5.1.5",
     "api-query-params": "4.4.0",
     "async": "2.4.1",
     "bcrypt": "1.0.2",
@@ -68,8 +68,7 @@
     "password-generator": "2.1.0",
     "pluralize": "5.0.0",
     "request-id": "0.11.1",
-    "snyk": "1.33.0",
-    "swagger-spec-express": "1.0.8",
+    "swagger-spec-express": "2.0.3",
     "winston": "2.3.1",
     "winston-daily-rotate-file": "1.4.6",
     "winston-graylog2": "0.6.0",
@@ -94,6 +93,7 @@
     "proxyquire": "1.8.0",
     "sinon": "2.3.2",
     "sinon-chai": "2.10.0",
+    "snyk": "1.33.0",
     "supertest": "3.0.0",
     "swagger-ui": "3.0.13"
   },

@@ -12,13 +12,13 @@ module.exports = function ensureSchemaSet(metadata, operation, direction) {
 };
 
 function ensureNotCoreId(schema, coreSchema, operation) {
-    if (schema.id !== coreSchema.id) {
+    if (schema.$id !== coreSchema.$id) {
         return;
     }
     if (_.endsWith(schema, '/')) {
-        schema.id += operation;
+        schema.$id += operation;
     } else {
-        schema.id += '/' + operation;
+        schema.$id += '/' + operation;
     }
 }
 

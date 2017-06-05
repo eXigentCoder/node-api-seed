@@ -44,9 +44,10 @@ function description(metadata) {
         },
         responses: {
             200: {
-                description: 'Returns the list of ' +
-                    metadata.titlePlural +
-                    ' matching the supplied parameters.',
+                description:
+                    'Returns the list of ' +
+                        metadata.titlePlural +
+                        ' matching the supplied parameters.',
                 arrayOfModel: metadata.schemas.output.name,
                 commonHeaders: [correlationIdOptions.resHeader]
             }

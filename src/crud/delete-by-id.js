@@ -29,20 +29,20 @@ function description(metadata) {
     const correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
-        summary: 'Removes ' +
-            metadata.aOrAn +
-            ' ' +
-            metadata.title +
-            ' By ' +
-            _.startCase(metadata.identifierName) +
-            '.',
+        summary:
+            'Removes ' +
+                metadata.aOrAn +
+                ' ' +
+                metadata.title +
+                ' By ' +
+                _.startCase(metadata.identifierName) +
+                '.',
         tags: [metadata.tag.name],
         parameters: [
             {
                 name: metadata.identifierName,
-                description: 'The field to uniquely identify this ' +
-                    metadata.title.toLowerCase() +
-                    '.',
+                description:
+                    'The field to uniquely identify this ' + metadata.title.toLowerCase() + '.',
                 required: true,
                 in: 'path',
                 type: 'string'
