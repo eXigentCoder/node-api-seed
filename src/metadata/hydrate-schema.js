@@ -2,12 +2,12 @@
 module.exports = function hydrateOutputSchema(schema) {
     schema.properties = schema.properties || {};
     schema.required = schema.required || [];
-    addId(schema);
+    add_id(schema);
     addStatusInfo(schema);
     addOwnerInfo(schema);
 };
 
-function addId(schema) {
+function add_id(schema) {
     const defaultIdField = {
         type: 'string',
         format: 'mongoId',
