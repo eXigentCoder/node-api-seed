@@ -40,7 +40,7 @@ module.exports = function(options) {
                 showLevel: true,
                 zippedArchive: true,
                 handleExceptions: true,
-                datePattern: `./logs/${options.source}/ddd-HH`,
+                datePattern: `./logs/${options.source.toLowerCase()}/ddd-HH`,
                 prepend: true
             },
             loggly: {
