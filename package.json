@@ -7,7 +7,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node .",
-    "build": "babel src/**/*.js -d dist -w -s",
+    "build": "babel src/**/*.js -d dist -w",
     "watch": "nodemon .",
     "test": "node_modules/.bin/istanbul --include-all-sources cover -x \"public/**\" -x \"report/**\" -x \"utilities/**\" node_modules/mocha/bin/_mocha \"test/**/*.js\"",
     "mocha": "node_modules/.bin/_mocha \"test/**/*.js\"",
