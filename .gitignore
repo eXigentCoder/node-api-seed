@@ -1,5 +1,6 @@
 # Logs
-logs
+logs/**/*.log
+logs/**/*.gz
 *.log
 npm-debug.log*
 

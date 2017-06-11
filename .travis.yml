@@ -23,4 +23,5 @@ before_script:
   - sleep 15
 script:
   - npm run lint-ci
-  - npm run mocha
+  - npm t
+  - npm run ensureNoWildcards

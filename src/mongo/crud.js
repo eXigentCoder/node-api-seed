@@ -1,13 +1,23 @@
 'use strict';
-var mongo = require('./index');
-var aqp = require('api-query-params').default;
-var boom = require('boom');
-var _ = require('lodash');
-var util = require('util');
-var moment = require('moment');
-var metadataFields = ['versionInfo', 'passwordHash', 'status', 'statusDate', 'statusLog'];//fields that need to exist in the system but should not be directly settable via PUT
+const mongo = require('./');
+const aqp = require('api-query-params').default;
+const boom = require('boom');
+const _ = require('lodash');
+const util = require('util');
+const moment = require('moment');
+//fields that need to exist in the system but should not be directly settable via PUT
+const metadataFields = [
+    'versionInfo',
+    'passwordHash',
+    'status',
+    'statusDate',
+    'statusLog',
+    'owner',
+    'ownerDate',
+    'ownerLog'
+];
 
-module.exports = function (metadata) {
+module.exports = function(metadata) {
     return {
         query: query(metadata),
         findByIdentifier: findByIdentifier(metadata),
@@ -19,11 +29,13 @@ module.exports = function (metadata) {
         deleteByIdentifier: deleteByIdentifier(metadata)
     };
 };
+module.exports.getExistingMetadata = getExistingMetadata;
 
 function query(metadata) {
-    return function (req, res, next) {
-        var parsedQuery = parseQueryWithDefaults(req.query);
-        mongo.db.collection(metadata.collectionName)
+    return function(req, res, next) {
+        const parsedQuery = parseQueryWithDefaults(req.query, metadata.schemas.core);
+        mongo.db
+            .collection(metadata.collectionName)
             .find(parsedQuery.filter)
             .skip(parsedQuery.skip)
             .limit(parsedQuery.limit)
@@ -41,19 +53,18 @@ function query(metadata) {
     };
 }
 
-function parseQueryWithDefaults(queryString) {
-    var agpOptions = {
+function parseQueryWithDefaults(queryString, schema) {
+    const agpOptions = {
         casters: {
             mongoId: val => mongo.ObjectId(val)
         },
         castParams: {
-            _id: 'mongoId'
+            _id: 'mongoId',
+            owner: 'mongoId'
         }
     };
-    var parsedQuery = aqp(queryString, agpOptions);
-    if (_.isObject(queryString)) {
-        coerceTypes(queryString, parsedQuery.filter);
-    }
+    setCastParamsFromSchema(agpOptions, schema.properties);
+    const parsedQuery = aqp(queryString, agpOptions);
     parsedQuery.projection = parsedQuery.projection || {};
     parsedQuery.skip = parsedQuery.skip || 0;
     parsedQuery.limit = parsedQuery.limit || 50;
@@ -61,35 +72,44 @@ function parseQueryWithDefaults(queryString) {
     return parsedQuery;
 }
 
-function coerceTypes(inputObject, filter) {
-    Object.keys(filter).forEach(function (key) {
-        if (!inputObject[key]) {
+function setCastParamsFromSchema(agpOptions, properties) {
+    Object.keys(properties).forEach(function(propertyName) {
+        const propertyValue = properties[propertyName];
+        if (!propertyValue.type) {
             return;
         }
-        if (inputObject[key] instanceof mongo.ObjectId) {
-            filter[key] = mongo.ObjectId(filter[key]);
+        if (_.isArray(propertyValue.type)) {
+            const types = propertyValue.type.filter(type => type.toLowerCase() !== 'null');
+            if (types.length === 1) {
+                agpOptions.castParams[propertyName] = types[0];
+                return;
+            }
+            return; //todo if can be a string or int, which do we cast too?
         }
+        if (propertyValue.type.toLowerCase() === 'object') {
+            return; //todo nested properties + queries, how do they work?
+        }
+        if (agpOptions.castParams[propertyName]) {
+            return; //don't override
+        }
+        agpOptions.castParams[propertyName] = propertyValue.type;
     });
+    return agpOptions;
 }
 
 function findByIdentifier(metadata) {
-    return function (req, res, next) {
-        var identifier = req.params[metadata.identifierName];
+    return function(req, res, next) {
+        const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+            return next(new Error('Object has no identifier'));
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
-        mongoQuery = _.merge({}, req.query, mongoQuery);
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
-        mongo.db.collection(metadata.collectionName)
-            .findOne(parsedQuery.filter, dataRetrieved);
+        const mongoQuery = getIdentifierQuery(identifier, metadata);
+        const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
+        mongo.db.collection(metadata.collectionName).findOne(parsedQuery.filter, dataRetrieved);
 
         function dataRetrieved(err, document) {
             if (err) {
                 return next(err);
-            }
-            if (!document) {
-                return next(boom.notFound(util.format('A %s matching query %j was not found.', metadata.name, mongoQuery)));
             }
             req.process[metadata.name] = document;
             return next();
@@ -99,15 +119,15 @@ function findByIdentifier(metadata) {
 
 function getIdentifierQuery(identifier, metadata) {
     if (mongo.isValidObjectId(identifier)) {
-        return {_id: identifier};
+        return { _id: identifier };
     }
-    var identifierQuery = {};
+    const identifierQuery = {};
     identifierQuery[metadata.identifierName] = identifier;
     return identifierQuery;
 }
 
 function create(metadata) {
-    return function (req, res, next) {
+    return function(req, res, next) {
         mongo.db.collection(metadata.collectionName).insertOne(req.body, inserted);
         function inserted(err) {
             req.process.output = req.body;
@@ -117,14 +137,14 @@ function create(metadata) {
 }
 
 function updateStatus(metadata) {
-    return function (req, res, next) {
-        var identifier = req.params[metadata.identifierName];
+    return function(req, res, next) {
+        const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+            return next(new Error('Object has no identifier'));
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
-        var now = moment.utc().toDate();
-        var updateStatement = {
+        const mongoQuery = getIdentifierQuery(identifier, metadata);
+        const now = moment.utc().toDate();
+        const updateStatement = {
             $set: {
                 status: req.params.newStatusName,
                 statusDate: now,
@@ -138,15 +158,16 @@ function updateStatus(metadata) {
                 }
             }
         };
-        var options = {
+        const options = {
             returnOriginal: true
         };
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
-        mongo.db.collection(metadata.collectionName)
+        const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
+        mongo.db
+            .collection(metadata.collectionName)
             .findOneAndUpdate(parsedQuery.filter, updateStatement, options, updateComplete);
         function updateComplete(err, result) {
             if (err) {
-                return next();
+                return next(err);
             }
             req.process.originalItem = result.value;
             return next();
@@ -155,22 +176,23 @@ function updateStatus(metadata) {
 }
 
 function update(metadata) {
-    return function (req, res, next) {
-        var identifier = req.params[metadata.identifierName];
+    return function(req, res, next) {
+        const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+            return next(new Error('Object has no identifier'));
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
-        var replacement = req.body;
-        var options = {
+        const mongoQuery = getIdentifierQuery(identifier, metadata);
+        const replacement = req.body;
+        const options = {
             returnOriginal: true
         };
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
-        mongo.db.collection(metadata.collectionName)
+        const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
+        mongo.db
+            .collection(metadata.collectionName)
             .findOneAndReplace(parsedQuery.filter, replacement, options, updateComplete);
         function updateComplete(err, result) {
             if (err) {
-                return next();
+                return next(err);
             }
             req.process.originalItem = result.value;
             return next();
@@ -185,38 +207,61 @@ function writeHistoryItem(metadata) {
         }
         req.process.originalItem.historyId = req.process.originalItem._id;
         delete req.process.originalItem._id;
-        mongo.db.collection(metadata.collectionName + '-history').insertOne(req.process.originalItem, next);
+        mongo.db
+            .collection(metadata.collectionName + '-history')
+            .insertOne(req.process.originalItem, next);
     };
 }
 
-function getExistingMetadata(metadata) {
-    return function (req, res, next) {
-        var identifier = req.params[metadata.identifierName];
+//todo rk this should actually be split out, it gets metadata and sets it on the req.body, should be on process.
+function getExistingMetadata(metadata, targetObjectPath) {
+    return function(req, res, next) {
+        const identifier = req.params[metadata.identifierName];
         if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+            return next(new Error('Object has no identifier'));
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
-        var options = {
+        const mongoQuery = getIdentifierQuery(identifier, metadata);
+        const options = {
             fields: {}
         };
-        metadataFields.forEach(function (field) {
+        metadataFields.forEach(function(field) {
             options.fields[field] = 1;
         });
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
-        mongo.db.collection(metadata.collectionName)
+        const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
+        mongo.db
+            .collection(metadata.collectionName)
             .findOne(parsedQuery.filter, options, dataRetrieved);
         function dataRetrieved(err, document) {
             if (err) {
                 return next(err);
             }
             if (!document) {
-                return next(boom.notFound(util.format('A %s with the "%s" field of "%s" was not found.', metadata.name, metadata.identifierName, identifier)));
+                return next(
+                    boom.notFound(
+                        util.format(
+                            'A %s with the "%s" field of "%s" was not found.',
+                            metadata.name,
+                            metadata.identifierName,
+                            identifier
+                        )
+                    )
+                );
             }
             req.params[metadata.identifierName] = document._id;
 
-            metadataFields.forEach(function (field) {
+            metadataFields.forEach(function(field) {
                 if (document[field]) {
-                    req.body[field] = document[field];
+                    if (targetObjectPath) {
+                        let obj = _.get(req, targetObjectPath);
+                        if (!obj) {
+                            //todo if targetObjectPath contains . need to check that each sub-object exists
+                            _.set(req, targetObjectPath, {});
+                            obj = _.get(req, targetObjectPath);
+                        }
+                        obj[field] = document[field];
+                    } else {
+                        req.body[field] = document[field];
+                    }
                 }
             });
             return next();
@@ -225,23 +270,36 @@ function getExistingMetadata(metadata) {
 }
 
 function deleteByIdentifier(metadata) {
-    return function (req, res, next) {
+    return function(req, res, next) {
         req.process.originalItem = req.process[metadata.name];
-        var identifier = req.params[metadata.identifierName];
-        if (_.isNil(identifier)) {
-            return next(new Error("Object has no identifier"));
+        if (!req.process.originalItem) {
+            return next(
+                boom.notFound(
+                    util.format(
+                        'A %s with the "%s" field of "%s" was not found.',
+                        metadata.name,
+                        metadata.identifierName,
+                        req.params[metadata.identifierName]
+                    )
+                )
+            );
         }
-        var mongoQuery = getIdentifierQuery(identifier, metadata);
-        var parsedQuery = parseQueryWithDefaults(mongoQuery);
-        mongo.db.collection(metadata.collectionName)
-            .deleteOne(parsedQuery.filter, documentDeleted);
+        const mongoQuery = { _id: req.process.originalItem._id };
+        mongo.db.collection(metadata.collectionName).deleteOne(mongoQuery, documentDeleted);
 
         function documentDeleted(err, result) {
             if (err) {
                 return next(err);
             }
             if (result.deletedCount !== 1) {
-                console.warn(util.format('Expected 1 item to be deleted, but result was %s. Query : %j. Original Item : %j', result.deletedCount, mongoQuery, req.process.originalItem));
+                console.warn(
+                    util.format(
+                        'Expected 1 item to be deleted, but result was %s. Query : %j. Original Item : %j',
+                        result.deletedCount,
+                        mongoQuery,
+                        req.process.originalItem
+                    )
+                );
             }
             return next();
         }

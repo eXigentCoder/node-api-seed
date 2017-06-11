@@ -1,16 +1,11 @@
 {
     "globals": {
         "expect": true,
-        "describe": true,
-        "it": true,
         "assert": true,
         "chai": true,
-        "should": true,
-        "before": true,
-        "after": true
+        "should": true
     },
     "rules": {
-        "no-invalid-this": "off",
-        "no-undefined": "off"
+        "node/no-unpublished-require":["off"]
     }
 }

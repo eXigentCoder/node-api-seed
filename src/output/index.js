@@ -1,7 +1,7 @@
 'use strict';
-var jsonSchemaFilter = require('json-schema-filter');
-var _ = require('lodash');
-var ensureExistsOnReq = require('./ensure-exists-on-req');
+const jsonSchemaFilter = require('json-schema-filter');
+const _ = require('lodash');
+const ensureExistsOnReq = require('./ensure-exists-on-req');
 
 module.exports = {
     filter: filterOutput,
@@ -10,7 +10,7 @@ module.exports = {
     send: function sendOutput(req, res) {
         return res.status(200).json(req.process.output);
     },
-    sendNoContent: function (req, res) {
+    sendNoContent: function(req, res) {
         res.status(204).send();
     }
 };
@@ -24,17 +24,20 @@ module.exports = {
  */
 function filterOutput(req, res, next) {
     if (!req.process.metadata.schemas.output) {
-        return next(new Error("Schema must be set before you can call mapOutput"));
+        return next(new Error('Schema must be set before you can call mapOutput'));
     }
     if (!req.process.output) {
-        return next(new Error("req.process.output must be set before you can call mapOutput"));
+        return next(new Error('req.process.output must be set before you can call mapOutput'));
     }
     if (_.isArray(req.process.output)) {
-        req.process.output.forEach(function (item, index) {
+        req.process.output.forEach(function(item, index) {
             req.process.output[index] = jsonSchemaFilter(req.process.metadata.schemas.output, item);
         });
     } else {
-        req.process.output = jsonSchemaFilter(req.process.metadata.schemas.output, req.process.output);
+        req.process.output = jsonSchemaFilter(
+            req.process.metadata.schemas.output,
+            req.process.output
+        );
     }
     return next();
 }
@@ -46,10 +49,10 @@ function filterOutput(req, res, next) {
  */
 function setOutput(path) {
     if (_.isNil(path)) {
-        throw new Error("Path must be set when calling setOutput");
+        throw new Error('Path must be set when calling setOutput');
     }
     if (!_.isString(path)) {
-        throw new Error("Path must be a string when calling setOutput");
+        throw new Error('Path must be a string when calling setOutput');
     }
     return set('process.output', 'process.' + path);
 }
@@ -58,20 +61,18 @@ function setOutput(path) {
  * Takes in the two provided lodash paths and will set something on the destinationObject at the destinationPath from the sourcePath
  * @param {string} destinationPath - The lodash path to the destination value
  * @param {string} sourcePath - The lodash path to the source value
- * @param {object?} destinationObject - The destination object, if not set, will use the req from the express middleware
  * @return {function} setMiddleware - The middleware that will perform the set operation.
  */
-function set(destinationPath, sourcePath, destinationObject) {
+function set(destinationPath, sourcePath) {
     if (!destinationPath || !_.isString(destinationPath)) {
-        throw new Error("destinationPath must be a non empty string");
+        throw new Error('destinationPath must be a non empty string');
     }
     if (!sourcePath || !_.isString(sourcePath)) {
-        throw new Error("sourcePath must be a non empty string");
+        throw new Error('sourcePath must be a non empty string');
     }
     return setMiddleware;
     function setMiddleware(req, res, next) {
-        destinationObject = destinationObject || req;
-        _.set(destinationObject, destinationPath, _.get(req, sourcePath));
+        _.set(req, destinationPath, _.get(req, sourcePath));
         next();
     }
 }

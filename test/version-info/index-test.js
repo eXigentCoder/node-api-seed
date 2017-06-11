@@ -1,24 +1,27 @@
 'use strict';
 
 require('../@util/init.js');
-var httpMocks = require('node-mocks-http');
-var uuid = require('node-uuid');
-var versionMiddleware = require('../../src/version-info');
-var config = require('nconf');
+const httpMocks = require('node-mocks-http');
+const uuid = require('node-uuid');
+const versionMiddleware = require('../../src/version-info');
+const config = require('nconf');
 
-describe('when setting the version info of requests', function () {
-    var request;
-    var response;
-    var validUUIDRegexPattern = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/, 'i');
+describe('when setting the version info of requests', function() {
+    let request;
+    let response;
+    const validUUIDRegexPattern = new RegExp(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+        'i'
+    );
 
-    beforeEach(function () {
+    beforeEach(function() {
         response = httpMocks.createResponse();
     });
 
-    describe('when processing an add request', function () {
-        beforeEach(function () {
-            var correlationIdOptions = config.get('logging').correlationId;
-            var reqOptions = {
+    describe('when processing an add request', function() {
+        beforeEach(function() {
+            const correlationIdOptions = config.get('logging').correlationId;
+            const reqOptions = {
                 method: 'POST',
                 url: '/user',
                 headers: {},
@@ -27,40 +30,40 @@ describe('when setting the version info of requests', function () {
                 },
                 body: {}
             };
-            reqOptions.headers[correlationIdOptions.reqHeader] = "uniquerequestid";
+            reqOptions.headers[correlationIdOptions.reqHeader] = 'uniquerequestid';
             request = httpMocks.createRequest(reqOptions);
 
-            versionMiddleware.add(request, response, function () {
+            versionMiddleware.add(request, response, function() {
                 return null;
             });
         });
 
-        it('should set the request id in the body', function () {
+        it('should set the request id in the body', function() {
             expect(request.body.versionInfo.updatedByRequestId).to.equal('uniquerequestid');
         });
 
-        it('should set the version tag as a valid uuid', function () {
+        it('should set the version tag as a valid uuid', function() {
             expect(validUUIDRegexPattern.test(request.body.versionInfo.versionTag)).to.equal(true);
         });
 
-        it('should set the created and updated dates', function () {
+        it('should set the created and updated dates', function() {
             expect(request.body.versionInfo.dateCreated).to.be.a('date');
             expect(request.body.versionInfo.dateUpdated).to.be.a('date');
         });
 
-        it('should set the created and update by fields to the user id', function () {
+        it('should set the created and update by fields to the user id', function() {
             expect(request.body.versionInfo.createdBy).to.equal('333');
             expect(request.body.versionInfo.lastUpdatedBy).to.equal('333');
         });
     });
 
-    describe('when processing an update request', function () {
-        var existingVersionTag = uuid.v4();
-        var existingUpdatedDate = new Date(2016, 11, 5);
+    describe('when processing an update request', function() {
+        const existingVersionTag = uuid.v4();
+        const existingUpdatedDate = new Date(2016, 11, 5);
 
-        beforeEach(function () {
-            var correlationIdOptions = config.get('logging').correlationId;
-            var reqOptions = {
+        beforeEach(function() {
+            const correlationIdOptions = config.get('logging').correlationId;
+            const reqOptions = {
                 method: 'POST',
                 url: '/user',
                 headers: {},
@@ -76,31 +79,32 @@ describe('when setting the version info of requests', function () {
                     }
                 }
             };
-            reqOptions.headers[correlationIdOptions.reqHeader] = "uniquerequestid";
+            reqOptions.headers[correlationIdOptions.reqHeader] = 'uniquerequestid';
             request = httpMocks.createRequest(reqOptions);
 
-            versionMiddleware.update(request, response, function () {
+            versionMiddleware.update(request, response, function() {
                 return null;
             });
         });
 
-        it('should set the request id in the body', function () {
+        it('should set the request id in the body', function() {
             expect(request.body.versionInfo.updatedByRequestId).to.equal('uniquerequestid');
         });
 
-        it('should update the date updated to a new date', function () {
+        it('should update the date updated to a new date', function() {
             expect(request.body.versionInfo.dateUpdated).to.not.equal(existingUpdatedDate);
             expect(request.body.versionInfo.dateUpdated).to.be.a('date');
         });
 
-        it('should update the version tag, to a new uuid', function () {
-            expect(validUUIDRegexPattern.test(request.body.versionInfo.versionTag)).to.not.equal(existingVersionTag);
+        it('should update the version tag, to a new uuid', function() {
+            expect(validUUIDRegexPattern.test(request.body.versionInfo.versionTag)).to.not.equal(
+                existingVersionTag
+            );
             expect(validUUIDRegexPattern.test(request.body.versionInfo.versionTag)).to.equal(true);
         });
 
-        it('should set the update by field to the user id', function () {
+        it('should set the update by field to the user id', function() {
             expect(request.body.versionInfo.lastUpdatedBy).to.equal('256');
         });
     });
 });
-

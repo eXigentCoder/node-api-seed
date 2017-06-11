@@ -1,17 +1,18 @@
 'use strict';
-var _ = require('lodash');
-var create = require('../create');
-var getById = require('../get-by-id');
-var query = require('../query');
-var update = require('../update');
-var updateStatus = require('../update-status');
-var getByIdAndUse = require('../get-by-id-and-use');
-var deleteById = require('../delete-by-id');
+const _ = require('lodash');
+const create = require('../create');
+const getById = require('../get-by-id');
+const query = require('../query');
+const update = require('../update');
+const updateStatus = require('../update-status');
+const getByIdAndUse = require('../get-by-id-and-use');
+const deleteById = require('../delete-by-id');
+
 module.exports = function addStandardRoutes(router) {
     if (!_.isObject(router.metadata)) {
-        throw new Error("Router.metadata must be set!");
+        throw new Error('Router.metadata must be set!');
     }
-    router.query = function (crudMiddleware, maps) {
+    router.query = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
                 return query(router, router.crudMiddleware, crudMiddleware);
@@ -19,7 +20,7 @@ module.exports = function addStandardRoutes(router) {
         }
         return query(router, crudMiddleware, maps);
     };
-    router.getById = function (crudMiddleware, maps) {
+    router.getById = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
                 return getById(router, router.crudMiddleware, crudMiddleware);
@@ -27,7 +28,7 @@ module.exports = function addStandardRoutes(router) {
         }
         return getById(router, crudMiddleware, maps);
     };
-    router.create = function (crudMiddleware, maps) {
+    router.create = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
                 return create(router, router.crudMiddleware, crudMiddleware);
@@ -35,7 +36,7 @@ module.exports = function addStandardRoutes(router) {
         }
         return create(router, crudMiddleware, maps);
     };
-    router.update = function (crudMiddleware, maps) {
+    router.update = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
                 return update(router, router.crudMiddleware, crudMiddleware);
@@ -43,7 +44,7 @@ module.exports = function addStandardRoutes(router) {
         }
         return update(router, crudMiddleware, maps);
     };
-    router.updateStatus = function (crudMiddleware, maps) {
+    router.updateStatus = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
                 return updateStatus(router, router.crudMiddleware, crudMiddleware);
@@ -51,7 +52,7 @@ module.exports = function addStandardRoutes(router) {
         }
         return updateStatus(router, crudMiddleware, maps);
     };
-    router.deleteById = function (crudMiddleware, maps) {
+    router.deleteById = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
                 return deleteById(router, router.crudMiddleware, crudMiddleware);
@@ -59,13 +60,18 @@ module.exports = function addStandardRoutes(router) {
         }
         return deleteById(router, crudMiddleware, maps);
     };
-    router.getByIdAndUse = function (path, routerOrMiddleware, crudMiddleware, maps) {
+    router.getByIdAndUse = function(path, routerOrMiddleware, crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
-                return getByIdAndUse(router, path, routerOrMiddleware, router.crudMiddleware, crudMiddleware);
+                return getByIdAndUse(
+                    router,
+                    path,
+                    routerOrMiddleware,
+                    router.crudMiddleware,
+                    crudMiddleware
+                );
             }
         }
         return getByIdAndUse(router, path, routerOrMiddleware, crudMiddleware, maps);
     };
 };
-

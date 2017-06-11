@@ -1,20 +1,14 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/items/item.json",
+    "$id": "https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/items/item.json",
     "name": "item",
     "description": "An item belonging to a user",
     "type": "object",
     "identifierName": "name",
     "properties": {
-        "ownerId": {
-            "type": "string",
-            "format": "mongoId",
-            "mongoId": true
-        },
         "name": {
             "type": "string",
             "minLength": 1,
-            "faker": "lorem.word"
+            "faker": "lorem.words"
         },
         "description": {
             "type": "string",
@@ -24,8 +18,16 @@
     },
     "additionalProperties": true,
     "trackHistory": true,
+    "ownership": {
+        "setOwnerExpression": "process.user._id",
+        "permissions": [
+            "create",
+            "update",
+            "updateStatus",
+            "deleteById"
+        ]
+    },
     "required": [
-        "ownerId",
         "name"
     ],
     "indexes": [

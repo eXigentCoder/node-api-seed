@@ -1,17 +1,34 @@
 'use strict';
-var ObjectId = require('mongodb').ObjectId;
-var moment = require('moment');
-var uuid = require("node-uuid");
+const ObjectId = require('mongodb').ObjectId;
+const moment = require('moment');
+const uuid = require('node-uuid');
+const config = require('nconf');
 
-module.exports = {
-    name: 'item3',
-    description: 'Really cool item, that is about to be deleted',
-    ownerId: ObjectId('580d9f45622d510b044fb6a8'),
-    versionInfo: {
-        dateCreated: moment.utc().toDate(),
-        versionTag: uuid.v4(),
-        dateUpdated: moment.utc().toDate(),
-        createdBy: ObjectId("580d9f45622d510b044fb6a8"),
-        lastUpdatedBy: ObjectId("580d9f45622d510b044fb6a8")
-    }
+module.exports = function(callback) {
+    const adminUser = config.get('tests').adminUser;
+    const now = moment.utc().toDate();
+    const userId = ObjectId(adminUser._id);
+    const item = {
+        name: 'item3',
+        description: 'Really cool item, that is about to be deleted',
+        owner: userId,
+        ownerDate: now,
+        ownerLog: [
+            {
+                owner: userId,
+                data: {
+                    reason: 'testing'
+                },
+                ownerDate: now
+            }
+        ],
+        versionInfo: {
+            dateCreated: now,
+            versionTag: uuid.v4(),
+            dateUpdated: now,
+            createdBy: userId,
+            lastUpdatedBy: userId
+        }
+    };
+    return callback(null, item);
 };

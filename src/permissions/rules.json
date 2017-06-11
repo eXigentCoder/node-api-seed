@@ -1,0 +1,43 @@
+[
+    {
+        "roles": [
+            "member"
+        ],
+        "allows": [
+            {
+                "resources": [
+                    "items"
+                ],
+                "permissions": [
+                    "query",
+                    "getById"
+                ]
+            },
+            {
+                "resources": [
+                    "users"
+                ],
+                "permissions": [
+                    "query",
+                    "getById"
+                ]
+            }
+        ]
+    },
+    {
+        "roles": "admin",
+        "allows": [
+            {
+                "resources": [
+                    "users",
+                    "items"
+                ],
+                "permissions": "*"
+            }
+        ]
+    },
+    {
+        "roles": "guest",
+        "allows": []
+    }
+]

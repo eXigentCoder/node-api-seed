@@ -1,6 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/user.json",
+    "$id": "https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/user.json",
     "name": "user",
     "description": "A user of the site",
     "type": "object",
@@ -22,13 +21,13 @@
     "updateStatusSchema": {
         "type": "object",
         "properties": {
-            "comment": {
+            "reason": {
                 "type": "string",
                 "minLength": 1
             }
         },
         "required": [
-            "comment"
+            "reason"
         ],
         "additionalProperties": true
     },

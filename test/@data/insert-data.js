@@ -1,6 +1,6 @@
 'use strict';
-var mongo = require("../../src/mongo/index");
-var async = require('async');
+const mongo = require('../../src/mongo/index');
+const async = require('async');
 
 module.exports = function insertData(data, callback) {
     async.each(data.collections, insertDataForCollection, complete);
@@ -10,7 +10,7 @@ module.exports = function insertData(data, callback) {
 };
 
 function insertDataForCollection(collection, callback) {
-    var dbCollection = mongo.db.collection(collection.name);
+    const dbCollection = mongo.db.collection(collection.name);
     async.each(collection.files, async.apply(insertFile, dbCollection), callback);
 }
 

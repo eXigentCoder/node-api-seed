@@ -1,18 +1,24 @@
 'use strict';
-require('./config/init-nconf');
+require('./config/init-nconf')('Api');
 require('./src/logging/index');
-require("nodejs-dashboard");
-var util = require('util');
-var config = require('nconf');
-var packageJson = require('./package.json');
-var port = config.get('PORT');
-var createApp = require('./src/app.js');
+const util = require('util');
+const config = require('nconf');
+const packageJson = require('./package.json');
+const port = config.get('PORT');
+const createApp = require('./src/app.js');
 
-createApp(function (err, app) {
+createApp(function(err, app) {
     if (err) {
         throw err;
     }
-    app.listen(port, function () {
-        console.info(util.format('%s is listening at http://%s:%s', packageJson.name, config.get('host'), port));
+    app.listen(port, function() {
+        console.info(
+            util.format(
+                '%s is listening at http://%s:%s',
+                packageJson.name,
+                config.get('host'),
+                port
+            )
+        );
     });
 });

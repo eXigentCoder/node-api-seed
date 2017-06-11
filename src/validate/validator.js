@@ -1,9 +1,9 @@
 'use strict';
-var _ = require('lodash');
-var jsonSchemaFilter = require('json-schema-filter');
-var customFormats = require('./custom-formats');
-var Ajv = require('ajv');
-var ajv = new Ajv({
+const _ = require('lodash');
+const jsonSchemaFilter = require('json-schema-filter');
+const customFormats = require('./custom-formats');
+const Ajv = require('ajv');
+const ajv = new Ajv({
     removeAdditional: 'failing',
     useDefaults: true,
     coerceTypes: true,
@@ -11,6 +11,8 @@ var ajv = new Ajv({
     verbose: true,
     format: 'full'
 });
+const jsf = require('json-schema-faker');
+customFormats.addAllToJsf(jsf);
 customFormats.addAllToAjv(ajv);
 
 module.exports = {
@@ -31,26 +33,28 @@ module.exports = {
  */
 function addSchema(schema, key) {
     if (!schema) {
-        throw new Error("Schema is required");
+        throw new Error('Schema is required');
     }
     if (_.isArray(schema)) {
         if (key) {
-            throw new Error("Cannot call add schema with an array of schemas and a key. Id from each schema will be used as the key");
+            throw new Error(
+                'Cannot call add schema with an array of schemas and a key. Id from each schema will be used as the key'
+            );
         }
-        return schema.forEach(function (schemaItem) {
+        return schema.forEach(function(schemaItem) {
             addSchema(schemaItem, null);
         });
     }
     if (!_.isObject(schema)) {
-        throw new Error("Schema must be an object");
+        throw new Error('Schema must be an object');
     }
-    var schemaIdentifier = key || schema.id;
+    let schemaIdentifier = key || schema.$id;
     if (!schemaIdentifier) {
-        throw new Error("No key was provided and no id was set");
+        throw new Error('No key was provided and no id was set');
     }
-    var existingSchema = ajv.getSchema(schemaIdentifier);
+    const existingSchema = ajv.getSchema(schemaIdentifier);
     if (existingSchema) {
-        console.warn("Already added schema with key " + schemaIdentifier);
+        console.warn('Already added schema with key ' + schemaIdentifier);
         return;
     }
     ajv.addSchema(schema, key);
@@ -78,11 +82,10 @@ function removeSchema(schemaKeyRef) {
  * @see {@link getErrorMessage}
  */
 function ensureValid(schemaKeyRef, data) {
-    var result = validate(schemaKeyRef, data);
+    const result = validate(schemaKeyRef, data);
     if (!result.valid) {
-        var error = new Error(result.message);
-        error.errors = result.errors;
-        throw error;
+        result.inputData = data;
+        throw new Error(JSON.stringify(result, null, 4));
     }
 }
 
@@ -93,16 +96,15 @@ function ensureValid(schemaKeyRef, data) {
  * @see Ajv.ajv.errorsText
  */
 function getErrorMessage(errors) {
-    var message = ajv.errorsText(errors);
+    let message = ajv.errorsText(errors);
     if (message.indexOf('should NOT have additional properties') < 0) {
         return message;
     }
-    errors.forEach(function (error) {
+    errors.forEach(function(error) {
         message += '. Property : ' + error.params.additionalProperty;
     });
     return message;
 }
-
 
 /**
  * Validate data using schema
@@ -113,22 +115,21 @@ function getErrorMessage(errors) {
  */
 function validate(schemaKeyRef, data) {
     if (!schemaKeyRef) {
-        throw new Error("schemaKeyRef is required");
+        throw new Error('schemaKeyRef is required');
     }
     if (_.isArray(schemaKeyRef)) {
-        throw new Error("schemaKeyRef cannot be an array");
+        throw new Error('schemaKeyRef cannot be an array');
     }
-    if (_.isObject(schemaKeyRef) && schemaKeyRef.id) {
-        var existingSchema = ajv.getSchema(schemaKeyRef.id);
+    if (_.isObject(schemaKeyRef) && schemaKeyRef.$id) {
+        const existingSchema = ajv.getSchema(schemaKeyRef.$id);
         if (existingSchema) {
-            schemaKeyRef = schemaKeyRef.id;
+            schemaKeyRef = schemaKeyRef.$id;
         }
     }
-    var result = {};
+    const result = {};
     try {
         result.valid = ajv.validate(schemaKeyRef, data);
-    }
-    catch (err) {
+    } catch (err) {
         result.valid = false;
         result.errors = [err];
         result.message = err.message;
@@ -143,7 +144,7 @@ function validate(schemaKeyRef, data) {
 
 /**
  * Get compiled schema from the instance by `key` or `ref`.
- * @param  {String} keyRef `key` that was passed to `addSchema` or full schema reference (`schema.id` or resolved id).
+ * @param  {String} keyRef `key` that was passed to `addSchema` or full schema reference (`schema.$id` or resolved id).
  * @return {Function} schema validating function (with property `schema`).
  */
 function getSchema(keyRef) {
@@ -158,24 +159,27 @@ function getSchema(keyRef) {
  */
 function filterDataBySchema(schemaKeyRef, data) {
     if (!schemaKeyRef) {
-        throw new Error("SchemaKeyRef is required.");
+        throw new Error('SchemaKeyRef is required.');
     }
     if (!data) {
-        throw new Error("Data is required.");
+        throw new Error('Data is required.');
     }
     if (!_.isObject(data)) {
-        throw new Error("Data must be an object.");
+        throw new Error('Data must be an object.');
     }
     if (_.isString(schemaKeyRef)) {
-        var schemaFn = getSchema(schemaKeyRef);
+        const schemaFn = getSchema(schemaKeyRef);
         if (schemaFn && schemaFn.schema) {
             return jsonSchemaFilter(schemaFn.schema, data);
         }
-        throw new Error("Can't map data by schema key when the schema has not yet been added. Key : " + schemaKeyRef
-            + ". Either call addSchema first or pass in the schema object.");
+        throw new Error(
+            "Can't map data by schema key when the schema has not yet been added. Key : " +
+                schemaKeyRef +
+                '. Either call addSchema first or pass in the schema object.'
+        );
     }
     if (!_.isObject(schemaKeyRef)) {
-        throw new Error("schemaKeyRef must be an object or string.");
+        throw new Error('schemaKeyRef must be an object or string.');
     }
     return jsonSchemaFilter(schemaKeyRef, data);
 }

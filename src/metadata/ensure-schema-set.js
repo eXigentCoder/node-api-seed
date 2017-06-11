@@ -1,6 +1,6 @@
 'use strict';
-var _ = require('lodash');
-var validator = require('../validate/validator');
+const _ = require('lodash');
+const validator = require('../validate/validator');
 
 module.exports = function ensureSchemaSet(metadata, operation, direction) {
     if (!metadata.schemas[operation]) {
@@ -12,13 +12,13 @@ module.exports = function ensureSchemaSet(metadata, operation, direction) {
 };
 
 function ensureNotCoreId(schema, coreSchema, operation) {
-    if (schema.id !== coreSchema.id) {
+    if (schema.$id !== coreSchema.$id) {
         return;
     }
-    if (_.endsWith(schema, '#')) {
-        schema.id += operation;
+    if (_.endsWith(schema, '/')) {
+        schema.$id += operation;
     } else {
-        schema.id += "#" + operation;
+        schema.$id += '/' + operation;
     }
 }
 

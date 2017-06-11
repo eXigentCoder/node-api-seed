@@ -1,36 +1,36 @@
 'use strict';
-var config = require('nconf');
-var packageJson = require('../../package.json');
-var swagger = require('swagger-spec-express');
-var _ = require('lodash');
+const config = require('nconf');
+const packageJson = require('../../package.json');
+const swagger = require('swagger-spec-express');
+const _ = require('lodash');
 
 module.exports = function initialiseSwagger(app, callback) {
-    var swaggerConfig = config.get('swagger');
-    var baseDocument = swaggerConfig.baseDocument || buildBaseDocument(swaggerConfig);
-    var options = {
+    const swaggerConfig = config.get('swagger');
+    const baseDocument = swaggerConfig.baseDocument || buildBaseDocument(swaggerConfig);
+    const options = {
         document: baseDocument,
         defaultSecurity: swaggerConfig.defaultSecurity
     };
     try {
         swagger.initialise(app, options);
-    }
-    catch (err) {
+    } catch (err) {
         return callback(err, app);
     }
+    console.log('Swagger initialised');
     return callback(null, app);
 };
 
 function buildBaseDocument(swaggerConfig) {
-    var host = config.get('host');
+    let host = config.get('host');
     if (swaggerConfig.appendPortToHost) {
-        host += ":" + config.get('PORT');
+        host += ':' + config.get('PORT');
     }
-    var contactInfo = getContactInfoFromPackage();
+    const contactInfo = getContactInfoFromPackage();
     contactInfo.name = _.get(swaggerConfig, 'contact.name') || contactInfo.name;
     contactInfo.url = _.get(swaggerConfig, 'contact.url') || contactInfo.url;
     contactInfo.email = _.get(swaggerConfig, 'contact.email') || contactInfo.email;
     return {
-        swagger: "2.0",
+        swagger: '2.0',
         info: {
             title: packageJson.title,
             version: packageJson.version,
@@ -39,31 +39,37 @@ function buildBaseDocument(swaggerConfig) {
             contact: contactInfo,
             license: {
                 name: _.get(swaggerConfig, 'license.name') || packageJson.license,
-                url: _.get(swaggerConfig, 'license.url') || 'https://spdx.org/licenses/' + packageJson.license + '.html'
+                url:
+                    _.get(swaggerConfig, 'license.url') ||
+                        'https://spdx.org/licenses/' + packageJson.license + '.html'
             }
         },
         host: host,
         schemes: swaggerConfig.schemes || ['http'],
-        consumes: swaggerConfig.consumes || ["application/json"],
-        produces: swaggerConfig.produces || ["application/json"],
+        consumes: swaggerConfig.consumes || ['application/json'],
+        produces: swaggerConfig.produces || ['application/json'],
         security: swaggerConfig.security,
         securityDefinitions: swaggerConfig.securityDefinitions
     };
 }
 
 function getContactInfoFromPackage() {
-    var authorName, authorEmail, authorSite;
+    let authorName, authorEmail, authorSite;
     if (packageJson.author.indexOf('<') >= 0) {
-        var parts = packageJson.author.split('<');
+        let parts = packageJson.author.split('<');
         if (parts.length > 2) {
-            throw new Error('package.json.author should be in the format "name <email> (website)" with email and website being optional');
+            throw new Error(
+                'package.json.author should be in the format "name <email> (website)" with email and website being optional'
+            );
         }
         authorName = parts[0].trim();
         authorEmail = parts[1].replace('>', '').trim();
         if (authorEmail.indexOf('(') >= 0) {
             parts = authorEmail.split('(');
             if (parts.length > 2) {
-                throw new Error('package.json.author should be in the format "name <email> (website)" with email and website being optional');
+                throw new Error(
+                    'package.json.author should be in the format "name <email> (website)" with email and website being optional'
+                );
             }
             authorEmail = parts[0].trim();
             authorSite = parts[1].replace(')', '').trim();

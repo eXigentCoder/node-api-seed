@@ -9,5 +9,4 @@ module.exports = function Steps() {
 };
 module.exports.doWork = doWork;
 //eslint-disable-next-line no-empty-function
-function doWork() {
-}
+function doWork() {}
