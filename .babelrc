@@ -1,4 +1,3 @@
 {
-    "presets": [],
-    "plugins": []
+    "presets": ["es2017"]
 }
