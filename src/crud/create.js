@@ -88,9 +88,7 @@ function description(metadata) {
         responses: {
             '201': {
                 description:
-                    'Informs the caller that the ' +
-                        metadata.title.toLowerCase() +
-                        ' was successfully created.',
+                    'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
                 commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }
@@ -104,19 +102,36 @@ function setStatusIfApplicable(metadata) {
         if (!statuses || statuses.length <= 0) {
             return next();
         }
-        req.body.status = statuses[0].name;
+        const statusToSet = statuses[0];
+        req.body.status = statusToSet.name;
         req.body.statusDate = moment.utc().toDate();
-        req.body.statusLog = [
-            {
-                status: req.body.status,
-                data: {
-                    reason: 'Initial Status' //todo need to set this logically somehow
-                },
-                statusDate: req.body.statusDate
-            }
-        ];
+        const logEntry = {
+            status: req.body.status,
+            statusDate: req.body.statusDate
+        };
+        if (statusToSet.initialData) {
+            const fromReq = getFromReqObject(statusToSet.initialData.fromReq, req);
+            logEntry.data = _.merge({}, statusToSet.initialData.static, fromReq);
+        }
+        req.body.statusLog = [logEntry];
         return next();
     };
+}
+
+function getFromReqObject(map, req) {
+    if (!map) {
+        return;
+    }
+    const data = {};
+    Object.keys(map).forEach(function(key) {
+        const value = map[key];
+        if (_.isObject(value)) {
+            data[key] = getFromReqObject(value, req);
+            return;
+        }
+        data[key] = _.get(req, value);
+    });
+    return data;
 }
 
 function setOwnerIfApplicable(metadata) {
@@ -129,12 +144,7 @@ function setOwnerIfApplicable(metadata) {
             req.body.owner = _.get(req, ownership.setOwnerExpression);
             if (!req.body.owner) {
                 return next(
-                    boom.badRequest(
-                        util.format(
-                            'Owner from expression "%s" was blank',
-                            ownership.setOwnerExpression
-                        )
-                    )
+                    boom.badRequest(util.format('Owner from expression "%s" was blank', ownership.setOwnerExpression))
                 );
             }
         } else {

@@ -98,6 +98,117 @@ describe('Crud - create', function() {
                 done();
             }
         });
+
+        describe('Status log data', function() {
+            it('Should not exist if initialData was missing', function(done) {
+                const statusToSet = {
+                    name: 'a'
+                };
+                const metadata = buildMetadata([statusToSet]);
+                const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+                const reqOptions = {
+                    body: {}
+                };
+                mockRequest(middleware, reqOptions, null, next);
+
+                function next(error) {
+                    expect(error).to.not.be.ok();
+                    const data = reqOptions.body.statusLog[0].data;
+                    expect(data).to.not.be.ok();
+                    done();
+                }
+            });
+
+            it('Should be an empty object if initialData was an empty object', function(done) {
+                const statusToSet = {
+                    name: 'a',
+                    initialData: {}
+                };
+                const metadata = buildMetadata([statusToSet]);
+                const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+                const reqOptions = {
+                    body: {}
+                };
+                mockRequest(middleware, reqOptions, null, next);
+
+                function next(error) {
+                    expect(error).to.not.be.ok();
+                    const data = reqOptions.body.statusLog[0].data;
+                    expect(Object.keys(data)).to.have.lengthOf(0);
+                    done();
+                }
+            });
+
+            it('Should be an object that deep equals initialData.static if only initialData.static was set', function(
+                done
+            ) {
+                const statusToSet = {
+                    name: 'a',
+                    initialData: {
+                        static: {
+                            number: 1,
+                            string: 'test',
+                            bool: true,
+                            array: [2, 'test', true, null, {}, []],
+                            object: {}
+                        }
+                    }
+                };
+                const metadata = buildMetadata([statusToSet]);
+                const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+                const reqOptions = {
+                    body: {}
+                };
+                mockRequest(middleware, reqOptions, null, next);
+
+                function next(error) {
+                    expect(error).to.not.be.ok();
+                    const data = reqOptions.body.statusLog[0].data;
+                    expect(data).to.deep.equal(statusToSet.initialData.static);
+                    done();
+                }
+            });
+            it('Should be an object with properties taken from the request object if only initialData.fromReq was set', function(
+                done
+            ) {
+                const reqOptions = {
+                    body: {},
+                    user: {
+                        username: 'Bob'
+                    }
+                };
+                const statusToSet = {
+                    name: 'a',
+                    initialData: {
+                        fromReq: {
+                            username: 'user.username',
+                            doesNotExist: 'a',
+                            nested: {
+                                initialUsername: 'user.username'
+                            }
+                            //TODO what if not a string or object value? i.e. [boolean, null, undefined, array, number]
+                            //TODO what if value isn't found? should we use "asdasd: ['a','defaultValue']" to denote using defaults? or do we throw an error?
+                            //TODO security around retrieving things from request? Maybe only from certain parts of req? req.params? req.query? req.body? req.process?
+                            //TODO if fromReq and static are both set, it will merge in an order, what about conflicts? Error?
+                            //TODO refactor this fromReq code with detailed logic into it's own describe block for getFromReqObject
+                        }
+                    }
+                };
+                const metadata = buildMetadata([statusToSet]);
+                const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+
+                mockRequest(middleware, reqOptions, null, next);
+
+                function next(error) {
+                    expect(error).to.not.be.ok();
+                    const data = reqOptions.body.statusLog[0].data;
+                    expect(data.username).to.equal('Bob');
+                    expect(data.doesNotExist).to.not.be.ok();
+                    expect(data.nested.initialUsername).to.equal('Bob');
+                    done();
+                }
+            });
+        });
     });
 });
 
