@@ -53,6 +53,7 @@ describe('Crud - create', function() {
                 done();
             }
         });
+
         it('Should create a status log with one entry', function(done) {
             const metadata = buildMetadata([{ name: 'a' }]);
             const middleware = addCreateRoute.setStatusIfApplicable(metadata);
@@ -64,6 +65,36 @@ describe('Crud - create', function() {
             function next(error) {
                 expect(error).to.not.be.ok();
                 expect(reqOptions.body.statusLog).to.be.an('array').that.has.length(1);
+                done();
+            }
+        });
+
+        it('Should create a status log entry with the status set to the first one in the schema', function(done) {
+            const metadata = buildMetadata([{ name: 'a' }]);
+            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const reqOptions = {
+                body: {}
+            };
+            mockRequest(middleware, reqOptions, null, next);
+
+            function next(error) {
+                expect(error).to.not.be.ok();
+                expect(reqOptions.body.statusLog[0].status).to.equal('a');
+                done();
+            }
+        });
+
+        it('Should create a status log entry with the statusDate set to now', function(done) {
+            const metadata = buildMetadata([{ name: 'a' }]);
+            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const reqOptions = {
+                body: {}
+            };
+            mockRequest(middleware, reqOptions, null, next);
+
+            function next(error) {
+                expect(error).to.not.be.ok();
+                expect(moment(reqOptions.body.statusLog[0].statusDate).diff(new Date())).to.be.lessThan(1);
                 done();
             }
         });
