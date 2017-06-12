@@ -3,6 +3,7 @@ require('../@util/init.js');
 const addCreateRoute = require('../../src/crud/create');
 const httpMocks = require('node-mocks-http');
 const events = require('events');
+const moment = require('moment');
 
 describe('Crud - create', function() {
     describe('setStatusIfApplicable', function() {
@@ -17,9 +18,12 @@ describe('Crud - create', function() {
             function next(error) {
                 expect(error).to.not.be.ok();
                 expect(reqOptions.body.status).to.not.be.ok();
+                expect(reqOptions.body.statusDate).to.not.be.ok();
+                expect(reqOptions.body.statusLog).to.not.be.ok();
                 done();
             }
         });
+
         it('Should set req.body.status to the first status in the schema', function(done) {
             const metadata = buildMetadata([{ name: 'a' }, { name: 'b' }]);
             const middleware = addCreateRoute.setStatusIfApplicable(metadata);
@@ -31,6 +35,35 @@ describe('Crud - create', function() {
             function next(error) {
                 expect(error).to.not.be.ok();
                 expect(reqOptions.body.status).to.equal('a');
+                done();
+            }
+        });
+
+        it('Should set req.body.statusDate to now', function(done) {
+            const metadata = buildMetadata([{ name: 'a' }]);
+            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const reqOptions = {
+                body: {}
+            };
+            mockRequest(middleware, reqOptions, null, next);
+
+            function next(error) {
+                expect(error).to.not.be.ok();
+                expect(moment(reqOptions.body.statusDate).diff(new Date())).to.be.lessThan(1);
+                done();
+            }
+        });
+        it('Should create a status log with one entry', function(done) {
+            const metadata = buildMetadata([{ name: 'a' }]);
+            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const reqOptions = {
+                body: {}
+            };
+            mockRequest(middleware, reqOptions, null, next);
+
+            function next(error) {
+                expect(error).to.not.be.ok();
+                expect(reqOptions.body.statusLog).to.be.an('array').that.has.length(1);
                 done();
             }
         });
