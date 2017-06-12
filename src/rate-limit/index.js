@@ -49,7 +49,7 @@ function apiRateLimited(req, res, next, nextValidRequestDate) {
 }
 
 function loginRateLimited(req, res, next, nextValidRequestDate) {
-    return next(new Error(util.format('Not implemented. %s', nextValidRequestDate.toISOString()))); //todo need to look up how many types the rate limit has been reached and freeze the account untill a two-factor auth call is made.
+    return next(new Error(util.format('Not implemented. %s', nextValidRequestDate.toISOString()))); //todo need to look up how many types the rate limit has been reached and freeze the account until a two-factor auth call is made.
 }
 
 function initialise(instanceName) {
