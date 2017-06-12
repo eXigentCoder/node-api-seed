@@ -22,8 +22,12 @@ function addCreateRoute(router, crudMiddleware, maps) {
         .describe(router.metadata.creationDescription || description(router.metadata));
     return router;
 }
+addCreateRoute.getSteps = getSteps;
+addCreateRoute.sendCreateResult = sendCreateResult;
+addCreateRoute.description = description;
 addCreateRoute.setStatusIfApplicable = setStatusIfApplicable;
 addCreateRoute.setOwnerIfApplicable = setOwnerIfApplicable;
+
 module.exports = addCreateRoute;
 
 function getSteps(router, crudMiddleware, maps) {
