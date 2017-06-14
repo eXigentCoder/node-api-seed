@@ -122,7 +122,7 @@ function getData(rules, req) {
     if (!rules) {
         return;
     }
-    const fromReq = getFromReqObject(rules.fromReq, req);
+    const fromReq = addCreateRoute.getFromReqObject(rules.fromReq, req);
     return _.merge({}, rules.static, fromReq);
 }
 

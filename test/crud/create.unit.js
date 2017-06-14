@@ -4,6 +4,7 @@ const addCreateRoute = require('../../src/crud/create');
 const httpMocks = require('node-mocks-http');
 const events = require('events');
 const moment = require('moment');
+const sinon = require('sinon');
 
 describe('Crud - create', function() {
     describe('setStatusIfApplicable', function() {
@@ -69,9 +70,7 @@ describe('Crud - create', function() {
             }
         });
 
-        it('Should create a status log entry with the status set to the first one in the schema', function(
-            done
-        ) {
+        it('Should create a status log entry with the status set to the first one in the schema', function(done) {
             const metadata = buildMetadata([{ name: 'a' }]);
             const middleware = addCreateRoute.setStatusIfApplicable(metadata);
             const reqOptions = {
@@ -96,9 +95,7 @@ describe('Crud - create', function() {
 
             function next(error) {
                 expect(error).to.not.be.ok();
-                expect(
-                    moment(reqOptions.body.statusLog[0].statusDate).diff(new Date())
-                ).to.be.lessThan(1);
+                expect(moment(reqOptions.body.statusLog[0].statusDate).diff(new Date())).to.be.lessThan(1);
                 done();
             }
         });
@@ -225,6 +222,34 @@ describe('Crud - create', function() {
             expect(data).to.be.ok();
             expect(Object.keys(data)).to.have.lengthOf(0);
         });
+        it('Should return an object that deep equals rules.static if only initialData.static was set', function() {
+            const req = {};
+            const rules = {
+                static: {
+                    number: 1,
+                    string: 'test',
+                    bool: true,
+                    array: [2, 'test', true, null, {}, []],
+                    object: {}
+                }
+            };
+            const data = addCreateRoute.getData(rules, req);
+            expect(data).to.deep.equal(rules.static);
+        });
+        it('Should merge the result from getFromReqObject if rules.fromReq existed', function() {
+            const req = {};
+            const rules = {
+                fromReq: {}
+            };
+            const stubbedData = {
+                bob: true
+            };
+            const stub = sinon.stub(addCreateRoute, 'getFromReqObject');
+            stub.returns(stubbedData);
+            const data = addCreateRoute.getData(rules, req);
+            stub.restore();
+            expect(data.bob).to.equal(true);
+        });
     });
 
     describe('getFromReqObject', function() {
@@ -263,6 +288,7 @@ describe('Crud - create', function() {
             const data = addCreateRoute.getFromReqObject(map, req);
             expect(data.nested.answer).to.equal('b');
         });
+
         it('Should support a nested map structure with a nested request object', function() {
             const req = httpMocks.createRequest({
                 a: {
@@ -277,6 +303,7 @@ describe('Crud - create', function() {
             const data = addCreateRoute.getFromReqObject(map, req);
             expect(data.nested.answer).to.equal('c');
         });
+
         it('Should throw an error for circular reference maps', function() {
             const req = httpMocks.createRequest({
                 a: {
