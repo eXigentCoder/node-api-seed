@@ -445,6 +445,30 @@ describe('Crud - create', function() {
                 addCreateRoute.getFromReqObject(map, req);
             }).to.throw(notAString);
         });
+
+        it('Should throw an error if the array is empty', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: []
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(notAString);
+        });
+
+        it('Should throw an error if the array has more than 2 entries', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: ['a', 'a', 'a']
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(/too many items in array/i);
+        });
     });
 });
 

@@ -147,6 +147,9 @@ function getFromReqObject(map, req, depth = 0) {
         const value = map[key];
         if (_.isArray(value)) {
             ensureMapIsString(value[0]);
+            if (value.length > 2) {
+                throw new Error(util.format('Too many items in array, should be at most 2. %j', value));
+            }
             data[key] = _.get(req, value[0], value[1]);
             return;
         }
@@ -159,7 +162,7 @@ function getFromReqObject(map, req, depth = 0) {
     });
     return data;
 }
-function ensureMapIsString(map){
+function ensureMapIsString(map) {
     if (!_.isString(map)) {
         throw new Error(util.format('Invalid map value, must be a string : \n%j\n', map));
     }
