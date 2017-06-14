@@ -412,7 +412,6 @@ describe('Crud - create', function() {
             }).to.throw(notAString);
         });
 
-        //TODO what if value isn't found? should we use "asdasd: ['a','defaultValue']" to denote using defaults? or do we throw an error?
         it('Should use the default value if one was supplied', function() {
             const req = httpMocks.createRequest({
                 a: 'b'
@@ -422,6 +421,29 @@ describe('Crud - create', function() {
             };
             const result = addCreateRoute.getFromReqObject(map, req);
             expect(result.answer).to.equal('d');
+        });
+
+        it('Should use the first value in the array for the map if only that is specified', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: ['a']
+            };
+            const result = addCreateRoute.getFromReqObject(map, req);
+            expect(result.answer).to.equal('b');
+        });
+
+        it('Should throw an error if the first value in the array was not a string', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: [1]
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(notAString);
         });
     });
 });

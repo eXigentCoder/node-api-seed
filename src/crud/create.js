@@ -146,6 +146,7 @@ function getFromReqObject(map, req, depth = 0) {
     Object.keys(map).forEach(function(key) {
         const value = map[key];
         if (_.isArray(value)) {
+            ensureMapIsString(value[0]);
             data[key] = _.get(req, value[0], value[1]);
             return;
         }
@@ -153,12 +154,15 @@ function getFromReqObject(map, req, depth = 0) {
             data[key] = getFromReqObject(value, req, depth + 1);
             return;
         }
-        if (!_.isString(value)) {
-            throw new Error(util.format('Invalid map value, must be a string : \n%j\n', value));
-        }
+        ensureMapIsString(value);
         data[key] = _.get(req, value);
     });
     return data;
+}
+function ensureMapIsString(map){
+    if (!_.isString(map)) {
+        throw new Error(util.format('Invalid map value, must be a string : \n%j\n', map));
+    }
 }
 
 function setOwnerIfApplicable(metadata) {
