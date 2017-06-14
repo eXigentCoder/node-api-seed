@@ -173,8 +173,6 @@ describe('Crud - create', function() {
     });
 
     describe('getData', function() {
-        //TODO if fromReq and static are both set, it will merge in an order, what about conflicts? Error?
-
         it('Should not exist if rules was falsy', function() {
             const data = addCreateRoute.getData(null, {});
             expect(data).to.not.be.ok();
@@ -243,6 +241,43 @@ describe('Crud - create', function() {
             expect(data.bool).to.equal(rules.static.bool);
             expect(data.array).to.deep.equal(rules.static.array);
             expect(data.object).to.deep.equal(rules.static.object);
+        });
+
+        it('Should prioritise fields from getFromReqObject over static if both were set', function() {
+            const req = {};
+            const rules = {
+                fromReq: {},
+                static: {
+                    number: 1,
+                    string: 'test',
+                    bool: true,
+                    array: [2, 'test', true, null, {}, []],
+                    object: {
+                        subObject: {}
+                    }
+                }
+            };
+            const stubbedData = {
+                bob: true,
+                number: 2,
+                string: 'test2',
+                bool: false,
+                array: [],
+                object: {
+                    betterSubObject: {}
+                }
+            };
+            const stub = sinon.stub(addCreateRoute, 'getFromReqObject');
+            stub.returns(stubbedData);
+            const data = addCreateRoute.getData(rules, req);
+            stub.restore();
+            expect(data.bob).to.equal(true);
+            expect(data.number).to.equal(stubbedData.number);
+            expect(data.string).to.equal(stubbedData.string);
+            expect(data.bool).to.equal(stubbedData.bool);
+            expect(data.array).to.deep.equal(rules.static.array);
+            expect(data.object.subObject).to.be.ok;
+            expect(data.object.betterSubObject).to.be.ok;
         });
     });
 
