@@ -28,6 +28,7 @@ addCreateRoute.description = description;
 addCreateRoute.setStatusIfApplicable = setStatusIfApplicable;
 addCreateRoute.setOwnerIfApplicable = setOwnerIfApplicable;
 addCreateRoute.getFromReqObject = getFromReqObject;
+addCreateRoute.getData = getData;
 
 module.exports = addCreateRoute;
 

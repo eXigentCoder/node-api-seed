@@ -210,8 +210,69 @@ describe('Crud - create', function() {
             });
         });
     });
-    describe('getFromReqObject', function() {
 
+    describe('getData', function() {
+        it('Should not exist if rules was falsy', function() {
+            const data = addCreateRoute.getData(null, {});
+            expect(data).to.not.be.ok();
+        });
+        it('Should be an empty object if rules was an empty object', function() {
+            const data = addCreateRoute.getData({}, {});
+            expect(data).to.be.ok();
+            expect(Object.keys(data)).to.have.lengthOf(0);
+        });
+    });
+
+    describe('getFromReqObject', function() {
+        it('Should map shallow properties from the req using the map', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: 'a'
+            };
+            const data = addCreateRoute.getFromReqObject(map, req);
+            expect(data.answer).to.equal('b');
+        });
+        it('Should map deep properties from the req using the map', function() {
+            const req = httpMocks.createRequest({
+                a: {
+                    b: 'c'
+                }
+            });
+            const map = {
+                answer: 'a.b'
+            };
+            const data = addCreateRoute.getFromReqObject(map, req);
+            expect(data.answer).to.equal('c');
+        });
+
+        it('Should support a nested map structure', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                nested: {
+                    answer: 'a'
+                }
+            };
+            const data = addCreateRoute.getFromReqObject(map, req);
+            expect(data.nested.answer).to.equal('b');
+        });
+        it('Should support a nested map structure with a nested request object', function() {
+            const req = httpMocks.createRequest({
+                a: {
+                    b: 'c'
+                }
+            });
+            const map = {
+                nested: {
+                    answer: 'a.b'
+                }
+            };
+            const data = addCreateRoute.getFromReqObject(map, req);
+            expect(data.nested.answer).to.equal('c');
+        });
     });
 });
 
