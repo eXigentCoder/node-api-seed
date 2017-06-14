@@ -352,6 +352,81 @@ describe('Crud - create', function() {
                 addCreateRoute.getFromReqObject(map, req);
             }).to.throw(/circular reference/i);
         });
+
+        const notAString = /must be a string/i;
+
+        it('Should throw an error if the map was a number', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: 1
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(notAString);
+        });
+
+        it('Should throw an error if the map was a boolean', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: true
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(notAString);
+        });
+
+        it('Should not throw an error if the map was an empty object', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: {}
+            };
+            const data = addCreateRoute.getFromReqObject(map, req);
+            expect(data.answer).to.deep.equal({});
+        });
+
+        it('Should throw an error if the map was null', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: null
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(notAString);
+        });
+
+        it('Should throw an error if the map was undefined', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                answer: undefined
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(notAString);
+        });
+
+        it('Should <doSomething> if the map was a array', function() {
+            const req = httpMocks.createRequest({
+                a: 'b'
+            });
+            const map = {
+                option1: ['asdasd', 12], //defaultValue?
+                option2: [], //throw error?
+                option3: ['a.doesNotExist', 'a.b'] // try get first one, if fails go onto next?
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(notAString);
+        });
     });
 });
 

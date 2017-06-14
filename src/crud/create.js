@@ -110,6 +110,7 @@ function setStatusIfApplicable(metadata) {
         req.body.statusLog = [
             {
                 status: req.body.status,
+                //we use 'addCreateRoute.' here to allow stubbing in the unit tests
                 data: addCreateRoute.getData(statusToSet.initialData, req),
                 statusDate: req.body.statusDate
             }
@@ -122,6 +123,7 @@ function getData(rules, req) {
     if (!rules) {
         return;
     }
+    //we use 'addCreateRoute.' here to allow stubbing in the unit tests
     const fromReq = addCreateRoute.getFromReqObject(rules.fromReq, req);
     return _.merge({}, rules.static, fromReq);
 }
@@ -146,6 +148,9 @@ function getFromReqObject(map, req, depth = 0) {
         if (_.isObject(value)) {
             data[key] = getFromReqObject(value, req, depth + 1);
             return;
+        }
+        if (!_.isString(value)) {
+            throw new Error(util.format('Invalid map value, must be a string : \n%j\n', value));
         }
         data[key] = _.get(req, value);
     });
