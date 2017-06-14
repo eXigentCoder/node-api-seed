@@ -27,6 +27,7 @@ addCreateRoute.sendCreateResult = sendCreateResult;
 addCreateRoute.description = description;
 addCreateRoute.setStatusIfApplicable = setStatusIfApplicable;
 addCreateRoute.setOwnerIfApplicable = setOwnerIfApplicable;
+addCreateRoute.getFromReqObject = getFromReqObject;
 
 module.exports = addCreateRoute;
 
@@ -105,17 +106,23 @@ function setStatusIfApplicable(metadata) {
         const statusToSet = statuses[0];
         req.body.status = statusToSet.name;
         req.body.statusDate = moment.utc().toDate();
-        const logEntry = {
-            status: req.body.status,
-            statusDate: req.body.statusDate
-        };
-        if (statusToSet.initialData) {
-            const fromReq = getFromReqObject(statusToSet.initialData.fromReq, req);
-            logEntry.data = _.merge({}, statusToSet.initialData.static, fromReq);
-        }
-        req.body.statusLog = [logEntry];
+        req.body.statusLog = [
+            {
+                status: req.body.status,
+                data: getData(statusToSet.initialData, req),
+                statusDate: req.body.statusDate
+            }
+        ];
         return next();
     };
+}
+
+function getData(rules, req) {
+    if (!rules) {
+        return;
+    }
+    const fromReq = getFromReqObject(rules.fromReq, req);
+    return _.merge({}, rules.static, fromReq);
 }
 
 function getFromReqObject(map, req) {
