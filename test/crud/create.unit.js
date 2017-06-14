@@ -245,3 +245,27 @@ function mockRequest(middlewareOrRouter, reqOptions, responseCallback, nextCallb
     });
     middlewareOrRouter(req, res, nextCallback);
 }
+
+function shouldNotCallNext(done) {
+    return function next(err) {
+        if (err) {
+            return done(err);
+        }
+        return done(new Error('Next should not have been called'));
+    };
+}
+
+function shouldCallNext(done) {
+    return function next(err) {
+        if (err) {
+            return done(err);
+        }
+        return done();
+    };
+}
+
+function shouldNotReturnResponse(done) {
+    return function resComplete() {
+        done(new Error('res.end should not have been called'));
+    };
+}
