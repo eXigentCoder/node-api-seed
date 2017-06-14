@@ -90,7 +90,9 @@ function description(metadata) {
         responses: {
             '201': {
                 description:
-                    'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
+                    'Informs the caller that the ' +
+                        metadata.title.toLowerCase() +
+                        ' was successfully created.',
                 commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }
@@ -126,15 +128,24 @@ function getData(rules, req) {
     return _.merge({}, rules.static, fromReq);
 }
 
-function getFromReqObject(map, req) {
+const maxDepth = 10;
+function getFromReqObject(map, req, depth = 0) {
     if (!map) {
         return;
+    }
+    if (depth > maxDepth) {
+        throw new Error(
+            util.format(
+                'Circular reference detected in map object after maximum depth (%s) reached',
+                maxDepth
+            )
+        );
     }
     const data = {};
     Object.keys(map).forEach(function(key) {
         const value = map[key];
         if (_.isObject(value)) {
-            data[key] = getFromReqObject(value, req);
+            data[key] = getFromReqObject(value, req, depth + 1);
             return;
         }
         data[key] = _.get(req, value);
@@ -152,7 +163,12 @@ function setOwnerIfApplicable(metadata) {
             req.body.owner = _.get(req, ownership.setOwnerExpression);
             if (!req.body.owner) {
                 return next(
-                    boom.badRequest(util.format('Owner from expression "%s" was blank', ownership.setOwnerExpression))
+                    boom.badRequest(
+                        util.format(
+                            'Owner from expression "%s" was blank',
+                            ownership.setOwnerExpression
+                        )
+                    )
                 );
             }
         } else {

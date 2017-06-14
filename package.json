@@ -1,7 +1,10 @@
 {
   "name": "node-api-seed",
   "title": "Node Api Seed",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=6.10.0"
+  },
   "deploymentDate": "2016-11-09T19:15:04.309Z",
   "description": "The seed for pretty much any api I write in node.js",
   "main": "index.js",
