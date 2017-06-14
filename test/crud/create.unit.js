@@ -217,11 +217,13 @@ describe('Crud - create', function() {
             const data = addCreateRoute.getData(null, {});
             expect(data).to.not.be.ok();
         });
+
         it('Should be an empty object if rules was an empty object', function() {
             const data = addCreateRoute.getData({}, {});
             expect(data).to.be.ok();
             expect(Object.keys(data)).to.have.lengthOf(0);
         });
+
         it('Should return an object that deep equals rules.static if only initialData.static was set', function() {
             const req = {};
             const rules = {
@@ -236,6 +238,7 @@ describe('Crud - create', function() {
             const data = addCreateRoute.getData(rules, req);
             expect(data).to.deep.equal(rules.static);
         });
+
         it('Should merge the result from getFromReqObject if rules.fromReq existed', function() {
             const req = {};
             const rules = {
@@ -249,6 +252,34 @@ describe('Crud - create', function() {
             const data = addCreateRoute.getData(rules, req);
             stub.restore();
             expect(data.bob).to.equal(true);
+        });
+        it('Should merge the result from getFromReqObject and static if both were set', function() {
+            const req = {};
+            const rules = {
+                fromReq: {},
+                static: {
+                    number: 1,
+                    string: 'test',
+                    bool: true,
+                    array: [2, 'test', true, null, {}, []],
+                    object: {
+                        subObject: {}
+                    }
+                }
+            };
+            const stubbedData = {
+                bob: true
+            };
+            const stub = sinon.stub(addCreateRoute, 'getFromReqObject');
+            stub.returns(stubbedData);
+            const data = addCreateRoute.getData(rules, req);
+            stub.restore();
+            expect(data.bob).to.equal(true);
+            expect(data.number).to.equal(rules.static.number);
+            expect(data.string).to.equal(rules.static.string);
+            expect(data.bool).to.equal(rules.static.bool);
+            expect(data.array).to.deep.equal(rules.static.array);
+            expect(data.object).to.deep.equal(rules.static.object);
         });
     });
 
