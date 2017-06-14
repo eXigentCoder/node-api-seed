@@ -1,5 +1,5 @@
 'use strict';
-const async = require('async');
+import * as async from 'async';
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
