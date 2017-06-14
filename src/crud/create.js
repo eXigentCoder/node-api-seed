@@ -145,6 +145,10 @@ function getFromReqObject(map, req, depth = 0) {
     const data = {};
     Object.keys(map).forEach(function(key) {
         const value = map[key];
+        if (_.isArray(value)) {
+            data[key] = _.get(req, value[0], value[1]);
+            return;
+        }
         if (_.isObject(value)) {
             data[key] = getFromReqObject(value, req, depth + 1);
             return;

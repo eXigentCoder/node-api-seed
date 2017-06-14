@@ -282,8 +282,6 @@ describe('Crud - create', function() {
     });
 
     describe('getFromReqObject', function() {
-        //TODO what if not a string or object value? i.e. [boolean, null, undefined, array, number]
-        //TODO what if value isn't found? should we use "asdasd: ['a','defaultValue']" to denote using defaults? or do we throw an error?
         //TODO security around retrieving things from request? Maybe only from certain parts of req? req.params? req.query? req.body? req.process?
 
         it('Should map shallow properties from the req using the map', function() {
@@ -414,18 +412,16 @@ describe('Crud - create', function() {
             }).to.throw(notAString);
         });
 
-        it('Should <doSomething> if the map was a array', function() {
+        //TODO what if value isn't found? should we use "asdasd: ['a','defaultValue']" to denote using defaults? or do we throw an error?
+        it('Should use the default value if one was supplied', function() {
             const req = httpMocks.createRequest({
                 a: 'b'
             });
             const map = {
-                option1: ['asdasd', 12], //defaultValue?
-                option2: [], //throw error?
-                option3: ['a.doesNotExist', 'a.b'] // try get first one, if fails go onto next?
+                answer: ['c', 'd']
             };
-            expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
-            }).to.throw(notAString);
+            const result = addCreateRoute.getFromReqObject(map, req);
+            expect(result.answer).to.equal('d');
         });
     });
 });
