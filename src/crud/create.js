@@ -110,7 +110,7 @@ function setStatusIfApplicable(metadata) {
         req.body.statusLog = [
             {
                 status: req.body.status,
-                data: getData(statusToSet.initialData, req),
+                data: addCreateRoute.getData(statusToSet.initialData, req),
                 statusDate: req.body.statusDate
             }
         ];
