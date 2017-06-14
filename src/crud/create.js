@@ -128,8 +128,9 @@ function getData(rules, req) {
     return _.merge({}, rules.static, fromReq);
 }
 
+const defaultDisallowedSuffixList = ['password', 'passwordHash', 'passwordSalt'];
 const maxDepth = 10;
-function getFromReqObject(map, req, depth = 0) {
+function getFromReqObject(map, req, depth = 0, disallowedSuffixList = defaultDisallowedSuffixList) {
     if (!map) {
         return;
     }
@@ -150,7 +151,7 @@ function getFromReqObject(map, req, depth = 0) {
             if (value.length > 2) {
                 throw new Error(util.format('Too many items in array, should be at most 2. %j', value));
             }
-            data[key] = _.get(req, value[0], value[1]);
+            data[key] = getValue(req, value[0], value[1], disallowedSuffixList);
             return;
         }
         if (_.isObject(value)) {
@@ -158,10 +159,19 @@ function getFromReqObject(map, req, depth = 0) {
             return;
         }
         ensureMapIsString(value);
-        data[key] = _.get(req, value);
+        data[key] = getValue(req, value, undefined, disallowedSuffixList);
     });
     return data;
 }
+
+function getValue(req, map, defaultValue, disallowedSuffixList) {
+    const disallowed = disallowedSuffixList.find(suffix => map.endsWith(suffix));
+    if (disallowed) {
+        throw new Error('Map is not allowed to end with ' + disallowed);
+    }
+    return _.get(req, map, defaultValue);
+}
+
 function ensureMapIsString(map) {
     if (!_.isString(map)) {
         throw new Error(util.format('Invalid map value, must be a string : \n%j\n', map));

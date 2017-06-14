@@ -282,8 +282,6 @@ describe('Crud - create', function() {
     });
 
     describe('getFromReqObject', function() {
-        //TODO security around retrieving things from request? Maybe only from certain parts of req? req.params? req.query? req.body? req.process?
-
         it('Should map shallow properties from the req using the map', function() {
             const req = httpMocks.createRequest({
                 a: 'b'
@@ -468,6 +466,37 @@ describe('Crud - create', function() {
             expect(function() {
                 addCreateRoute.getFromReqObject(map, req);
             }).to.throw(/too many items in array/i);
+        });
+
+        //TODO security around retrieving things from request? Maybe only from certain parts of req? req.params? req.query? req.body? req.process?
+        //todo const allowedPrefixList = ['user', 'process', 'body', 'params', 'query'];
+        it('Should not allow map values that end with something on the exception list', function() {
+            const req = httpMocks.createRequest({
+                a: {
+                    b: 'c'
+                }
+            });
+            const map = {
+                answer: 'a.b'
+            };
+            const disallowedSuffixList = ['.b'];
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req, 0, disallowedSuffixList);
+            }).to.throw(/Map is not allowed to end with/i);
+        });
+
+        it('Should not allow map values that end with something on the default exception list', function() {
+            const req = httpMocks.createRequest({
+                a: {
+                    b: 'c'
+                }
+            });
+            const map = {
+                answer: 'a.password'
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(/Map is not allowed to end with/i);
         });
     });
 });
