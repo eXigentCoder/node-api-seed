@@ -1,10 +1,10 @@
 'use strict';
 require('../@util/init.js');
 const addCreateRoute = require('../../src/crud/create');
-const httpMocks = require('node-mocks-http');
-const events = require('events');
+const mockRequest = require('../@util/request-mocking').mockRequest;
 const moment = require('moment');
 const sinon = require('sinon');
+const httpMocks = require('node-mocks-http');
 
 describe('Crud - create', function() {
     describe('setStatusIfApplicable', function() {
@@ -541,49 +541,3 @@ function buildMetadata(statuses) {
     }
     return metadata;
 }
-
-function mockRequest(middlewareOrRouter, reqOptions, responseCallback, nextCallback) {
-    const req = httpMocks.createRequest(reqOptions);
-    const res = httpMocks.createResponse({
-        eventEmitter: events.EventEmitter
-    });
-    res.on('end', function() {
-        let resToReturn;
-        try {
-            resToReturn = {
-                statusCode: res._getStatusCode(),
-                body: JSON.parse(res._getData()),
-                headers: res._getHeaders(),
-                raw: res
-            };
-        } catch (err) {
-            return responseCallback(err);
-        }
-        responseCallback(null, resToReturn);
-    });
-    middlewareOrRouter(req, res, nextCallback);
-}
-
-// function shouldNotCallNext(done) {
-//     return function next(err) {
-//         if (err) {
-//             return done(err);
-//         }
-//         return done(new Error('Next should not have been called'));
-//     };
-// }
-//
-// function shouldCallNext(done) {
-//     return function next(err) {
-//         if (err) {
-//             return done(err);
-//         }
-//         return done();
-//     };
-// }
-//
-// function shouldNotReturnResponse(done) {
-//     return function resComplete() {
-//         done(new Error('res.end should not have been called'));
-//     };
-// }
