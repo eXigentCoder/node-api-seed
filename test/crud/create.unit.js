@@ -289,7 +289,7 @@ describe('Crud - create', function() {
             const map = {
                 answer: 'a'
             };
-            const data = addCreateRoute.getFromReqObject(map, req);
+            const data = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(data.answer).to.equal('b');
         });
 
@@ -302,7 +302,7 @@ describe('Crud - create', function() {
             const map = {
                 answer: 'a.b'
             };
-            const data = addCreateRoute.getFromReqObject(map, req);
+            const data = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(data.answer).to.equal('c');
         });
 
@@ -315,7 +315,7 @@ describe('Crud - create', function() {
                     answer: 'a'
                 }
             };
-            const data = addCreateRoute.getFromReqObject(map, req);
+            const data = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(data.nested.answer).to.equal('b');
         });
 
@@ -330,7 +330,7 @@ describe('Crud - create', function() {
                     answer: 'a.b'
                 }
             };
-            const data = addCreateRoute.getFromReqObject(map, req);
+            const data = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(data.nested.answer).to.equal('c');
         });
 
@@ -417,7 +417,7 @@ describe('Crud - create', function() {
             const map = {
                 answer: ['c', 'd']
             };
-            const result = addCreateRoute.getFromReqObject(map, req);
+            const result = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['c']);
             expect(result.answer).to.equal('d');
         });
 
@@ -428,7 +428,7 @@ describe('Crud - create', function() {
             const map = {
                 answer: ['a']
             };
-            const result = addCreateRoute.getFromReqObject(map, req);
+            const result = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(result.answer).to.equal('b');
         });
 
@@ -468,8 +468,7 @@ describe('Crud - create', function() {
             }).to.throw(/too many items in array/i);
         });
 
-        //TODO security around retrieving things from request? Maybe only from certain parts of req? req.params? req.query? req.body? req.process?
-        //todo const allowedPrefixList = ['user', 'process', 'body', 'params', 'query'];
+        const invalidSuffix = /Map is not allowed to end with/i;
         it('Should not allow map values that end with something on the exception list', function() {
             const req = httpMocks.createRequest({
                 a: {
@@ -482,7 +481,7 @@ describe('Crud - create', function() {
             const disallowedSuffixList = ['.b'];
             expect(function() {
                 addCreateRoute.getFromReqObject(map, req, 0, disallowedSuffixList);
-            }).to.throw(/Map is not allowed to end with/i);
+            }).to.throw(invalidSuffix);
         });
 
         it('Should not allow map values that end with something on the default exception list', function() {
@@ -496,7 +495,37 @@ describe('Crud - create', function() {
             };
             expect(function() {
                 addCreateRoute.getFromReqObject(map, req);
-            }).to.throw(/Map is not allowed to end with/i);
+            }).to.throw(invalidSuffix);
+        });
+
+        const invalidPrefix = /Map must start with one of /i;
+        it('Should not allow access to req properties are not on the exception list', function() {
+            const req = httpMocks.createRequest({
+                a: {
+                    b: 'c'
+                }
+            });
+            const map = {
+                answer: 'a.b'
+            };
+            const allowedPrefixList = [];
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req, 0, undefined, allowedPrefixList);
+            }).to.throw(invalidPrefix);
+        });
+
+        it('Should not allow map values that end with something on the default exception list', function() {
+            const req = httpMocks.createRequest({
+                body: {
+                    b: 'c'
+                }
+            });
+            const map = {
+                answer: 'body.password'
+            };
+            expect(function() {
+                addCreateRoute.getFromReqObject(map, req);
+            }).to.throw(invalidSuffix);
         });
     });
 });
