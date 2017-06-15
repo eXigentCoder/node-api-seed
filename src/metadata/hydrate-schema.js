@@ -45,9 +45,9 @@ function addStatusInfo(schema) {
             properties: {
                 status: schema.properties.status,
                 statusDate: schema.properties.statusDate,
-                data: schema.updateStatusSchema
+                data: schema.updateStatusSchema //todo anyof?
             },
-            required: ['status', 'statusDate', 'data'],
+            required: ['status', 'statusDate', 'data'], //todo - data check schema anyof?
             additionalProperties: false
         },
         additionalItems: false
@@ -84,7 +84,7 @@ function addOwnerInfo(schema) {
                     type: ['object', 'string'] //todo?
                 }
             },
-            required: ['owner', 'ownerDate', 'data'],
+            required: ['owner', 'ownerDate', 'data'], //todo - data check schema anyof?
             additionalProperties: false
         },
         additionalItems: false
