@@ -24,6 +24,8 @@ We use [winston](https://github.com/winstonjs/winston) to route our logs to vari
 
 # Creating a new release
 
+See [http://keepachangelog.com/en/0.3.0/](http://keepachangelog.com/en/0.3.0/) for best parctices and justification on maintaining a changelog.
+
 1. Merge in the pull request(s) on GitHub that make up the release.
 1. Decide based on what is going into the release how the version number is going to change, see [Semantic Versioning](http://semver.org/) for more info.
 1. The `CHANGELOG.md` file should have pending changes documented in the `Unreleased` section, create a new heading for this version and cut the relevant changes and paste them into the new section.
