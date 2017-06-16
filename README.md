@@ -21,3 +21,12 @@ The seed for pretty much any api I write in node.js
 
 # Logging
 We use [winston](https://github.com/winstonjs/winston) to route our logs to various places as required, and override console.x as per [this article here](http://seanmonstar.com/post/56448644049/consolelog-all-the-things) to allow us to see what's happening with dependencies we may be using.
+
+# Creating a new release
+
+1. Merge in the pull request(s) on GitHub that make up the release.
+1. Decide based on what is going into the release how the version number is going to change, see [Semantic Versioning](http://semver.org/) for more info.
+1. The `CHANGELOG.md` file should have pending changes documented in the `Unreleased` section, create a new heading for this version and cut the relevant changes and paste them into the new section.
+1. Run the npm command to increment the version number and tag it `npm version [major | minor | patch | premajor | preminor | prepatch | prerelease] -m "A message that makes sense"`
+1. Push the updated branch & tag back to origin.
+1. Run `chandler push` to push the notes from `CHANGELOG.md` to the GitHub release page. See [chandler](https://github.com/mattbrictson/chandler) for more
