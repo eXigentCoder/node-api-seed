@@ -1,6 +1,8 @@
 # Node Api Seed Change Log
 
-## [Unreleased][]
+## [Unreleased](https://github.com/eXigentCoder/node-api-seed/compare/v1.1.0...HEAD)
+
+Check here for upcoming changes
 
 ## [1.1.0](https://github.com/eXigentCoder/node-api-seed/compare/v1.0.0...v1.1.0) (2017-06-16)
 
