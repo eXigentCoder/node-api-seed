@@ -3,7 +3,7 @@
   "title": "Node Api Seed",
   "version": "0.0.1",
   "engines": {
-    "node": ">=6.10.0"
+    "node": ">=8.1.2"
   },
   "deploymentDate": "2016-11-09T19:15:04.309Z",
   "description": "The seed for pretty much any api I write in node.js",
