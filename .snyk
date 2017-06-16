@@ -50,6 +50,8 @@ patch:
   'npm:moment:20161019':
     - express-brute-mongo > moment:
         patched: '2017-06-11T17:33:32.049Z'
+    - express-brute-mongo > moment:
+        patched: '2017-06-16T11:31:02.941Z'
   'npm:request:20160119':
     - nodejs-dashboard > blessed-contrib > picture-tube > request:
         patched: '2016-11-18T11:48:06.051Z'
@@ -62,6 +64,10 @@ patch:
         patched: '2017-06-11T17:33:32.049Z'
     - bcrypt > node-pre-gyp > tar-pack > debug > ms:
         patched: '2017-06-11T17:33:32.049Z'
+    - api-query-params > ava > ms:
+        patched: '2017-06-16T11:31:02.941Z'
+    - bcrypt > node-pre-gyp > tar-pack > debug > ms:
+        patched: '2017-06-16T11:31:02.941Z'
   'npm:qs:20170213':
     - babel-cli > chokidar > fsevents > node-pre-gyp > request > qs:
         patched: '2017-06-11T17:33:32.049Z'
