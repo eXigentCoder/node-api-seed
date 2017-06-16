@@ -1,7 +1,7 @@
 {
   "name": "node-api-seed",
   "title": "Node Api Seed",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "engines": {
     "node": ">=8.1.2"
   },
