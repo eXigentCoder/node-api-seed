@@ -1,6 +1,6 @@
 {
     "watch": [
-        "dist"
+        "lib"
     ],
     "ignore": [
         "swagger.json"

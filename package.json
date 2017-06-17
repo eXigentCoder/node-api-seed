@@ -7,10 +7,10 @@
   },
   "deploymentDate": "2016-11-09T19:15:04.309Z",
   "description": "The seed for pretty much any api I write in node.js",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "start": "node .",
-    "build": "babel src -d dist -w --copy-files",
+    "build": "babel src -d lib -w --copy-files",
     "watch": "nodemon .",
     "test": "node_modules/.bin/istanbul --include-all-sources cover -x \"public/**\" -x \"report/**\" -x \"utilities/**\" node_modules/mocha/bin/_mocha \"test/**/*.js\" -- --compilers=js:babel-core/register",
     "unit-test": "node_modules/.bin/istanbul --include-all-sources cover -x \"public/**\" -x \"report/**\" -x \"utilities/**\" node_modules/mocha/bin/_mocha \"test/**/*.unit.js\"",
