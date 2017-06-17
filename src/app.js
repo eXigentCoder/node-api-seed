@@ -17,7 +17,7 @@ const authentication = require('./authentication');
 const permissions = require('./permissions');
 const expressSanitized = require('express-sanitize-escape');
 
-module.exports = function initialise(callback) {
+module.exports = function initialise(callback: Function) {
     async.waterfall(
         [
             createApp,

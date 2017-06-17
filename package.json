@@ -108,6 +108,8 @@
   },
   "devDependencies": {
     "babel-cli": "6.24.1",
+    "babel-eslint": "7.2.3",
+    "babel-plugin-transform-flow-strip-types": "6.22.0",
     "babel-preset-env": "1.5.2",
     "chai": "4.0.2",
     "dirty-chai": "2.0.0",
@@ -115,6 +117,7 @@
     "eslint-config-prettier": "2.1.1",
     "eslint-plugin-node": "5.0.0",
     "eslint-plugin-prettier": "2.1.2",
+    "flow": "0.2.3",
     "glob": "7.1.2",
     "istanbul": "0.4.5",
     "mocha": "3.4.2",
