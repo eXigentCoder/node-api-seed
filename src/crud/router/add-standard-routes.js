@@ -15,10 +15,10 @@ module.exports = function addStandardRoutes(router) {
     router.query = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
-                return query(router, router.crudMiddleware, crudMiddleware);
+                return query.addQueryRoute(router, router.crudMiddleware, crudMiddleware);
             }
         }
-        return query(router, crudMiddleware, maps);
+        return query.addQueryRoute(router, crudMiddleware, maps);
     };
     router.getById = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {

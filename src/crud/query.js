@@ -5,12 +5,18 @@ const addModel = require('../swagger/add-model');
 const config = require('nconf');
 const permissions = require('../permissions');
 
-module.exports = function addQueryRoute(router, crudMiddleware, maps) {
+module.exports = {
+    addQueryRoute,
+    getSteps,
+    description
+};
+
+function addQueryRoute(router, crudMiddleware, maps) {
     router
         .get('/', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.queryDescription || description(router.metadata));
     return router;
-};
+}
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
@@ -44,10 +50,7 @@ function description(metadata) {
         },
         responses: {
             200: {
-                description:
-                    'Returns the list of ' +
-                        metadata.titlePlural +
-                        ' matching the supplied parameters.',
+                description: 'Returns the list of ' + metadata.titlePlural + ' matching the supplied parameters.',
                 arrayOfModel: metadata.schemas.output.name,
                 commonHeaders: [correlationIdOptions.resHeader]
             }
