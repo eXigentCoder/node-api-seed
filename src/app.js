@@ -1,3 +1,4 @@
+// @flow
 import * as async from 'async';
 const express = require('express');
 const bodyParser = require('body-parser');

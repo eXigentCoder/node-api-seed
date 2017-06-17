@@ -3,6 +3,7 @@
 .*/coverage/.*
 .*/lib/.*
 .*/logs/.*
+.*/node_modules/.*
 .*/public/.*
 
 [include]
