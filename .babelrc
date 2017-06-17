@@ -9,5 +9,5 @@
             }
         ]
     ],
-    "sourceMaps": "inline"
+    "sourceMaps": "both"
 }

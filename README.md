@@ -15,6 +15,7 @@ The seed for pretty much any api I write in node.js
 - Go through the todo's in the seed api and make decisions based on your needs.
 - metadata fields to move to their own file, update the hydrate to use this file instead
 - Adding the role to a newly created user.
+- how to debug es6+ code in WebStorm - https://blog.jetbrains.com/webstorm/2015/05/ecmascript-6-in-webstorm-transpiling/
 
 # Config
 [The Twelve-Factor App](https://12factor.net/config) Recommends **not** storing your config in files, there are some pretty good reasons for and against this which can be read [here.](https://gist.github.com/telent/9742059) In my personal experience and based on how my projects run, I find that the advantages of file-based far outweigh the downsides, feel free to disagree. If you would prefer pure env config, check out [dotenv](https://www.npmjs.com/package/dotenv) or simply update the config code here to not load from file.
