@@ -1,6 +1,7 @@
 # Node Api Seed Change Log
 
 ## [Unreleased](https://github.com/eXigentCoder/node-api-seed/compare/v1.1.1...HEAD)
+* Refactoring generic CRUD functions to export all their functions as properties on an object rather than tacked on to the primary function. This will allow for easier unit testing
 
 Check here for upcoming changes
 
