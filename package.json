@@ -9,6 +9,11 @@
   "description": "The seed for pretty much any api I write in node.js",
   "main": "lib/index.js",
   "nyc": {
+    "check-coverage": true,
+    "lines": 64,
+    "functions": 74,
+    "branches": 54,
+    "statements": 64,
     "reporter": [
       "lcov",
       "text-summary"
