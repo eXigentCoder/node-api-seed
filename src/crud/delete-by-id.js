@@ -6,12 +6,18 @@ const addModel = require('../swagger/add-model');
 const config = require('nconf');
 const permissions = require('../permissions');
 
-module.exports = function addDeleteByIdRoute(router, crudMiddleware, maps) {
+module.exports = {
+    addDeleteByIdRoute,
+    getSteps,
+    description
+};
+
+function addDeleteByIdRoute(router, crudMiddleware, maps) {
     router
         .delete('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.getByIdDescription || description(router.metadata));
     return router;
-};
+}
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {

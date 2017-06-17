@@ -11,7 +11,13 @@ const versionInfo = require('../version-info');
 const config = require('nconf');
 const permissions = require('../permissions');
 
-module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
+module.exports = {
+    addUpdateRoute,
+    getSteps,
+    description
+};
+
+function addUpdateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
     filterPropertiesForUpdate(router.metadata.schemas[schemaName]);
     const routeName = '/:' + router.metadata.identifierName;
@@ -22,7 +28,7 @@ module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
     router.patch(routeName, routeAction).describe(_.cloneDeep(routeDescription));
 
     return router;
-};
+}
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {

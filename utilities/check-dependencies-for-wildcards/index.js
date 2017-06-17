@@ -12,7 +12,7 @@ function checkDependencySection(dependencySection) {
             console.warn(util.format('Http dependency detected (%s), skipping.', versionString));
             return;
         }
-        const allowedCharacters = /^[a-zA-Z\d\.]{1,}$/;
+        const allowedCharacters = /^[a-zA-Z\d\.\-]{1,}$/;
         let valid = allowedCharacters.test(versionString);
         if (!valid) {
             throw new Error(

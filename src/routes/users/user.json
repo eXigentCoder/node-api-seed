@@ -7,7 +7,12 @@
     "statuses": [
         {
             "name": "active",
-            "description": "Default status, shows that the user is active and can login"
+            "description": "Default status, shows that the user is active and can login",
+            "initialData":{
+                "static":{
+                    "reason":"testing"
+                }
+            }
         },
         {
             "name": "inactive",
