@@ -51,11 +51,11 @@ function createApp(callback) {
     app.use(expressSanitized.middleware());
     configureRequestId(app);
     configureMorgan(app);
-    app.use(function(req, res, next) {
+    app.use(function(req : express$Request, res : express$Response, next: express$NextFunction) {
         req.process = {};
         next();
     });
-    console.log('App Created on ' + app.settings.env);
+    console.log('App Created');
     callback(null, app);
 }
 

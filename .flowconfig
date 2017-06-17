@@ -8,8 +8,11 @@
 
 [include]
 .*/src/*.js
+.*/node_modules/async/*.js
+.*/node_modules/cors/*.js
 
 [libs]
+
 
 [options]
 
