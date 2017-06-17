@@ -1,6 +1,6 @@
 'use strict';
 require('../@util/init.js');
-const addCreateRoute = require('../../src/crud/create');
+const create = require('../../src/crud/create');
 const mockRequest = require('../@util/request-mocking').mockRequest;
 const moment = require('moment');
 const sinon = require('sinon');
@@ -10,7 +10,7 @@ describe('Crud - create', function() {
     describe('setStatusIfApplicable', function() {
         it('Should not set req.body.status if the provided schema has no statuses', function(done) {
             const metadata = buildMetadata();
-            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const middleware = create.setStatusIfApplicable(metadata);
             const reqOptions = {
                 body: {}
             };
@@ -27,7 +27,7 @@ describe('Crud - create', function() {
 
         it('Should set req.body.status to the first status in the schema', function(done) {
             const metadata = buildMetadata([{ name: 'a' }, { name: 'b' }]);
-            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const middleware = create.setStatusIfApplicable(metadata);
             const reqOptions = {
                 body: {}
             };
@@ -42,7 +42,7 @@ describe('Crud - create', function() {
 
         it('Should set req.body.statusDate to now', function(done) {
             const metadata = buildMetadata([{ name: 'a' }]);
-            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const middleware = create.setStatusIfApplicable(metadata);
             const reqOptions = {
                 body: {}
             };
@@ -57,7 +57,7 @@ describe('Crud - create', function() {
 
         it('Should create a status log with one entry', function(done) {
             const metadata = buildMetadata([{ name: 'a' }]);
-            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const middleware = create.setStatusIfApplicable(metadata);
             const reqOptions = {
                 body: {}
             };
@@ -74,7 +74,7 @@ describe('Crud - create', function() {
             done
         ) {
             const metadata = buildMetadata([{ name: 'a' }]);
-            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const middleware = create.setStatusIfApplicable(metadata);
             const reqOptions = {
                 body: {}
             };
@@ -89,7 +89,7 @@ describe('Crud - create', function() {
 
         it('Should create a status log entry with the statusDate set to now', function(done) {
             const metadata = buildMetadata([{ name: 'a' }]);
-            const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+            const middleware = create.setStatusIfApplicable(metadata);
             const reqOptions = {
                 body: {}
             };
@@ -110,7 +110,7 @@ describe('Crud - create', function() {
                     name: 'a'
                 };
                 const metadata = buildMetadata([statusToSet]);
-                const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+                const middleware = create.setStatusIfApplicable(metadata);
                 const reqOptions = {
                     body: {}
                 };
@@ -130,7 +130,7 @@ describe('Crud - create', function() {
                     initialData: {}
                 };
                 const metadata = buildMetadata([statusToSet]);
-                const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+                const middleware = create.setStatusIfApplicable(metadata);
                 const reqOptions = {
                     body: {}
                 };
@@ -150,7 +150,7 @@ describe('Crud - create', function() {
                     initialData: {}
                 };
                 const metadata = buildMetadata([statusToSet]);
-                const middleware = addCreateRoute.setStatusIfApplicable(metadata);
+                const middleware = create.setStatusIfApplicable(metadata);
                 const reqOptions = {
                     body: {}
                 };
@@ -161,7 +161,7 @@ describe('Crud - create', function() {
                         name: 'bob'
                     }
                 };
-                const stub = sinon.stub(addCreateRoute, 'getData');
+                const stub = sinon.stub(create, 'getData');
                 stub.returns(stubbedData);
                 mockRequest(middleware, reqOptions, null, next);
 
@@ -178,12 +178,12 @@ describe('Crud - create', function() {
 
     describe('getData', function() {
         it('Should not exist if rules was falsy', function() {
-            const data = addCreateRoute.getData(null, {});
+            const data = create.getData(null, {});
             expect(data).to.not.be.ok();
         });
 
         it('Should be an empty object if rules was an empty object', function() {
-            const data = addCreateRoute.getData({}, {});
+            const data = create.getData({}, {});
             expect(data).to.be.ok();
             expect(Object.keys(data)).to.have.lengthOf(0);
         });
@@ -199,7 +199,7 @@ describe('Crud - create', function() {
                     object: {}
                 }
             };
-            const data = addCreateRoute.getData(rules, req);
+            const data = create.getData(rules, req);
             expect(data).to.deep.equal(rules.static);
         });
 
@@ -211,9 +211,9 @@ describe('Crud - create', function() {
             const stubbedData = {
                 bob: true
             };
-            const stub = sinon.stub(addCreateRoute, 'getFromReqObject');
+            const stub = sinon.stub(create, 'getFromReqObject');
             stub.returns(stubbedData);
-            const data = addCreateRoute.getData(rules, req);
+            const data = create.getData(rules, req);
             stub.restore();
             expect(data.bob).to.equal(true);
         });
@@ -235,9 +235,9 @@ describe('Crud - create', function() {
             const stubbedData = {
                 bob: true
             };
-            const stub = sinon.stub(addCreateRoute, 'getFromReqObject');
+            const stub = sinon.stub(create, 'getFromReqObject');
             stub.returns(stubbedData);
-            const data = addCreateRoute.getData(rules, req);
+            const data = create.getData(rules, req);
             stub.restore();
             expect(data.bob).to.equal(true);
             expect(data.number).to.equal(rules.static.number);
@@ -271,9 +271,9 @@ describe('Crud - create', function() {
                     betterSubObject: {}
                 }
             };
-            const stub = sinon.stub(addCreateRoute, 'getFromReqObject');
+            const stub = sinon.stub(create, 'getFromReqObject');
             stub.returns(stubbedData);
-            const data = addCreateRoute.getData(rules, req);
+            const data = create.getData(rules, req);
             stub.restore();
             expect(data.bob).to.equal(true);
             expect(data.number).to.equal(stubbedData.number);
@@ -293,7 +293,7 @@ describe('Crud - create', function() {
             const map = {
                 answer: 'a'
             };
-            const data = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
+            const data = create.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(data.answer).to.equal('b');
         });
 
@@ -306,7 +306,7 @@ describe('Crud - create', function() {
             const map = {
                 answer: 'a.b'
             };
-            const data = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
+            const data = create.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(data.answer).to.equal('c');
         });
 
@@ -319,7 +319,7 @@ describe('Crud - create', function() {
                     answer: 'a'
                 }
             };
-            const data = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
+            const data = create.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(data.nested.answer).to.equal('b');
         });
 
@@ -334,7 +334,7 @@ describe('Crud - create', function() {
                     answer: 'a.b'
                 }
             };
-            const data = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
+            const data = create.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(data.nested.answer).to.equal('c');
         });
 
@@ -349,7 +349,7 @@ describe('Crud - create', function() {
             };
             map.nested.answer = map;
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(/circular reference/i);
         });
 
@@ -363,7 +363,7 @@ describe('Crud - create', function() {
                 answer: 1
             };
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(notAString);
         });
 
@@ -375,7 +375,7 @@ describe('Crud - create', function() {
                 answer: true
             };
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(notAString);
         });
 
@@ -386,7 +386,7 @@ describe('Crud - create', function() {
             const map = {
                 answer: {}
             };
-            const data = addCreateRoute.getFromReqObject(map, req);
+            const data = create.getFromReqObject(map, req);
             expect(data.answer).to.deep.equal({});
         });
 
@@ -398,7 +398,7 @@ describe('Crud - create', function() {
                 answer: null
             };
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(notAString);
         });
 
@@ -410,7 +410,7 @@ describe('Crud - create', function() {
                 answer: undefined
             };
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(notAString);
         });
 
@@ -421,7 +421,7 @@ describe('Crud - create', function() {
             const map = {
                 answer: ['c', 'd']
             };
-            const result = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['c']);
+            const result = create.getFromReqObject(map, req, 0, undefined, ['c']);
             expect(result.answer).to.equal('d');
         });
 
@@ -432,7 +432,7 @@ describe('Crud - create', function() {
             const map = {
                 answer: ['a']
             };
-            const result = addCreateRoute.getFromReqObject(map, req, 0, undefined, ['a']);
+            const result = create.getFromReqObject(map, req, 0, undefined, ['a']);
             expect(result.answer).to.equal('b');
         });
 
@@ -444,7 +444,7 @@ describe('Crud - create', function() {
                 answer: [1]
             };
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(notAString);
         });
 
@@ -456,7 +456,7 @@ describe('Crud - create', function() {
                 answer: []
             };
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(notAString);
         });
 
@@ -468,7 +468,7 @@ describe('Crud - create', function() {
                 answer: ['a', 'a', 'a']
             };
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(/too many items in array/i);
         });
 
@@ -484,7 +484,7 @@ describe('Crud - create', function() {
             };
             const disallowedSuffixList = ['.b'];
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req, 0, disallowedSuffixList);
+                create.getFromReqObject(map, req, 0, disallowedSuffixList);
             }).to.throw(invalidSuffix);
         });
 
@@ -498,7 +498,7 @@ describe('Crud - create', function() {
                 answer: 'a.password'
             };
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(invalidSuffix);
         });
 
@@ -514,7 +514,7 @@ describe('Crud - create', function() {
             };
             const allowedPrefixList = [];
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req, 0, undefined, allowedPrefixList);
+                create.getFromReqObject(map, req, 0, undefined, allowedPrefixList);
             }).to.throw(invalidPrefix);
         });
 
@@ -528,7 +528,7 @@ describe('Crud - create', function() {
                 answer: 'body.password'
             };
             expect(function() {
-                addCreateRoute.getFromReqObject(map, req);
+                create.getFromReqObject(map, req);
             }).to.throw(invalidSuffix);
         });
     });

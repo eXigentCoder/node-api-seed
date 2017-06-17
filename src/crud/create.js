@@ -14,6 +14,19 @@ const boom = require('boom');
 const util = require('util');
 const _ = require('lodash');
 
+module.exports = {
+    addCreateRoute,
+    getSteps,
+    sendCreateResult,
+    description,
+    setStatusIfApplicable,
+    getData,
+    getFromReqObject,
+    getValue,
+    ensureMapIsString,
+    setOwnerIfApplicable
+};
+
 function addCreateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
     filterPropertiesForCreation(router.metadata.schemas[schemaName]);
@@ -22,15 +35,6 @@ function addCreateRoute(router, crudMiddleware, maps) {
         .describe(router.metadata.creationDescription || description(router.metadata));
     return router;
 }
-addCreateRoute.getSteps = getSteps;
-addCreateRoute.sendCreateResult = sendCreateResult;
-addCreateRoute.description = description;
-addCreateRoute.setStatusIfApplicable = setStatusIfApplicable;
-addCreateRoute.setOwnerIfApplicable = setOwnerIfApplicable;
-addCreateRoute.getFromReqObject = getFromReqObject;
-addCreateRoute.getData = getData;
-
-module.exports = addCreateRoute;
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
@@ -112,8 +116,8 @@ function setStatusIfApplicable(metadata) {
         req.body.statusLog = [
             {
                 status: req.body.status,
-                //we use 'addCreateRoute.' here to allow stubbing in the unit tests
-                data: addCreateRoute.getData(statusToSet.initialData, req),
+                //we use 'module.exports.' here to allow stubbing in the unit tests
+                data: module.exports.getData(statusToSet.initialData, req),
                 statusDate: req.body.statusDate
             }
         ];
@@ -125,8 +129,8 @@ function getData(rules, req) {
     if (!rules) {
         return;
     }
-    //we use 'addCreateRoute.' here to allow stubbing in the unit tests
-    const fromReq = addCreateRoute.getFromReqObject(rules.fromReq, req);
+    //we use 'module.exports.' here to allow stubbing in the unit tests
+    const fromReq = module.exports.getFromReqObject(rules.fromReq, req);
     return _.merge({}, rules.static, fromReq);
 }
 

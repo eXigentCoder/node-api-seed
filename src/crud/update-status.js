@@ -11,7 +11,14 @@ const boom = require('boom');
 const util = require('util');
 const permissions = require('../permissions');
 
-module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
+module.exports = {
+    addUpdateStatusRoute,
+    getSteps,
+    description,
+    ensureStatusAllowed
+};
+
+function addUpdateStatusRoute(router, crudMiddleware, maps) {
     if (!router.metadata.schemas.core.statuses) {
         throw new Error('No statuses defined in metadata.schemas.core.statuses');
     }
@@ -42,7 +49,7 @@ module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
         )
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
     return router;
-};
+}
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
