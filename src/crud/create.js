@@ -94,7 +94,9 @@ function description(metadata) {
         responses: {
             '201': {
                 description:
-                    'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
+                    'Informs the caller that the ' +
+                        metadata.title.toLowerCase() +
+                        ' was successfully created.',
                 commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }
@@ -160,13 +162,21 @@ function getFromReqObject(
         if (_.isArray(value)) {
             ensureMapIsString(value[0]);
             if (value.length > 2) {
-                throw new Error(util.format('Too many items in array, should be at most 2. %j', value));
+                throw new Error(
+                    util.format('Too many items in array, should be at most 2. %j', value)
+                );
             }
             data[key] = getValue(req, value[0], value[1], disallowedSuffixList, allowedPrefixList);
             return;
         }
         if (_.isObject(value)) {
-            data[key] = getFromReqObject(value, req, depth + 1, disallowedSuffixList, allowedPrefixList);
+            data[key] = getFromReqObject(
+                value,
+                req,
+                depth + 1,
+                disallowedSuffixList,
+                allowedPrefixList
+            );
             return;
         }
         ensureMapIsString(value);
@@ -203,7 +213,12 @@ function setOwnerIfApplicable(metadata) {
             req.body.owner = _.get(req, ownership.setOwnerExpression);
             if (!req.body.owner) {
                 return next(
-                    boom.badRequest(util.format('Owner from expression "%s" was blank', ownership.setOwnerExpression))
+                    boom.badRequest(
+                        util.format(
+                            'Owner from expression "%s" was blank',
+                            ownership.setOwnerExpression
+                        )
+                    )
                 );
             }
         } else {
