@@ -1,0 +1,14 @@
+[ignore]
+.*/.nyc_output/.*
+.*/coverage/.*
+.*/lib/.*
+.*/logs/.*
+.*/public/.*
+
+[include]
+.*/src/*.js
+
+[libs]
+
+[options]
+

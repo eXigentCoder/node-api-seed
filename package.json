@@ -49,7 +49,8 @@
     "ensureNoWildcards": "node ./utilities/check-dependencies-for-wildcards/index.js",
     "snyk-protect": "snyk protect",
     "snyk-test": "snyk test",
-    "prepare": "npm run snyk-protect"
+    "prepare": "npm run snyk-protect",
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
