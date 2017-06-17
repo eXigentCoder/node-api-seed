@@ -14,6 +14,19 @@ const boom = require('boom');
 const util = require('util');
 const _ = require('lodash');
 
+module.exports = {
+    addCreateRoute,
+    getSteps,
+    sendCreateResult,
+    description,
+    setStatusIfApplicable,
+    getData,
+    getFromReqObject,
+    getValue,
+    ensureMapIsString,
+    setOwnerIfApplicable
+};
+
 function addCreateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
     filterPropertiesForCreation(router.metadata.schemas[schemaName]);
@@ -22,15 +35,6 @@ function addCreateRoute(router, crudMiddleware, maps) {
         .describe(router.metadata.creationDescription || description(router.metadata));
     return router;
 }
-addCreateRoute.getSteps = getSteps;
-addCreateRoute.sendCreateResult = sendCreateResult;
-addCreateRoute.description = description;
-addCreateRoute.setStatusIfApplicable = setStatusIfApplicable;
-addCreateRoute.setOwnerIfApplicable = setOwnerIfApplicable;
-addCreateRoute.getFromReqObject = getFromReqObject;
-addCreateRoute.getData = getData;
-
-module.exports = addCreateRoute;
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
@@ -90,9 +94,7 @@ function description(metadata) {
         responses: {
             '201': {
                 description:
-                    'Informs the caller that the ' +
-                        metadata.title.toLowerCase() +
-                        ' was successfully created.',
+                    'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
                 commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }
@@ -112,8 +114,8 @@ function setStatusIfApplicable(metadata) {
         req.body.statusLog = [
             {
                 status: req.body.status,
-                //we use 'addCreateRoute.' here to allow stubbing in the unit tests
-                data: addCreateRoute.getData(statusToSet.initialData, req),
+                //we use 'module.exports.' here to allow stubbing in the unit tests
+                data: module.exports.getData(statusToSet.initialData, req),
                 statusDate: req.body.statusDate
             }
         ];
@@ -125,8 +127,8 @@ function getData(rules, req) {
     if (!rules) {
         return;
     }
-    //we use 'addCreateRoute.' here to allow stubbing in the unit tests
-    const fromReq = addCreateRoute.getFromReqObject(rules.fromReq, req);
+    //we use 'module.exports.' here to allow stubbing in the unit tests
+    const fromReq = module.exports.getFromReqObject(rules.fromReq, req);
     return _.merge({}, rules.static, fromReq);
 }
 
@@ -158,21 +160,13 @@ function getFromReqObject(
         if (_.isArray(value)) {
             ensureMapIsString(value[0]);
             if (value.length > 2) {
-                throw new Error(
-                    util.format('Too many items in array, should be at most 2. %j', value)
-                );
+                throw new Error(util.format('Too many items in array, should be at most 2. %j', value));
             }
             data[key] = getValue(req, value[0], value[1], disallowedSuffixList, allowedPrefixList);
             return;
         }
         if (_.isObject(value)) {
-            data[key] = getFromReqObject(
-                value,
-                req,
-                depth + 1,
-                disallowedSuffixList,
-                allowedPrefixList
-            );
+            data[key] = getFromReqObject(value, req, depth + 1, disallowedSuffixList, allowedPrefixList);
             return;
         }
         ensureMapIsString(value);
@@ -209,12 +203,7 @@ function setOwnerIfApplicable(metadata) {
             req.body.owner = _.get(req, ownership.setOwnerExpression);
             if (!req.body.owner) {
                 return next(
-                    boom.badRequest(
-                        util.format(
-                            'Owner from expression "%s" was blank',
-                            ownership.setOwnerExpression
-                        )
-                    )
+                    boom.badRequest(util.format('Owner from expression "%s" was blank', ownership.setOwnerExpression))
                 );
             }
         } else {
