@@ -12,7 +12,7 @@
     "start": "node .",
     "watch": "nodemon .",
     "test": "node_modules/.bin/istanbul --include-all-sources cover -x \"public/**\" -x \"report/**\" -x \"utilities/**\" node_modules/mocha/bin/_mocha \"test/**/*.js\"",
-    "mocha": "node_modules/.bin/_mocha \"test/**/*.js\"",
+    "unit-test": "node_modules/.bin/istanbul --include-all-sources cover -x \"public/**\" -x \"report/**\" -x \"utilities/**\" node_modules/mocha/bin/_mocha \"test/**/*.unit.js\"",
     "prettier": "node_modules/.bin/prettier --write --tab-width=4 --single-quote=true --print-width=100 \"{src,test,utilities,config}/**/*.js\" \"{index.js,get-opportunities.js,worker.js}\"",
     "lint": "node_modules/.bin/eslint \"src/**/*.js\" \"test/**/*.js\" index.js --fix",
     "lint-ci": "node_modules/.bin/eslint \"src/**/*.js\" \"test/**/*.js\" index.js",
