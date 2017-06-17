@@ -6,12 +6,18 @@ const addModel = require('../swagger/add-model');
 const config = require('nconf');
 const permissions = require('../permissions');
 
-module.exports = function addDeleteByIdRoute(router, crudMiddleware, maps) {
+module.exports = {
+    addDeleteByIdRoute,
+    getSteps,
+    description
+};
+
+function addDeleteByIdRoute(router, crudMiddleware, maps) {
     router
         .delete('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.getByIdDescription || description(router.metadata));
     return router;
-};
+}
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
@@ -30,19 +36,12 @@ function description(metadata) {
     return {
         security: true,
         summary:
-            'Removes ' +
-                metadata.aOrAn +
-                ' ' +
-                metadata.title +
-                ' By ' +
-                _.startCase(metadata.identifierName) +
-                '.',
+            'Removes ' + metadata.aOrAn + ' ' + metadata.title + ' By ' + _.startCase(metadata.identifierName) + '.',
         tags: [metadata.tag.name],
         parameters: [
             {
                 name: metadata.identifierName,
-                description:
-                    'The field to uniquely identify this ' + metadata.title.toLowerCase() + '.',
+                description: 'The field to uniquely identify this ' + metadata.title.toLowerCase() + '.',
                 required: true,
                 in: 'path',
                 type: 'string'

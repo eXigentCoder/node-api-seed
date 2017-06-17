@@ -55,10 +55,10 @@ module.exports = function addStandardRoutes(router) {
     router.deleteById = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
-                return deleteById(router, router.crudMiddleware, crudMiddleware);
+                return deleteById.addDeleteByIdRoute(router, router.crudMiddleware, crudMiddleware);
             }
         }
-        return deleteById(router, crudMiddleware, maps);
+        return deleteById.addDeleteByIdRoute(router, crudMiddleware, maps);
     };
     router.getByIdAndUse = function(path, routerOrMiddleware, crudMiddleware, maps) {
         if (router.crudMiddleware) {
