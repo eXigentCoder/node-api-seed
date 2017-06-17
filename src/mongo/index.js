@@ -1,4 +1,3 @@
-'use strict';
 const mongo = require('mongodb');
 const ObjectId = mongo.ObjectId;
 const config = require('nconf');

@@ -1,4 +1,3 @@
-'use strict';
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const config = require('nconf');

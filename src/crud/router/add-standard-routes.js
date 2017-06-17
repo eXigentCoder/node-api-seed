@@ -1,4 +1,3 @@
-'use strict';
 const _ = require('lodash');
 const create = require('../create');
 const getById = require('../get-by-id');

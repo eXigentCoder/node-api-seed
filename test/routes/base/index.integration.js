@@ -1,4 +1,3 @@
-'use strict';
 const common = require('../../@util/integration-common');
 /* ----========[ end of test file setup ]========---- */
 

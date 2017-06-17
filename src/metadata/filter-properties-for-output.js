@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = function filterPropertiesForOutput(schema) {
     clearProperties(schema);
     if (schema.definitions) {

@@ -1,4 +1,3 @@
-'use strict';
 require('../../../@util/init.js');
 const applyMaps = require('../../../../src/crud/shared/apply-maps');
 const applyReplace = applyMaps._applyReplace;

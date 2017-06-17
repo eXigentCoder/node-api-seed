@@ -1,4 +1,3 @@
-'use strict';
 const _ = require('lodash');
 const jsonSchemaFilter = require('json-schema-filter');
 const customFormats = require('./custom-formats');

@@ -1,4 +1,3 @@
-'use strict';
 const common = require('../../../@util/integration-common.js');
 const router = require('../../../../src/routes/users/items/index.js');
 const config = require('nconf');

@@ -1,4 +1,3 @@
-'use strict';
 module.exports = function hydrateOutputSchema(schema) {
     schema.properties = schema.properties || {};
     schema.required = schema.required || [];

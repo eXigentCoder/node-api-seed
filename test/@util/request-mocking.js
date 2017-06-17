@@ -1,4 +1,3 @@
-'use strict';
 const httpMocks = require('node-mocks-http');
 const events = require('events');
 

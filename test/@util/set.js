@@ -1,4 +1,3 @@
-'use strict';
 const url = require('url');
 const authentication = require('../../src/authentication');
 

@@ -1,4 +1,3 @@
-'use strict';
 const ObjectId = require('mongodb').ObjectId;
 const moment = require('moment');
 const uuid = require('node-uuid');

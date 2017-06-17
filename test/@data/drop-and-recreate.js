@@ -1,4 +1,3 @@
-'use strict';
 const async = require('async');
 const dropExistingData = require('./drop-existing-data');
 const findItemsToCreate = require('./find-items-to-create');

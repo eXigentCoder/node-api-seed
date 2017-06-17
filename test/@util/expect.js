@@ -1,4 +1,3 @@
-'use strict';
 require('./init.js');
 const swagger = require('swagger-spec-express');
 const _ = require('lodash');

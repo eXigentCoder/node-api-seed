@@ -1,4 +1,3 @@
-'use strict';
 const config = require('nconf');
 const packageJson = require('../../package.json');
 const swagger = require('swagger-spec-express');

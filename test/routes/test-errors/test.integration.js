@@ -1,4 +1,3 @@
-'use strict';
 const common = require('../../@util/integration-common');
 const uncaughtErrorMessage = require('../../../src/routes/test-errors')._uncaughtErrorMessage;
 const config = require('nconf');

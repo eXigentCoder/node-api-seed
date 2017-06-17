@@ -1,4 +1,3 @@
-'use strict';
 const NodeAcl = require('acl');
 const boom = require('boom');
 const mongo = require('../mongo');

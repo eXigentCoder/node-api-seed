@@ -1,4 +1,3 @@
-'use strict';
 const requestId = require('request-id/express');
 const config = require('nconf');
 

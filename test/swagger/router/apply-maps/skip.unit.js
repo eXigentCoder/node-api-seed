@@ -1,4 +1,3 @@
-'use strict';
 require('../../../@util/init.js');
 const _ = require('lodash');
 const util = require('util');

@@ -1,4 +1,3 @@
-'use strict';
 const _ = require('lodash');
 const objectPathValidation = require('./object-path-validation');
 const boom = require('boom');

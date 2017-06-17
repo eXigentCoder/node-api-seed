@@ -1,4 +1,3 @@
-'use strict';
 const packageJson = require('../../package.json');
 const boom = require('boom');
 const _ = require('lodash');

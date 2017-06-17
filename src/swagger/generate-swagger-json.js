@@ -1,4 +1,3 @@
-'use strict';
 const swagger = require('swagger-spec-express');
 const config = require('nconf');
 const os = require('os');

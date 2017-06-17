@@ -1,4 +1,3 @@
-'use strict';
 const glob = require('glob');
 const async = require('async');
 const path = require('path');

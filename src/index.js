@@ -1,4 +1,3 @@
-'use strict';
 require('./../config/init-nconf')('Api');
 require('./logging/index');
 const util = require('util');
