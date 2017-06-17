@@ -9,6 +9,20 @@
   "description": "The seed for pretty much any api I write in node.js",
   "main": "lib/index.js",
   "nyc": {
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "all": true,
+    "exclude": [
+      "config/**",
+      "coverage/**",
+      "lib/**",
+      "logs/**",
+      "public/**",
+      "report/**",
+      "test/**"
+    ],
     "require": [
       "babel-register"
     ]
