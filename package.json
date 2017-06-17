@@ -120,6 +120,7 @@
     "eslint-plugin-node": "5.0.0",
     "eslint-plugin-prettier": "2.1.2",
     "flow": "0.2.3",
+    "flow-bin": "0.48.0",
     "glob": "7.1.2",
     "istanbul": "0.4.5",
     "mocha": "3.4.2",
