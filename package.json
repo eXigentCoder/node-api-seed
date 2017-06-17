@@ -115,6 +115,7 @@
     "dirty-chai": "2.0.0",
     "eslint": "4.0.0",
     "eslint-config-prettier": "2.1.1",
+    "eslint-plugin-flowtype": "2.34.0",
     "eslint-plugin-node": "5.0.0",
     "eslint-plugin-prettier": "2.1.2",
     "flow": "0.2.3",
