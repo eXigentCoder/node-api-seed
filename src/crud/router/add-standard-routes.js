@@ -39,10 +39,10 @@ module.exports = function addStandardRoutes(router) {
     router.update = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
-                return update(router, router.crudMiddleware, crudMiddleware);
+                return update.addUpdateRoute(router, router.crudMiddleware, crudMiddleware);
             }
         }
-        return update(router, crudMiddleware, maps);
+        return update.addUpdateRoute(router, crudMiddleware, maps);
     };
     router.updateStatus = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {

@@ -11,7 +11,13 @@ const versionInfo = require('../version-info');
 const config = require('nconf');
 const permissions = require('../permissions');
 
-module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
+module.exports = {
+    addUpdateRoute,
+    getSteps,
+    description
+};
+
+function addUpdateRoute(router, crudMiddleware, maps) {
     ensureSchemaSet(router.metadata, schemaName, 'Input');
     filterPropertiesForUpdate(router.metadata.schemas[schemaName]);
     const routeName = '/:' + router.metadata.identifierName;
@@ -22,7 +28,7 @@ module.exports = function addUpdateRoute(router, crudMiddleware, maps) {
     router.patch(routeName, routeAction).describe(_.cloneDeep(routeDescription));
 
     return router;
-};
+}
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
@@ -46,19 +52,12 @@ function description(metadata) {
     const correlationIdOptions = config.get('logging').correlationId;
     return {
         security: true,
-        summary:
-            'Updates ' +
-                metadata.aOrAn +
-                ' ' +
-                metadata.title +
-                ' By ' +
-                _.startCase(metadata.identifierName),
+        summary: 'Updates ' + metadata.aOrAn + ' ' + metadata.title + ' By ' + _.startCase(metadata.identifierName),
         tags: [metadata.tag.name],
         parameters: [
             {
                 name: metadata.identifierName,
-                description:
-                    'The field to uniquely identify this ' + metadata.title.toLowerCase() + '.',
+                description: 'The field to uniquely identify this ' + metadata.title.toLowerCase() + '.',
                 required: true,
                 in: 'path',
                 type: 'string'
