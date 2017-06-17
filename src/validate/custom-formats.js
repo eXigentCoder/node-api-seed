@@ -1,4 +1,3 @@
-'use strict';
 const mongo = require('../mongo');
 const moment = require('moment');
 const uuuid = require('node-uuid');

@@ -1,4 +1,3 @@
-'use strict';
 const schema = require('./item.json');
 const router = require('../../../crud/router')({
     schemas: {

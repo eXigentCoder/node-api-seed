@@ -1,4 +1,3 @@
-'use strict';
 const mongo = require('../mongo');
 const MongoStore = require('express-brute-mongo');
 const ExpressBrute = require('express-brute');

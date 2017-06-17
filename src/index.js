@@ -1,11 +1,10 @@
-'use strict';
-require('./config/init-nconf')('Api');
-require('./src/logging/index');
+require('./../config/init-nconf')('Api');
+require('./logging/index');
 const util = require('util');
 const config = require('nconf');
-const packageJson = require('./package.json');
+const packageJson = require('./../package.json');
 const port = config.get('PORT');
-const createApp = require('./src/app.js');
+const createApp = require('./app.js');
 
 createApp(function(err, app) {
     if (err) {

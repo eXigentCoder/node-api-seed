@@ -1,4 +1,3 @@
-'use strict';
 require('../@util/init.js');
 const filterPropertiesForCreation = require('../../src/metadata/filter-properties-for-creation');
 

@@ -44,3 +44,10 @@ yarn.lock
 # VS Code Editor files
 .vscode
 *.orig
+
+dist/*
+
+lib/*
+/.nyc_output/
+
+logs/**/*

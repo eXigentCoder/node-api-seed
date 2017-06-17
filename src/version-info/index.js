@@ -1,4 +1,3 @@
-'use strict';
 const uuid = require('node-uuid');
 const moment = require('moment');
 const config = require('nconf');

@@ -1,4 +1,3 @@
-'use strict';
 require('./init.js');
 const createApp = require('../../src/app.js');
 const async = require('async');

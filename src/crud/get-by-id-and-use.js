@@ -1,4 +1,3 @@
-'use strict';
 const ensureExistsOnReq = require('../output/ensure-exists-on-req');
 const applyMaps = require('./shared/apply-maps');
 const util = require('util');

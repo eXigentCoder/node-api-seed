@@ -1,4 +1,3 @@
-'use strict';
 const _ = require('lodash');
 const swagger = require('swagger-spec-express');
 const schemaKeys = Object.keys(require('swagger-spec-express/lib/schemas/schema.json').properties);

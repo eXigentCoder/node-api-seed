@@ -1,4 +1,3 @@
-'use strict';
 const express = require('express');
 const config = require('nconf');
 const expressOptions = config.get('expressApp');

@@ -1,4 +1,3 @@
-'use strict';
 const winston = require('winston');
 const packageJson = require('../../package.json');
 require('winston-loggly');

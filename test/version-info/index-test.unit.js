@@ -1,5 +1,3 @@
-'use strict';
-
 require('../@util/init.js');
 const httpMocks = require('node-mocks-http');
 const uuid = require('node-uuid');

@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = function filterPropertiesForCreation(schema) {
     if (!schema) {
         throw new Error('Schema is a required field');

@@ -1,4 +1,3 @@
-'use strict';
 const inferNames = require('./infer-names');
 const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
 const _ = require('lodash');

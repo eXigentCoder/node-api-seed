@@ -1,4 +1,3 @@
-'use strict';
 const validator = require('./validator');
 const boom = require('boom');
 

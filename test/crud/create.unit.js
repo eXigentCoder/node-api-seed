@@ -1,4 +1,3 @@
-'use strict';
 require('../@util/init.js');
 const create = require('../../src/crud/create');
 const mockRequest = require('../@util/request-mocking').mockRequest;

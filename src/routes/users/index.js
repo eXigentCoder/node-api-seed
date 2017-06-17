@@ -1,4 +1,3 @@
-'use strict';
 const schema = require('./user.json');
 const bcrypt = require('bcrypt');
 const config = require('nconf');

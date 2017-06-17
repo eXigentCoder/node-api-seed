@@ -1,4 +1,3 @@
-'use strict';
 require('../@util/init.js');
 const hydrateSchema = require('../../src/metadata/hydrate-schema');
 

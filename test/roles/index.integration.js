@@ -1,4 +1,3 @@
-'use strict';
 const common = require('../@util/integration-common');
 const async = require('async');
 const permissions = require('../../src/permissions');

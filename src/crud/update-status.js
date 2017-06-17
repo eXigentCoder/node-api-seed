@@ -1,4 +1,3 @@
-'use strict';
 const output = require('../output');
 const applyMaps = require('./shared/apply-maps');
 const getValidateFunction = require('./shared/get-validate-function');

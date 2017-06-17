@@ -1,4 +1,3 @@
-'use strict';
 const mongo = require('./');
 const aqp = require('api-query-params').default;
 const boom = require('boom');

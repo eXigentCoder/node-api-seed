@@ -1,4 +1,3 @@
-'use strict';
 const morgan = require('morgan');
 const config = require('nconf');
 const util = require('util');

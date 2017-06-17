@@ -1,4 +1,3 @@
-'use strict';
 const mongo = require('../../src/mongo/index');
 const async = require('async');
 
