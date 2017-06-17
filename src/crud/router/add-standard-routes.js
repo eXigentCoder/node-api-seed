@@ -63,7 +63,7 @@ module.exports = function addStandardRoutes(router) {
     router.getByIdAndUse = function(path, routerOrMiddleware, crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
-                return getByIdAndUse(
+                return getByIdAndUse.addGetByIdAndUseRoute(
                     router,
                     path,
                     routerOrMiddleware,
@@ -72,6 +72,6 @@ module.exports = function addStandardRoutes(router) {
                 );
             }
         }
-        return getByIdAndUse(router, path, routerOrMiddleware, crudMiddleware, maps);
+        return getByIdAndUse.addGetByIdAndUseRoute(router, path, routerOrMiddleware, crudMiddleware, maps);
     };
 };

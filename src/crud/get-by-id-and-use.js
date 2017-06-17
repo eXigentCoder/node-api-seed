@@ -5,13 +5,12 @@ const util = require('util');
 const _ = require('lodash');
 const permissions = require('../permissions');
 
-module.exports = function addGetByIdAndUseRoute(
-    router,
-    path,
-    routerOrMiddleware,
-    crudMiddleware,
-    maps
-) {
+module.exports = {
+    addGetByIdAndUseRoute,
+    getByIdAndUseSteps
+};
+
+function addGetByIdAndUseRoute(router, path, routerOrMiddleware, crudMiddleware, maps) {
     if (_.isObject(path)) {
         //path omitted, move all args up by one.
         maps = crudMiddleware;
@@ -40,7 +39,7 @@ module.exports = function addGetByIdAndUseRoute(
     const steps = getByIdAndUseSteps(router, routerOrMiddleware, crudMiddleware, maps);
     router.use('/:' + router.metadata.identifierName + path, steps);
     return router;
-};
+}
 
 function getByIdAndUseSteps(router, routerOrMiddleware, crudMiddleware, maps) {
     const steps = {
