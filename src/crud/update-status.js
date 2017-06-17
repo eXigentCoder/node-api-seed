@@ -11,7 +11,14 @@ const boom = require('boom');
 const util = require('util');
 const permissions = require('../permissions');
 
-module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
+module.exports = {
+    addUpdateStatusRoute,
+    getSteps,
+    description,
+    ensureStatusAllowed
+};
+
+function addUpdateStatusRoute(router, crudMiddleware, maps) {
     if (!router.metadata.schemas.core.statuses) {
         throw new Error('No statuses defined in metadata.schemas.core.statuses');
     }
@@ -23,9 +30,7 @@ module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
     }
     if (!router.metadata.schemas.updateStatus) {
         if (router.metadata.schemas.core.updateStatusSchema) {
-            router.metadata.schemas.updateStatus = _.cloneDeep(
-                router.metadata.schemas.core.updateStatusSchema
-            );
+            router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
             router.metadata.schemas.updateStatus.$id = router.metadata.schemas.core.$id.replace(
                 '.json',
                 '-updateStatus.json'
@@ -36,13 +41,10 @@ module.exports = function addUpdateStatusRoute(router, crudMiddleware, maps) {
     }
     validator.addSchema(router.metadata.schemas.updateStatus);
     router
-        .put(
-            '/:' + router.metadata.identifierName + '/:newStatusName',
-            getSteps(router, crudMiddleware, maps)
-        )
+        .put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
     return router;
-};
+}
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
