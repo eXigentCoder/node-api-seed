@@ -30,7 +30,9 @@ function addUpdateStatusRoute(router, crudMiddleware, maps) {
     }
     if (!router.metadata.schemas.updateStatus) {
         if (router.metadata.schemas.core.updateStatusSchema) {
-            router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
+            router.metadata.schemas.updateStatus = _.cloneDeep(
+                router.metadata.schemas.core.updateStatusSchema
+            );
             router.metadata.schemas.updateStatus.$id = router.metadata.schemas.core.$id.replace(
                 '.json',
                 '-updateStatus.json'
@@ -41,7 +43,10 @@ function addUpdateStatusRoute(router, crudMiddleware, maps) {
     }
     validator.addSchema(router.metadata.schemas.updateStatus);
     router
-        .put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, crudMiddleware, maps))
+        .put(
+            '/:' + router.metadata.identifierName + '/:newStatusName',
+            getSteps(router, crudMiddleware, maps)
+        )
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
     return router;
 }
