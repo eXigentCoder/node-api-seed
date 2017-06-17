@@ -2,6 +2,7 @@
 
 ## [Unreleased](https://github.com/eXigentCoder/node-api-seed/compare/v1.1.1...HEAD)
 * Refactoring generic CRUD functions to export all their functions as properties on an object rather than tacked on to the primary function. This will allow for easier unit testing
+* Creating a new npm script `unit-test` to run just the unit tests with coverage to get a better idea of where to add tests or where problems may lie.
 
 Check here for upcoming changes
 
