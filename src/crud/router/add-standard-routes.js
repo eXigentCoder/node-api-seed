@@ -23,10 +23,10 @@ module.exports = function addStandardRoutes(router) {
     router.getById = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {
             if (_.isNil(maps)) {
-                return getById(router, router.crudMiddleware, crudMiddleware);
+                return getById.addGetByIdRoute(router, router.crudMiddleware, crudMiddleware);
             }
         }
-        return getById(router, crudMiddleware, maps);
+        return getById.addGetByIdRoute(router, crudMiddleware, maps);
     };
     router.create = function(crudMiddleware, maps) {
         if (router.crudMiddleware) {

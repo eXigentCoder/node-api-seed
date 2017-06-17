@@ -6,12 +6,18 @@ const addModel = require('../swagger/add-model');
 const config = require('nconf');
 const permissions = require('../permissions');
 
-module.exports = function addGetByIdRoute(router, crudMiddleware, maps) {
+module.exports = {
+    addGetByIdRoute,
+    getSteps,
+    description
+};
+
+function addGetByIdRoute(router, crudMiddleware, maps) {
     router
         .get('/:' + router.metadata.identifierName, getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.getByIdDescription || description(router.metadata));
     return router;
-};
+}
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
@@ -39,8 +45,7 @@ function description(metadata) {
         parameters: [
             {
                 name: metadata.identifierName,
-                description:
-                    'The field to uniquely identify this ' + metadata.title.toLowerCase() + '.',
+                description: 'The field to uniquely identify this ' + metadata.title.toLowerCase() + '.',
                 required: true,
                 in: 'path',
                 type: 'string'
@@ -54,8 +59,7 @@ function description(metadata) {
         },
         responses: {
             '200': {
-                description:
-                    'Returns the single ' + metadata.title + ' matching the provided parameters.',
+                description: 'Returns the single ' + metadata.title + ' matching the provided parameters.',
                 model: metadata.schemas.output.name,
                 commonHeaders: [correlationIdOptions.resHeader]
             }
