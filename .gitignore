@@ -49,3 +49,5 @@ dist/*
 
 lib/*
 /.nyc_output/
+
+logs/**/*
