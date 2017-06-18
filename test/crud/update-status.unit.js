@@ -39,13 +39,20 @@ describe('Crud - updateStatus', function() {
             updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
             assert(addSchemaSpy.calledWith(fakeUpdateSchema));
         });
-        it('Should use the updateStatus schema if one was specified', function() {
+
+        it('Should use the updateStatus schema if both it and updateStatusSchema were set', function() {
             const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
             const fakeUpdateSchema2 = { $id: 'test-update-schema2', bob: true };
             const router = fakeRouter(['ssd'], fakeUpdateSchema);
             router.metadata.schemas.core.updateStatusSchema = fakeUpdateSchema2;
             updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
             assert(addSchemaSpy.calledWith(fakeUpdateSchema));
+        });
+
+        it('Should throw an error if both the updateStatus schema and updateStatusSchema were not set', function() {
+            expect(function() {
+                updateStatusFunctions.addUpdateStatusRoute(fakeRouter(['asd']));
+            }).to.throw(/No update status schema set./i);
         });
     });
 });
