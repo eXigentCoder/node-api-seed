@@ -205,7 +205,7 @@ function ensureMapIsString(map) {
 function setOwnerIfApplicable(metadata) {
     return function _setOwnerIfApplicable(req, res, next) {
         let ownership = metadata.schemas.core.ownership;
-        if (!ownership || ownership.doNotTrack) {
+        if (!ownership) {
             return next();
         }
         if (ownership.setOwnerExpression) {
