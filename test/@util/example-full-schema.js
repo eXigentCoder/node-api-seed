@@ -67,6 +67,7 @@ module.exports = {
     ownership: {
         // controls where the inital owner comes from when creating an entity. If left off, will use req.user._id
         setOwnerExpression: 'process.user._id',
+        // A list of permissions to grant the owner of this particular entity. So for example if you don't have the role that allows you to delete but you are the owner then you can.
         permissions: ['create', 'update', 'updateStatus', 'deleteById']
     },
     // the JSON schema properties of this object, see http://json-schema.org/ for more info
@@ -76,6 +77,8 @@ module.exports = {
         // Some manually specified field
         email: {
             type: 'string',
+            // Specifies that this property should not be returned in the response for this entity.
+            excludeOnOutput: true,
             format: 'email',
             minLength: 1,
             faker: 'internet.email'
