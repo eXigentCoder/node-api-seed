@@ -25,11 +25,27 @@ describe('Crud - updateStatus', function() {
             }).to.throw(/must have at least one item in it/i);
         });
 
+        const addSchemaSpy = sinon.spy(validator, 'addSchema');
         it('Should use the updateStatus schema if one was specified', function() {
             const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
-            const spy = sinon.spy(validator, 'addSchema');
             updateStatusFunctions.addUpdateStatusRoute(fakeRouter(['ssd'], fakeUpdateSchema), fakeCrudMiddleware());
-            assert(spy.calledWith(fakeUpdateSchema));
+            assert(addSchemaSpy.calledWith(fakeUpdateSchema));
+        });
+
+        it('Should use the updateStatusSchema value on the core schema if there was no updateStatus schema spcified', function() {
+            const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
+            const router = fakeRouter(['ssd'], null);
+            router.metadata.schemas.core.updateStatusSchema = fakeUpdateSchema;
+            updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
+            assert(addSchemaSpy.calledWith(fakeUpdateSchema));
+        });
+        it('Should use the updateStatus schema if one was specified', function() {
+            const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
+            const fakeUpdateSchema2 = { $id: 'test-update-schema2', bob: true };
+            const router = fakeRouter(['ssd'], fakeUpdateSchema);
+            router.metadata.schemas.core.updateStatusSchema = fakeUpdateSchema2;
+            updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
+            assert(addSchemaSpy.calledWith(fakeUpdateSchema));
         });
     });
 });
@@ -38,7 +54,9 @@ function fakeRouter(statuses, updateStatusSchema) {
     const router = {
         metadata: {
             schemas: {
-                core: {}
+                core: {
+                    $id: 'fake-core-schema-id'
+                }
             },
             updateStatusDescription: 'Fake'
         },
