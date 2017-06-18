@@ -12,6 +12,7 @@ const permissions = require('../permissions');
 const boom = require('boom');
 const util = require('util');
 const _ = require('lodash');
+import getData from './data-mapping/get-data';
 
 module.exports = {
     addCreateRoute,
@@ -19,10 +20,6 @@ module.exports = {
     sendCreateResult,
     description,
     setStatusIfApplicable,
-    getData,
-    getFromReqObject,
-    getValue,
-    ensureMapIsString,
     setOwnerIfApplicable
 };
 
@@ -93,9 +90,7 @@ function description(metadata) {
         responses: {
             '201': {
                 description:
-                    'Informs the caller that the ' +
-                        metadata.title.toLowerCase() +
-                        ' was successfully created.',
+                    'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
                 commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }
@@ -115,91 +110,12 @@ function setStatusIfApplicable(metadata) {
         req.body.statusLog = [
             {
                 status: req.body.status,
-                //we use 'module.exports.' here to allow stubbing in the unit tests
-                data: module.exports.getData(statusToSet.initialData, req),
+                data: getData(statusToSet.initialData, req),
                 statusDate: req.body.statusDate
             }
         ];
         return next();
     };
-}
-
-function getData(rules, req) {
-    if (!rules) {
-        return;
-    }
-    //we use 'module.exports.' here to allow stubbing in the unit tests
-    const fromReq = module.exports.getFromReqObject(rules.fromReq, req);
-    return _.merge({}, rules.static, fromReq);
-}
-
-const defaultDisallowedSuffixList = ['password', 'passwordHash', 'passwordSalt'];
-const defaultAllowedPrefixList = ['user', 'process', 'body', 'params', 'query'];
-const maxDepth = 10;
-function getFromReqObject(
-    map,
-    req,
-    depth = 0,
-    disallowedSuffixList = defaultDisallowedSuffixList,
-    allowedPrefixList = defaultAllowedPrefixList
-) {
-    if (!map) {
-        return;
-    }
-    if (depth > maxDepth) {
-        throw new Error(
-            util.format(
-                'Circular reference detected in map object after maximum depth (%s) reached. Partial map\n%j\n',
-                maxDepth,
-                util.inspect(map, true, maxDepth)
-            )
-        );
-    }
-    const data = {};
-    Object.keys(map).forEach(function(key) {
-        const value = map[key];
-        if (_.isArray(value)) {
-            ensureMapIsString(value[0]);
-            if (value.length > 2) {
-                throw new Error(
-                    util.format('Too many items in array, should be at most 2. %j', value)
-                );
-            }
-            data[key] = getValue(req, value[0], value[1], disallowedSuffixList, allowedPrefixList);
-            return;
-        }
-        if (_.isObject(value)) {
-            data[key] = getFromReqObject(
-                value,
-                req,
-                depth + 1,
-                disallowedSuffixList,
-                allowedPrefixList
-            );
-            return;
-        }
-        ensureMapIsString(value);
-        data[key] = getValue(req, value, undefined, disallowedSuffixList, allowedPrefixList);
-    });
-    return data;
-}
-
-function getValue(req, map, defaultValue, disallowedSuffixList, allowedPrefixList) {
-    const disallowed = disallowedSuffixList.find(suffix => map.endsWith(suffix));
-    if (disallowed) {
-        throw new Error('Map is not allowed to end with ' + disallowed);
-    }
-    const allowed = allowedPrefixList.find(prefix => map.startsWith(prefix));
-    if (!allowed) {
-        throw new Error(util.format('Map must start with one of %j', allowedPrefixList));
-    }
-    return _.get(req, map, defaultValue);
-}
-
-function ensureMapIsString(map) {
-    if (!_.isString(map)) {
-        throw new Error(util.format('Invalid map value, must be a string : \n%j\n', map));
-    }
 }
 
 function setOwnerIfApplicable(metadata) {
@@ -212,12 +128,7 @@ function setOwnerIfApplicable(metadata) {
             req.body.owner = _.get(req, ownership.setOwnerExpression);
             if (!req.body.owner) {
                 return next(
-                    boom.badRequest(
-                        util.format(
-                            'Owner from expression "%s" was blank',
-                            ownership.setOwnerExpression
-                        )
-                    )
+                    boom.badRequest(util.format('Owner from expression "%s" was blank', ownership.setOwnerExpression))
                 );
             }
         } else {
