@@ -9,6 +9,7 @@ const validator = require('../validate/validator');
 const boom = require('boom');
 const util = require('util');
 const permissions = require('../permissions');
+const assert = require('assert');
 
 module.exports = {
     addUpdateStatusRoute,
@@ -18,31 +19,7 @@ module.exports = {
 };
 
 function addUpdateStatusRoute(router, crudMiddleware, maps) {
-    /* Todo all this validation logic is very noisy, maybe try using assert? */
-    if (!router.metadata.schemas.core.statuses) {
-        throw new Error('No statuses defined in metadata.schemas.core.statuses');
-    }
-    if (!_.isArray(router.metadata.schemas.core.statuses)) {
-        throw new Error('metadata.schemas.core.statuses must be an array');
-    }
-    if (router.metadata.schemas.core.statuses.length <= 0) {
-        throw new Error('metadata.schemas.core.statuses array must have at least one item in it.');
-    }
-    router.metadata.schemas.core.statuses.forEach(function(status) {
-        if (!_.isObject(status)) {
-            throw new Error('items in metadata.schemas.core.statuses array must be an object.');
-        }
-        if (!status.name) {
-            throw new Error(
-                'items in metadata.schemas.core.statuses array must be an object which must have a property called "name"'
-            );
-        }
-        if (!_.isString(status.name)) {
-            throw new Error(
-                'items in metadata.schemas.core.statuses array must be an object which must have a property called "name" which must be a string'
-            );
-        }
-    });
+    ensureRouterValid(router);
     if (!router.metadata.schemas.updateStatus) {
         if (router.metadata.schemas.core.updateStatusSchema) {
             router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
@@ -59,6 +36,26 @@ function addUpdateStatusRoute(router, crudMiddleware, maps) {
         .put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
     return router;
+}
+
+function ensureRouterValid(router) {
+    assert(router.metadata.schemas.core.statuses, 'No statuses defined in metadata.schemas.core.statuses');
+    assert(_.isArray(router.metadata.schemas.core.statuses), 'metadata.schemas.core.statuses must be an array');
+    assert(
+        router.metadata.schemas.core.statuses.length > 0,
+        'metadata.schemas.core.statuses array must have at least one item in it.'
+    );
+    router.metadata.schemas.core.statuses.forEach(function(status) {
+        assert(_.isObject(status), 'items in metadata.schemas.core.statuses array must be an object.');
+        assert(
+            status.name,
+            'items in metadata.schemas.core.statuses array must be an object which must have a property called "name"'
+        );
+        assert(
+            _.isString(status.name),
+            'items in metadata.schemas.core.statuses array must be an object which must have a property called "name" which must be a string'
+        );
+    });
 }
 
 function getSteps(router, crudMiddleware, maps) {
