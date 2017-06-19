@@ -25,16 +25,37 @@ describe('Crud - updateStatus', function() {
             }).to.throw(/must have at least one item in it/i);
         });
 
+        it('Should throw an error if the items in the status array are not objects', function() {
+            expect(function() {
+                updateStatusFunctions.addUpdateStatusRoute(fakeRouter(['ssd']));
+            }).to.throw(/must be an object/i);
+        });
+
+        it('Should throw an error if the items in the status array are not objects with a name property on them', function() {
+            expect(function() {
+                updateStatusFunctions.addUpdateStatusRoute(fakeRouter([{}]));
+            }).to.throw(/must have a property called "name"/i);
+        });
+
+        it('Should throw an error if the items in the status array are not objects with a name property on them that is a string', function() {
+            expect(function() {
+                updateStatusFunctions.addUpdateStatusRoute(fakeRouter([{ name: 1 }]));
+            }).to.throw(/must be a string/i);
+        });
+
         const addSchemaSpy = sinon.spy(validator, 'addSchema');
         it('Should use the updateStatus schema if one was specified', function() {
             const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
-            updateStatusFunctions.addUpdateStatusRoute(fakeRouter(['ssd'], fakeUpdateSchema), fakeCrudMiddleware());
+            updateStatusFunctions.addUpdateStatusRoute(
+                fakeRouter([{ name: 'test' }], fakeUpdateSchema),
+                fakeCrudMiddleware()
+            );
             assert(addSchemaSpy.calledWith(fakeUpdateSchema));
         });
 
         it('Should use the updateStatusSchema value on the core schema if there was no updateStatus schema spcified', function() {
             const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
-            const router = fakeRouter(['ssd'], null);
+            const router = fakeRouter([{ name: 'test' }], null);
             router.metadata.schemas.core.updateStatusSchema = fakeUpdateSchema;
             updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
             assert(addSchemaSpy.calledWith(fakeUpdateSchema));
@@ -43,7 +64,7 @@ describe('Crud - updateStatus', function() {
         it('Should use the updateStatus schema if both it and updateStatusSchema were set', function() {
             const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
             const fakeUpdateSchema2 = { $id: 'test-update-schema2', bob: true };
-            const router = fakeRouter(['ssd'], fakeUpdateSchema);
+            const router = fakeRouter([{ name: 'test' }], fakeUpdateSchema);
             router.metadata.schemas.core.updateStatusSchema = fakeUpdateSchema2;
             updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
             assert(addSchemaSpy.calledWith(fakeUpdateSchema));
@@ -51,9 +72,19 @@ describe('Crud - updateStatus', function() {
 
         it('Should throw an error if both the updateStatus schema and updateStatusSchema were not set', function() {
             expect(function() {
-                updateStatusFunctions.addUpdateStatusRoute(fakeRouter(['asd']));
+                updateStatusFunctions.addUpdateStatusRoute(fakeRouter([{ name: 'test' }]));
             }).to.throw(/No update status schema set./i);
         });
+
+        // it('Should use the specific status schema if one was specified', function() {
+        //     const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
+        //     const fakeUpdateSchema2 = { $id: 'test-update-schema2', bob: true };
+        //     const status = []
+        //     const router = fakeRouter(['ssd'], fakeUpdateSchema);
+        //     router.metadata.schemas.core.updateStatusSchema = fakeUpdateSchema2;
+        //     updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
+        //     assert(addSchemaSpy.calledWith(fakeUpdateSchema));
+        // });
     });
 });
 
