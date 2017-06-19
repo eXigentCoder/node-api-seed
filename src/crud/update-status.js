@@ -79,8 +79,8 @@ function ensureRouterValid(router) {
 
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
-        validate: getValidateFunction(schemaName),
         ensureStatusAllowed: ensureStatusAllowed(router.metadata),
+        validate: getValidateFunction(schemaName),
         getExistingMetadata: crudMiddleware.getExistingMetadata,
         checkPermissions: permissions.checkRoleAndOwner(
             router.metadata.namePlural,
