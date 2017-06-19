@@ -22,7 +22,9 @@ function addUpdateStatusRoute(router, crudMiddleware, maps) {
     ensureRouterValid(router);
     if (!router.metadata.schemas.updateStatus) {
         if (router.metadata.schemas.core.updateStatusSchema) {
-            router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
+            router.metadata.schemas.updateStatus = _.cloneDeep(
+                router.metadata.schemas.core.updateStatusSchema
+            );
             router.metadata.schemas.updateStatus.$id = router.metadata.schemas.core.$id.replace(
                 '.json',
                 '-updateStatus.json'
@@ -33,20 +35,32 @@ function addUpdateStatusRoute(router, crudMiddleware, maps) {
     }
     validator.addSchema(router.metadata.schemas.updateStatus);
     router
-        .put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, crudMiddleware, maps))
+        .put(
+            '/:' + router.metadata.identifierName + '/:newStatusName',
+            getSteps(router, crudMiddleware, maps)
+        )
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
     return router;
 }
 
 function ensureRouterValid(router) {
-    assert(router.metadata.schemas.core.statuses, 'No statuses defined in metadata.schemas.core.statuses');
-    assert(_.isArray(router.metadata.schemas.core.statuses), 'metadata.schemas.core.statuses must be an array');
+    assert(
+        router.metadata.schemas.core.statuses,
+        'No statuses defined in metadata.schemas.core.statuses'
+    );
+    assert(
+        _.isArray(router.metadata.schemas.core.statuses),
+        'metadata.schemas.core.statuses must be an array'
+    );
     assert(
         router.metadata.schemas.core.statuses.length > 0,
         'metadata.schemas.core.statuses array must have at least one item in it.'
     );
     router.metadata.schemas.core.statuses.forEach(function(status) {
-        assert(_.isObject(status), 'items in metadata.schemas.core.statuses array must be an object.');
+        assert(
+            _.isObject(status),
+            'items in metadata.schemas.core.statuses array must be an object.'
+        );
         assert(
             status.name,
             'items in metadata.schemas.core.statuses array must be an object which must have a property called "name"'
