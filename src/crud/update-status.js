@@ -53,7 +53,7 @@ function addDefaultStatusSchemaIfApplicable(router) {
     }
     const numberOfStatusesWithASchema = router.metadata.schemas.core.statuses.filter(status => status.schema).length;
     if (numberOfStatusesWithASchema !== router.metadata.schemas.core.statuses.length) {
-        throw new Error('No update status schema set.');
+        throw new Error('No update status schema set or not every status has a schema.');
     }
 }
 

@@ -89,7 +89,22 @@ describe('Crud - updateStatus', function() {
             assert(addSchemaSpy.calledWith(fakeUpdateSchema));
         });
 
-        //should thrown an error if neither updateStatus or updateStatusSchema were set and not every status specifies its own schema
+        it('should thrown an error if neither updateStatus or updateStatusSchema were set and not every status specifies its own schema', function() {
+            const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
+            const statuses = [
+                {
+                    name: 'test',
+                    schema: fakeUpdateSchema
+                },
+                {
+                    name: 'test2'
+                }
+            ];
+            const router = fakeRouter(statuses);
+            expect(function() {
+                updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
+            }).to.throw(/No update status schema set./i);
+        });
     });
 });
 
