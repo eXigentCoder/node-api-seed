@@ -76,15 +76,20 @@ describe('Crud - updateStatus', function() {
             }).to.throw(/No update status schema set./i);
         });
 
-        // it('Should use the specific status schema if one was specified', function() {
-        //     const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
-        //     const fakeUpdateSchema2 = { $id: 'test-update-schema2', bob: true };
-        //     const status = []
-        //     const router = fakeRouter(['ssd'], fakeUpdateSchema);
-        //     router.metadata.schemas.core.updateStatusSchema = fakeUpdateSchema2;
-        //     updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
-        //     assert(addSchemaSpy.calledWith(fakeUpdateSchema));
-        // });
+        it('Should use the specific status schema if one was specified', function() {
+            const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
+            const statuses = [
+                {
+                    name: 'test',
+                    schema: fakeUpdateSchema
+                }
+            ];
+            const router = fakeRouter(statuses);
+            updateStatusFunctions.addUpdateStatusRoute(router, fakeCrudMiddleware());
+            assert(addSchemaSpy.calledWith(fakeUpdateSchema));
+        });
+
+        //should thrown an error if neither updateStatus or updateStatusSchema were set and not every status specifies its own schema
     });
 });
 

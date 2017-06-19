@@ -20,22 +20,41 @@ module.exports = {
 
 function addUpdateStatusRoute(router, crudMiddleware, maps) {
     ensureRouterValid(router);
-    if (!router.metadata.schemas.updateStatus) {
-        if (router.metadata.schemas.core.updateStatusSchema) {
-            router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
-            router.metadata.schemas.updateStatus.$id = router.metadata.schemas.core.$id.replace(
-                '.json',
-                '-updateStatus.json'
-            );
-        } else {
-            throw new Error('No update status schema set.');
-        }
-    }
-    validator.addSchema(router.metadata.schemas.updateStatus);
+    addIndividualStatusSchemas(router);
+    addDefaultStatusSchemaIfApplicable(router);
     router
         .put('/:' + router.metadata.identifierName + '/:newStatusName', getSteps(router, crudMiddleware, maps))
         .describe(router.metadata.updateStatusDescription || description(router.metadata));
     return router;
+}
+
+function addIndividualStatusSchemas(router) {
+    router.metadata.schemas.core.statuses.forEach(function(status) {
+        if (status.schema) {
+            const coreSchemaId = router.metadata.schemas.core.$id;
+            setStatusSchemaId(status, coreSchemaId);
+        }
+    });
+}
+
+function setStatusSchemaId(status, coreSchemaId) {
+    status.schema.$id = coreSchemaId.replace('.json', `-${schemaName}-${_.kebabCase(status.name)}.json`);
+}
+
+function addDefaultStatusSchemaIfApplicable(router) {
+    if (router.metadata.schemas.updateStatus) {
+        return validator.addSchema(router.metadata.schemas.updateStatus);
+    }
+    if (router.metadata.schemas.core.updateStatusSchema) {
+        router.metadata.schemas.updateStatus = _.cloneDeep(router.metadata.schemas.core.updateStatusSchema);
+        const coreSchemaId = router.metadata.schemas.core.$id;
+        router.metadata.schemas.updateStatus.$id = coreSchemaId.replace('.json', `-${schemaName}.json`);
+        return validator.addSchema(router.metadata.schemas.updateStatus);
+    }
+    const numberOfStatusesWithASchema = router.metadata.schemas.core.statuses.filter(status => status.schema).length;
+    if (numberOfStatusesWithASchema !== router.metadata.schemas.core.statuses.length) {
+        throw new Error('No update status schema set.');
+    }
 }
 
 function ensureRouterValid(router) {
