@@ -105,10 +105,7 @@ describe('apply-map._applySkip', function() {
         if (testCase.throws) {
             let statement = 'Should throw an error if ' + condition;
             it(statement, function() {
-                expect(
-                    callSkip(testCase.skip, testCase.steps),
-                    'Should have thrown because ' + condition
-                ).to.throw();
+                expect(callSkip(testCase.skip, testCase.steps), 'Should have thrown because ' + condition).to.throw();
             });
         } else {
             let statement = 'Should not throw an error if ' + condition;

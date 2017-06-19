@@ -95,9 +95,7 @@ describe('when setting the version info of requests', function() {
         });
 
         it('should update the version tag, to a new uuid', function() {
-            expect(validUUIDRegexPattern.test(request.body.versionInfo.versionTag)).to.not.equal(
-                existingVersionTag
-            );
+            expect(validUUIDRegexPattern.test(request.body.versionInfo.versionTag)).to.not.equal(existingVersionTag);
             expect(validUUIDRegexPattern.test(request.body.versionInfo.versionTag)).to.equal(true);
         });
 

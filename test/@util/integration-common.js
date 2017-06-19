@@ -13,10 +13,7 @@ before(function(done) {
     }
     initialised = true;
     this.timeout(10000);
-    async.waterfall(
-        [dropAndRecreate, createApp, createDataObject, expect.initialise],
-        waterfallComplete
-    );
+    async.waterfall([dropAndRecreate, createApp, createDataObject, expect.initialise], waterfallComplete);
 
     function waterfallComplete(err, data) {
         if (err) {
@@ -61,18 +58,14 @@ module.exports = {
 
 Object.keys(expect).forEach(function(key) {
     if (module.exports[key]) {
-        throw new Error(
-            "Can't add a the property " + key + ' to module.exports because it already exists'
-        );
+        throw new Error("Can't add a the property " + key + ' to module.exports because it already exists');
     }
     module.exports[key] = expect[key];
 });
 
 Object.keys(set).forEach(function(key) {
     if (module.exports[key]) {
-        throw new Error(
-            "Can't add a the property " + key + ' to module.exports because it already exists'
-        );
+        throw new Error("Can't add a the property " + key + ' to module.exports because it already exists');
     }
     module.exports[key] = set[key];
 });

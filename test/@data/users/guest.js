@@ -7,11 +7,7 @@ const permissions = require('../../../src/permissions');
 module.exports = function(callback) {
     const guestUser = config.get('tests').guestUser;
     const adminUser = config.get('tests').adminUser;
-    bcrypt.hash(
-        guestUser.password,
-        config.get('authenticationOptions').password.saltRounds,
-        hashCalculated
-    );
+    bcrypt.hash(guestUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
 
     function hashCalculated(hashErr, hash) {
         if (hashErr) {

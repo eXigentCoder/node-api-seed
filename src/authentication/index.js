@@ -15,10 +15,7 @@ module.exports = {
 };
 
 function initialise(app, callback) {
-    const strategy = new passportJWT.Strategy(
-        _.omit(config.get('authenticationOptions').jwt, 'sign'),
-        findUserById
-    );
+    const strategy = new passportJWT.Strategy(_.omit(config.get('authenticationOptions').jwt, 'sign'), findUserById);
     passport.use(strategy);
     callback(null, app);
 }
@@ -38,11 +35,7 @@ function findUserById(req, payload, callback) {
             return callback(err);
         }
         if (!user) {
-            return callback(
-                boom.notFound(
-                    util.format('A user with the _id field of "%s" was not found.', parsedId)
-                )
-            );
+            return callback(boom.notFound(util.format('A user with the _id field of "%s" was not found.', parsedId)));
         }
         callback(null, user);
     }

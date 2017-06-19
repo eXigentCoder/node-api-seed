@@ -1,10 +1,7 @@
 'use strict';
 require('../../config/init-nconf')('Script-CreateIndexes');
 const async = require('async');
-const schemas = [
-    require('../../src/routes/users/user.json'),
-    require('../../src/routes/users/items/item.json')
-];
+const schemas = [require('../../src/routes/users/user.json'), require('../../src/routes/users/items/item.json')];
 const mongo = require('../../src/mongo');
 const pluralize = require('pluralize');
 const _ = require('lodash');
@@ -96,9 +93,7 @@ function processIndex(item, indexToCreate, callback) {
     }
     let existingIndex = findExistingIndex(indexToCreate, item.existingIndexes);
     if (!existingIndex) {
-        return mongo.db
-            .collection(item.collectionName)
-            .createIndex(indexToCreate.fields, indexOptions, callback);
+        return mongo.db.collection(item.collectionName).createIndex(indexToCreate.fields, indexOptions, callback);
     }
     if (!shouldDropAndCreate(indexToCreate, item.existingIndexes)) {
         return callback();
@@ -107,9 +102,7 @@ function processIndex(item, indexToCreate, callback) {
         if (err) {
             return callback(err);
         }
-        return mongo.db
-            .collection(item.collectionName)
-            .createIndex(indexToCreate.fields, indexOptions, callback);
+        return mongo.db.collection(item.collectionName).createIndex(indexToCreate.fields, indexOptions, callback);
     });
 }
 

@@ -84,9 +84,7 @@ function _skip(options) {
     function skipStep(stepName) {
         if (!options.steps[stepName] && options.throw) {
             throw new Error(
-                'No step by the name of ' +
-                    stepName +
-                    ' was found, please check the spelling and try again'
+                'No step by the name of ' + stepName + ' was found, please check the spelling and try again'
             );
         }
         delete options.steps[stepName];
@@ -141,9 +139,7 @@ function applyAfter(addAfter, steps, throwIfStepNotFound) {
                 return;
             }
             throw new Error(
-                'No step by the name of ' +
-                    stepName +
-                    ' was found, please check the spelling and try again'
+                'No step by the name of ' + stepName + ' was found, please check the spelling and try again'
             );
         }
         let addOnNext = false;
@@ -218,9 +214,7 @@ function applyBefore(addBefore, steps, throwIfStepNotFound) {
                 return;
             }
             throw new Error(
-                'No step by the name of ' +
-                    stepName +
-                    ' was found, please check the spelling and try again'
+                'No step by the name of ' + stepName + ' was found, please check the spelling and try again'
             );
         }
         _.forIn(steps, function(value, key) {
@@ -287,9 +281,7 @@ function applyReplace(replaceWith, steps, throwIfStepNotFound) {
                 return;
             }
             throw new Error(
-                'No step by the name of ' +
-                    stepName +
-                    ' was found, please check the spelling and try again'
+                'No step by the name of ' + stepName + ' was found, please check the spelling and try again'
             );
         }
         _.forIn(steps, function(value, key) {

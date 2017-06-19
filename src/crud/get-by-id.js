@@ -44,8 +44,7 @@ function description(metadata) {
         parameters: [
             {
                 name: metadata.identifierName,
-                description:
-                    'The field to uniquely identify this ' + metadata.title.toLowerCase() + '.',
+                description: 'The field to uniquely identify this ' + metadata.title.toLowerCase() + '.',
                 required: true,
                 in: 'path',
                 type: 'string'
@@ -59,8 +58,7 @@ function description(metadata) {
         },
         responses: {
             '200': {
-                description:
-                    'Returns the single ' + metadata.title + ' matching the provided parameters.',
+                description: 'Returns the single ' + metadata.title + ' matching the provided parameters.',
                 model: metadata.schemas.output.name,
                 commonHeaders: [correlationIdOptions.resHeader]
             }

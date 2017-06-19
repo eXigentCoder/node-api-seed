@@ -90,9 +90,7 @@ function description(metadata) {
         responses: {
             '201': {
                 description:
-                    'Informs the caller that the ' +
-                        metadata.title.toLowerCase() +
-                        ' was successfully created.',
+                    'Informs the caller that the ' + metadata.title.toLowerCase() + ' was successfully created.',
                 commonHeaders: [correlationIdOptions.resHeader],
                 model: metadata.schemas.output.name
             }
@@ -130,12 +128,7 @@ function setOwnerIfApplicable(metadata) {
             req.body.owner = _.get(req, ownership.setOwnerExpression);
             if (!req.body.owner) {
                 return next(
-                    boom.badRequest(
-                        util.format(
-                            'Owner from expression "%s" was blank',
-                            ownership.setOwnerExpression
-                        )
-                    )
+                    boom.badRequest(util.format('Owner from expression "%s" was blank', ownership.setOwnerExpression))
                 );
             }
         } else {

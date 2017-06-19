@@ -68,11 +68,7 @@ function writeRoutesAsTest(data) {
     let outputContent = '';
     let indent = 0;
     addLine("'use strict';");
-    addLine(
-        "var common = require('" +
-            relativePath(data.outputPath, './test/@util/integration-common.js') +
-            "');"
-    );
+    addLine("var common = require('" + relativePath(data.outputPath, './test/@util/integration-common.js') + "');");
     addLine("var router = require('" + relativePath(data.outputPath, data.routerPath) + "');");
     addLine("var config = require('nconf');");
     addLine();
@@ -212,9 +208,7 @@ function writeRoutesAsTest(data) {
             addLine("common.request.get('" + foundRoute.fullPath + "')");
             indent++;
             addLine(
-                '.use(common.urlTemplate(' +
-                    JSON.stringify(getPathParameterObject(foundRoute, { fake: true })) +
-                    '))'
+                '.use(common.urlTemplate(' + JSON.stringify(getPathParameterObject(foundRoute, { fake: true })) + '))'
             );
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine('.expect(common.error(404))');
@@ -436,9 +430,7 @@ function writeRoutesAsTest(data) {
             addLine("common.request.delete('" + foundRoute.fullPath + "')");
             indent++;
             addLine(
-                '.use(common.urlTemplate(' +
-                    JSON.stringify(getPathParameterObject(foundRoute, { fake: true })) +
-                    '))'
+                '.use(common.urlTemplate(' + JSON.stringify(getPathParameterObject(foundRoute, { fake: true })) + '))'
             );
             addLine(".set(common.authentication({user: config.get('tests').adminUser}))");
             addLine('.expect(common.error(404))');

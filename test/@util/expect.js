@@ -39,12 +39,7 @@ function success(code) {
         return checkSuccessfulResponse(code);
     }
     return function(res) {
-        const message =
-            'Expected a status code of ' +
-            code +
-            ' but got ' +
-            res.statusCode +
-            endMessageBody(res);
+        const message = 'Expected a status code of ' + code + ' but got ' + res.statusCode + endMessageBody(res);
         expect(res.statusCode, message).to.equal(code);
         checkSuccessfulResponse(res);
     };
@@ -59,13 +54,8 @@ function messageBody(res) {
 }
 
 function checkSuccessfulResponse(res) {
-    expect(res.statusType, 'Expected a status code in the 2xx range. ' + messageBody(res)).to.equal(
-        2
-    );
-    expect(
-        res.error,
-        util.format('The response body contained an error : %j', res.error)
-    ).to.not.be.ok();
+    expect(res.statusType, 'Expected a status code in the 2xx range. ' + messageBody(res)).to.equal(2);
+    expect(res.error, util.format('The response body contained an error : %j', res.error)).to.not.be.ok();
 }
 
 function error(code) {
@@ -73,22 +63,14 @@ function error(code) {
         return checkErrorResponse(code);
     }
     return function(res) {
-        const message =
-            'Expected a status code of ' +
-            code +
-            ' but got ' +
-            res.statusCode +
-            endMessageBody(res);
+        const message = 'Expected a status code of ' + code + ' but got ' + res.statusCode + endMessageBody(res);
         expect(res.statusCode, message).to.equal(code);
         checkErrorResponse(res);
     };
 }
 
 function checkErrorResponse(res) {
-    expect(
-        res.statusType,
-        'Expected a status code not in the 2xx range. ' + messageBody(res)
-    ).to.not.equal(2);
+    expect(res.statusType, 'Expected a status code not in the 2xx range. ' + messageBody(res)).to.not.equal(2);
     expect(res.error, 'Expected an error in the response but there was not one').to.be.ok();
 }
 
@@ -120,20 +102,14 @@ function matchesSwaggerHeaders(res) {
 function matchesSwaggerHeader(res, headerName, headerDefinition) {
     if (!res.headers) {
         throw new Error(
-            'Expected response to have header ' +
-                headerName +
-                ' but there were no headers. ' +
-                operationString(res)
+            'Expected response to have header ' + headerName + ' but there were no headers. ' + operationString(res)
         );
     }
     const superTestName = headerName.toLowerCase();
     let headerValue = res.headers[superTestName];
     if (!headerValue) {
         throw new Error(
-            'Expected response to have header ' +
-                headerName +
-                ' but it was missing. ' +
-                operationString(res)
+            'Expected response to have header ' + headerName + ' but it was missing. ' + operationString(res)
         );
     }
     const actualType = typeof headerValue;
@@ -212,9 +188,7 @@ function getDefinitionObject(res, name) {
 function getSwaggerResponseObject(res) {
     const operation = getSwaggerOperation(res);
     if (!operation.responses) {
-        throw new Error(
-            'Swagger document does not have any responses for operation ' + operationString(res)
-        );
+        throw new Error('Swagger document does not have any responses for operation ' + operationString(res));
     }
     if (!operation.responses[res.statusCode]) {
         throw new Error(

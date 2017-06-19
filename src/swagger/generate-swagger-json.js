@@ -26,9 +26,7 @@ module.exports = function generateSwaggerJson(app, callback) {
 };
 
 function writeSwaggerFileToDisk(app, callback) {
-    fs.writeFile('./src/swagger/swagger.json', JSON.stringify(swagger.json(), null, 4), function(
-        err
-    ) {
+    fs.writeFile('./src/swagger/swagger.json', JSON.stringify(swagger.json(), null, 4), function(err) {
         return callback(err, app);
     });
 }

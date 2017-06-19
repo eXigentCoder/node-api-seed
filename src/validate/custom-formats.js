@@ -21,14 +21,7 @@ function isValidMongoId(input) {
     return mongo.isValidObjectId(input);
 }
 
-function validateAndCoerceToMongoId(
-    isMongoId,
-    input,
-    schema,
-    currentDataPath,
-    parentDataObject,
-    propName
-) {
+function validateAndCoerceToMongoId(isMongoId, input, schema, currentDataPath, parentDataObject, propName) {
     if (!isMongoId) {
         return true;
     }
@@ -39,49 +32,21 @@ function validateAndCoerceToMongoId(
     return valid;
 }
 
-function validateAndCoerceFromDateFormat(
-    dateFormat,
-    input,
-    schema,
-    currentDataPath,
-    parentDataObject,
-    propName
-) {
+function validateAndCoerceFromDateFormat(dateFormat, input, schema, currentDataPath, parentDataObject, propName) {
     dateFormat = dateFormat.toLowerCase();
     const allowedValues = ['date', 'time'];
     if (allowedValues.indexOf(dateFormat) < 0) {
         return false;
     }
     if (dateFormat === 'date') {
-        return validateAndCoerceToDate(
-            dateFormat,
-            input,
-            schema,
-            currentDataPath,
-            parentDataObject,
-            propName
-        );
+        return validateAndCoerceToDate(dateFormat, input, schema, currentDataPath, parentDataObject, propName);
     }
     if (dateFormat === 'time') {
-        return validateAndCoerceToTime(
-            dateFormat,
-            input,
-            schema,
-            currentDataPath,
-            parentDataObject,
-            propName
-        );
+        return validateAndCoerceToTime(dateFormat, input, schema, currentDataPath, parentDataObject, propName);
     }
 }
 
-function validateAndCoerceToDate(
-    dateFormat,
-    input,
-    schema,
-    currentDataPath,
-    parentDataObject,
-    propName
-) {
+function validateAndCoerceToDate(dateFormat, input, schema, currentDataPath, parentDataObject, propName) {
     const format = 'YYYY-MM-DD';
     const dateValue = moment.utc(new Date(input));
     const valid = dateValue.isValid();
@@ -91,14 +56,7 @@ function validateAndCoerceToDate(
     return valid;
 }
 
-function validateAndCoerceToTime(
-    dateFormat,
-    input,
-    schema,
-    currentDataPath,
-    parentDataObject,
-    propName
-) {
+function validateAndCoerceToTime(dateFormat, input, schema, currentDataPath, parentDataObject, propName) {
     const dateValue = moment.utc(new Date(input));
     const valid = dateValue.isValid();
     if (valid) {

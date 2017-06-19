@@ -69,9 +69,7 @@ describe('Crud - create', function() {
             }
         });
 
-        it('Should create a status log entry with the status set to the first one in the schema', function(
-            done
-        ) {
+        it('Should create a status log entry with the status set to the first one in the schema', function(done) {
             const metadata = buildMetadata([{ name: 'a' }]);
             const middleware = create.setStatusIfApplicable(metadata);
             const reqOptions = {
@@ -96,9 +94,7 @@ describe('Crud - create', function() {
 
             function next(error) {
                 expect(error).to.not.be.ok();
-                expect(
-                    moment(reqOptions.body.statusLog[0].statusDate).diff(new Date())
-                ).to.be.lessThan(1);
+                expect(moment(reqOptions.body.statusLog[0].statusDate).diff(new Date())).to.be.lessThan(1);
                 done();
             }
         });

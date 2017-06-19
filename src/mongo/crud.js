@@ -206,9 +206,7 @@ function writeHistoryItem(metadata) {
         }
         req.process.originalItem.historyId = req.process.originalItem._id;
         delete req.process.originalItem._id;
-        mongo.db
-            .collection(metadata.collectionName + '-history')
-            .insertOne(req.process.originalItem, next);
+        mongo.db.collection(metadata.collectionName + '-history').insertOne(req.process.originalItem, next);
     };
 }
 
@@ -227,9 +225,7 @@ function getExistingMetadata(metadata, targetObjectPath) {
             options.fields[field] = 1;
         });
         const parsedQuery = parseQueryWithDefaults(mongoQuery, metadata.schemas.core);
-        mongo.db
-            .collection(metadata.collectionName)
-            .findOne(parsedQuery.filter, options, dataRetrieved);
+        mongo.db.collection(metadata.collectionName).findOne(parsedQuery.filter, options, dataRetrieved);
         function dataRetrieved(err, document) {
             if (err) {
                 return next(err);

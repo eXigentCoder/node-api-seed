@@ -38,9 +38,7 @@ function buildBaseDocument(swaggerConfig) {
             contact: contactInfo,
             license: {
                 name: _.get(swaggerConfig, 'license.name') || packageJson.license,
-                url:
-                    _.get(swaggerConfig, 'license.url') ||
-                        'https://spdx.org/licenses/' + packageJson.license + '.html'
+                url: _.get(swaggerConfig, 'license.url') || 'https://spdx.org/licenses/' + packageJson.license + '.html'
             }
         },
         host: host,
