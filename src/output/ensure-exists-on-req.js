@@ -34,7 +34,9 @@ module.exports = function ensureExistsOnReq(path, options) {
                 ' could not be found';
             return next(boom.notFound(message));
         }
-        throw new Error('Should not be possible due to the ensureExactly1KeyTruthy method in validate, called above');
+        throw new Error(
+            'Should not be possible due to the ensureExactly1KeyTruthy method in validate, called above'
+        );
     };
 };
 

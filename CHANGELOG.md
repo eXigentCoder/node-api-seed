@@ -4,7 +4,7 @@
 * Refactoring generic CRUD functions to export all their functions as properties on an object rather than tacked on to the primary function. This will allow for easier unit testing
 * Creating a new npm script `unit-test` to run just the unit tests with coverage to get a better idea of where to add tests or where problems may lie.
 * Adding `babel` for transpilation step. Updating eslint rules to cater for this. Adding nodemon config. Moving index file so that it gets transpiled as well. Adding nyc + config to cater for new coverage.
-
+* Adding the
 Check here for upcoming changes
 
 ## [1.1.1](https://github.com/eXigentCoder/node-api-seed/compare/v1.1.0...v1.1.1) (2017-06-16)

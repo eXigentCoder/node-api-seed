@@ -30,13 +30,21 @@ export default function getDataFromReq(
         if (_.isArray(value)) {
             ensureMapIsString(value[0]);
             if (value.length > 2) {
-                throw new Error(util.format('Too many items in array, should be at most 2. %j', value));
+                throw new Error(
+                    util.format('Too many items in array, should be at most 2. %j', value)
+                );
             }
             data[key] = getValue(req, value[0], value[1], disallowedSuffixList, allowedPrefixList);
             return;
         }
         if (_.isObject(value)) {
-            data[key] = getDataFromReq(value, req, depth + 1, disallowedSuffixList, allowedPrefixList);
+            data[key] = getDataFromReq(
+                value,
+                req,
+                depth + 1,
+                disallowedSuffixList,
+                allowedPrefixList
+            );
             return;
         }
         ensureMapIsString(value);

@@ -49,7 +49,9 @@ function checkRoleOnly(resource, permissions) {
             if (isAllowed) {
                 return next();
             }
-            return next(boom.forbidden(util.format(messageTemplate, userIdString, permissions, resource)));
+            return next(
+                boom.forbidden(util.format(messageTemplate, userIdString, permissions, resource))
+            );
         }
     };
 }
@@ -60,7 +62,12 @@ function checkRoleAndOwner(resource, permissions, ownership) {
             permissions = [permissions];
         }
         const userIdString = req.user._id.toString();
-        const missingPermissionsErrorMessage = util.format(messageTemplate, userIdString, permissions, resource);
+        const missingPermissionsErrorMessage = util.format(
+            messageTemplate,
+            userIdString,
+            permissions,
+            resource
+        );
         nodeAcl.isAllowed(userIdString, resource, permissions, roleChecked);
 
         function roleChecked(err, isAllowed) {
@@ -86,7 +93,9 @@ function checkRoleAndOwner(resource, permissions, ownership) {
             }
             if (!owner) {
                 return next(
-                    boom.badImplementation('Owner was null, make sure you have called getExistingMetadata first')
+                    boom.badImplementation(
+                        'Owner was null, make sure you have called getExistingMetadata first'
+                    )
                 );
             }
             //check if owner matches current user

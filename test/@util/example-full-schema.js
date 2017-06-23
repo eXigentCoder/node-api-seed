@@ -2,7 +2,8 @@
 
 module.exports = {
     //Unique identifier for this schema, should be a url, I tend to use the path to the raw file on github.
-    $id: 'https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/user.json',
+    $id:
+        'https://raw.githubusercontent.com/eXigentCoder/node-api-seed/master/src/routes/users/user.json',
     // The name of the entity, singular.
     name: 'user',
     // The name of the entity, plural. Not required, will be inferred in code, specify this if there is an issue with how it is being generated.

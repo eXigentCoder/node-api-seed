@@ -107,7 +107,9 @@ describe('Crud - updateStatus', function() {
     });
 
     describe('ensureStatusAllowed', function() {
-        it('Should throw an error if the newStatusName was not found in the allowed status list', function(done) {
+        it('Should throw an error if the newStatusName was not found in the allowed status list', function(
+            done
+        ) {
             const statuses = [
                 {
                     name: 'test'
@@ -121,10 +123,17 @@ describe('Crud - updateStatus', function() {
                     newStatusName: 'notTest'
                 }
             };
-            requestMocking.mockRequest(middleware, reqOptions, null, requestMocking.shouldCallNextWithError(done));
+            requestMocking.mockRequest(
+                middleware,
+                reqOptions,
+                null,
+                requestMocking.shouldCallNextWithError(done)
+            );
         });
 
-        it('Should not throw an error if the newStatusName was found in the allowed status list', function(done) {
+        it('Should not throw an error if the newStatusName was found in the allowed status list', function(
+            done
+        ) {
             const statuses = [
                 {
                     name: 'test'
@@ -138,7 +147,12 @@ describe('Crud - updateStatus', function() {
                     newStatusName: 'test'
                 }
             };
-            requestMocking.mockRequest(middleware, reqOptions, null, requestMocking.shouldCallNext(done));
+            requestMocking.mockRequest(
+                middleware,
+                reqOptions,
+                null,
+                requestMocking.shouldCallNext(done)
+            );
         });
 
         it('Should set the newStatus on the req.process', function(done) {
@@ -172,7 +186,9 @@ describe('Crud - updateStatus', function() {
         beforeEach(function() {
             validateSchemaStub = sinon.stub(validator, 'validate');
         });
-        it("Should use the default validation function if the newStatus didn't have a schema", function(done) {
+        it("Should use the default validation function if the newStatus didn't have a schema", function(
+            done
+        ) {
             const metadata = fakeMetadata();
             const schemaId = 'asd';
             metadata.schemas[updateStatusFunctions.schemaName] = {
@@ -199,7 +215,9 @@ describe('Crud - updateStatus', function() {
                 done();
             }
         });
-        it('Should use the individual status schema for validation if the newStatus did have a schema', function(done) {
+        it('Should use the individual status schema for validation if the newStatus did have a schema', function(
+            done
+        ) {
             const schemaId = 'specific-status-schema-id';
             const statuses = [
                 {

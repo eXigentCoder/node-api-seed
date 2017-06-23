@@ -6,7 +6,11 @@ const uuid = require('node-uuid');
 const permissions = require('../../../src/permissions');
 module.exports = function(callback) {
     const adminUser = config.get('tests').adminUser;
-    bcrypt.hash(adminUser.password, config.get('authenticationOptions').password.saltRounds, hashCalculated);
+    bcrypt.hash(
+        adminUser.password,
+        config.get('authenticationOptions').password.saltRounds,
+        hashCalculated
+    );
 
     function hashCalculated(hashErr, hash) {
         if (hashErr) {

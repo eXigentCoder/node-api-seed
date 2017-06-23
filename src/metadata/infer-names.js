@@ -13,7 +13,8 @@ function inferName(metadata) {
 }
 
 function inferNamePlural(metadata) {
-    metadata.namePlural = metadata.namePlural || metadata.schemas.core.namePlural || pluralize.plural(metadata.name);
+    metadata.namePlural =
+        metadata.namePlural || metadata.schemas.core.namePlural || pluralize.plural(metadata.name);
 }
 
 function inferTitle(metadata) {
@@ -22,5 +23,7 @@ function inferTitle(metadata) {
 
 function inferTitlePlural(metadata) {
     metadata.titlePlural =
-        metadata.titlePlural || metadata.schemas.core.titlePlural || pluralize.plural(metadata.title);
+        metadata.titlePlural ||
+        metadata.schemas.core.titlePlural ||
+        pluralize.plural(metadata.title);
 }

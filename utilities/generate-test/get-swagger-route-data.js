@@ -18,7 +18,10 @@ module.exports = function getSwaggerDataFromRouteStack(stack, pathPrefix) {
     });
     routerRoutes.forEach(function(middleware) {
         const newPrefix = getPathFromMiddleware(middleware);
-        const subRoutes = getSwaggerDataFromRouteStack(middleware.handle.stack, pathPrefix + newPrefix);
+        const subRoutes = getSwaggerDataFromRouteStack(
+            middleware.handle.stack,
+            pathPrefix + newPrefix
+        );
         routes = routes.concat(subRoutes);
     });
     return routes;

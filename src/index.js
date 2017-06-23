@@ -11,6 +11,13 @@ createApp(function(err, app) {
         throw err;
     }
     app.listen(port, function() {
-        console.info(util.format('%s is listening at http://%s:%s', packageJson.name, config.get('host'), port));
+        console.info(
+            util.format(
+                '%s is listening at http://%s:%s',
+                packageJson.name,
+                config.get('host'),
+                port
+            )
+        );
     });
 });

@@ -14,7 +14,9 @@ module.exports = function getValidateFunction(schemaName) {
             return next(
                 new Error(
                     util.format(
-                        'req.process.metadata.schemas.' + schemaName + '.id was null. Schema was %j ',
+                        'req.process.metadata.schemas.' +
+                            schemaName +
+                            '.id was null. Schema was %j ',
                         req.process.metadata.schemas[schemaName]
                     )
                 )

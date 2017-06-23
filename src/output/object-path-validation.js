@@ -21,7 +21,11 @@ function validate(object, paths, checkType, methodName) {
     }
     if (!_.isString(checkType) || checkTypes.indexOf(checkType) < 0) {
         throw new Error(
-            util.format('checkType must be one of the following strings %j when calling %s', checkTypes, methodName)
+            util.format(
+                'checkType must be one of the following strings %j when calling %s',
+                checkTypes,
+                methodName
+            )
         );
     }
 }

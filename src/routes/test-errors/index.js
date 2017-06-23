@@ -14,7 +14,8 @@ router.get('/client', function(req, res, next) {
     return next(boom.badRequest('Client error - should see details'));
 });
 
-const uncaughtErrorMessage = "Testing the uncaught process error, should kill the server, don't expose on live";
+const uncaughtErrorMessage =
+    "Testing the uncaught process error, should kill the server, don't expose on live";
 router.get('/process', function() {
     process.nextTick(function() {
         throw new Error(uncaughtErrorMessage);

@@ -33,7 +33,10 @@ function filterOutput(req, res, next) {
             req.process.output[index] = jsonSchemaFilter(req.process.metadata.schemas.output, item);
         });
     } else {
-        req.process.output = jsonSchemaFilter(req.process.metadata.schemas.output, req.process.output);
+        req.process.output = jsonSchemaFilter(
+            req.process.metadata.schemas.output,
+            req.process.output
+        );
     }
     return next();
 }

@@ -11,10 +11,13 @@ const _ = require('lodash');
 
 module.exports = {
     initialise: function(app, callback) {
-        async.parallel([initialise('api'), initialise('loginUsername'), initialise('loginIp')], function(err) {
-            console.log('Rate limits initialised');
-            return callback(err, app);
-        });
+        async.parallel(
+            [initialise('api'), initialise('loginUsername'), initialise('loginIp')],
+            function(err) {
+                console.log('Rate limits initialised');
+                return callback(err, app);
+            }
+        );
     },
     api: function(req, res, next) {
         return instances.api.prevent(req, res, next);

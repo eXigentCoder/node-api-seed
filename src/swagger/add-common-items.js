@@ -105,7 +105,8 @@ module.exports = function(app, callback) {
     });
     swagger.common.addResponse({
         name: '204',
-        description: 'The server successfully processed the request, but is not returning any content.'
+        description:
+            'The server successfully processed the request, but is not returning any content.'
     });
     const correlationIdOptions = config.get('logging').correlationId;
     swagger.common.addResponseHeader({
