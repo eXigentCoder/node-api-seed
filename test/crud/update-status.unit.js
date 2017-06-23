@@ -166,6 +166,78 @@ describe('Crud - updateStatus', function() {
             }
         });
     });
+    describe('validate', function() {
+        let validateSchemaStub;
+        beforeEach(function() {
+            validateSchemaStub = sinon.stub(validator, 'validate');
+        });
+        it("Should use the default validation function if the newStatus didn't have a schema", function(done) {
+            const metadata = fakeMetadata();
+            const schemaId = 'asd';
+            metadata.schemas[updateStatusFunctions.schemaName] = {
+                $id: schemaId
+            };
+            const middleware = updateStatusFunctions.validate();
+            const reqOptions = {
+                body: {},
+                params: {
+                    newStatusName: 'test'
+                },
+                process: {
+                    metadata,
+                    newStatus: {}
+                }
+            };
+            validateSchemaStub.returns({ valid: true });
+            requestMocking.mockRequest(middleware, reqOptions, null, next);
+            function next(err) {
+                if (err) {
+                    return done(err);
+                }
+                assert(validateSchemaStub.calledWith(schemaId));
+                done();
+            }
+        });
+        it('Should use the individual status schema for validation if the newStatus did have a schema', function(done) {
+            const schemaId = 'specific-status-schema-id';
+            const statuses = [
+                {
+                    name: 'test',
+                    bob: true,
+                    schema: {
+                        $id: schemaId
+                    }
+                }
+            ];
+            const metadata = fakeMetadata(statuses);
+            metadata.schemas[updateStatusFunctions.schemaName] = {
+                $id: 'asd'
+            };
+            const middleware = updateStatusFunctions.validate();
+            const reqOptions = {
+                body: {},
+                params: {
+                    newStatusName: 'test'
+                },
+                process: {
+                    metadata,
+                    newStatus: statuses[0]
+                }
+            };
+            validateSchemaStub.returns({ valid: true });
+            requestMocking.mockRequest(middleware, reqOptions, null, next);
+            function next(err) {
+                if (err) {
+                    return done(err);
+                }
+                assert(validateSchemaStub.calledWith(schemaId));
+                done();
+            }
+        });
+        afterEach(function() {
+            validateSchemaStub.restore();
+        });
+    });
 });
 
 function fakeRouter(statuses, updateStatusSchema) {

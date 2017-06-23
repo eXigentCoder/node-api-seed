@@ -15,7 +15,9 @@ module.exports = {
     addUpdateStatusRoute,
     getSteps,
     description,
-    ensureStatusAllowed
+    ensureStatusAllowed,
+    validate,
+    schemaName
 };
 
 function addUpdateStatusRoute(router, crudMiddleware, maps) {
@@ -80,7 +82,7 @@ function ensureRouterValid(router) {
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
         ensureStatusAllowed: ensureStatusAllowed(router.metadata),
-        validate: getValidateFunction(schemaName),
+        validate: validate(),
         getExistingMetadata: crudMiddleware.getExistingMetadata,
         checkPermissions: permissions.checkRoleAndOwner(
             router.metadata.namePlural,
@@ -165,5 +167,19 @@ function ensureStatusAllowed(metadata) {
         req.params.newStatusName = foundStatus.name;
         req.process.newStatus = foundStatus;
         return next();
+    };
+}
+
+function validate() {
+    const defaultValidationFunction = getValidateFunction(schemaName);
+    return function(req, res, next) {
+        if (req.process.newStatus.schema) {
+            const result = validator.validate(req.process.newStatus.schema.$id, req.body);
+            if (!result.valid) {
+                return next(boom.badRequest(result.message, result.errors));
+            }
+            return next();
+        }
+        defaultValidationFunction(req, res, next);
     };
 }
