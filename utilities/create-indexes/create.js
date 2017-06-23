@@ -46,7 +46,10 @@ function createHistoryIndexItem(item) {
         if (!index.includeInHistory) {
             return;
         }
-        newItem.indexes.push(index);
+        const indexCopy = _.cloneDeep(index);
+        //If we are going to write multiple copies to the history table, they can't be unique.
+        indexCopy.unique = false;
+        newItem.indexes.push(indexCopy);
     });
     return newItem;
 }
