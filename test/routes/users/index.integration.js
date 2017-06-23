@@ -125,6 +125,20 @@ describe('Users', function() {
                 .expect(common.success(204))
                 .end(common.logResponse(done));
         });
+        it('Happy case - custom status schema', function(done) {
+            common.request
+                .put('/users/:email/:newStatusName')
+                .use(
+                    common.urlTemplate({
+                        email: config.get('tests').adminUser._id,
+                        newStatusName: 'inactive'
+                    })
+                )
+                .send({ potatoes: 4 })
+                .set(common.authentication({ user: config.get('tests').adminUser }))
+                .expect(common.success(204))
+                .end(common.logResponse(done));
+        });
         it('No Authentication', function(done) {
             common.request
                 .put('/users/:email/:newStatusName')

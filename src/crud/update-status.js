@@ -9,38 +9,21 @@ const validator = require('../validate/validator');
 const boom = require('boom');
 const util = require('util');
 const permissions = require('../permissions');
+const assert = require('assert');
 
 module.exports = {
     addUpdateStatusRoute,
     getSteps,
     description,
-    ensureStatusAllowed
+    ensureStatusAllowed,
+    validate,
+    schemaName
 };
 
 function addUpdateStatusRoute(router, crudMiddleware, maps) {
-    if (!router.metadata.schemas.core.statuses) {
-        throw new Error('No statuses defined in metadata.schemas.core.statuses');
-    }
-    if (!_.isArray(router.metadata.schemas.core.statuses)) {
-        throw new Error('metadata.schemas.core.statuses must be an array');
-    }
-    if (router.metadata.schemas.core.statuses.length <= 0) {
-        throw new Error('metadata.schemas.core.statuses array must have at least one item in it.');
-    }
-    if (!router.metadata.schemas.updateStatus) {
-        if (router.metadata.schemas.core.updateStatusSchema) {
-            router.metadata.schemas.updateStatus = _.cloneDeep(
-                router.metadata.schemas.core.updateStatusSchema
-            );
-            router.metadata.schemas.updateStatus.$id = router.metadata.schemas.core.$id.replace(
-                '.json',
-                '-updateStatus.json'
-            );
-        } else {
-            throw new Error('No update status schema set.');
-        }
-    }
-    validator.addSchema(router.metadata.schemas.updateStatus);
+    ensureRouterValid(router);
+    addIndividualStatusSchemas(router);
+    addDefaultStatusSchemaIfApplicable(router);
     router
         .put(
             '/:' + router.metadata.identifierName + '/:newStatusName',
@@ -50,10 +33,79 @@ function addUpdateStatusRoute(router, crudMiddleware, maps) {
     return router;
 }
 
+function addIndividualStatusSchemas(router) {
+    router.metadata.schemas.core.statuses.forEach(function(status) {
+        if (status.schema) {
+            const coreSchemaId = router.metadata.schemas.core.$id;
+            setStatusSchemaId(status, coreSchemaId);
+            validator.addSchema(status.schema);
+        }
+    });
+}
+
+function setStatusSchemaId(status, coreSchemaId) {
+    status.schema.$id = coreSchemaId.replace(
+        '.json',
+        `-${schemaName}-${_.kebabCase(status.name)}.json`
+    );
+}
+
+function addDefaultStatusSchemaIfApplicable(router) {
+    if (router.metadata.schemas.updateStatus) {
+        return validator.addSchema(router.metadata.schemas.updateStatus);
+    }
+    if (router.metadata.schemas.core.updateStatusSchema) {
+        router.metadata.schemas.updateStatus = _.cloneDeep(
+            router.metadata.schemas.core.updateStatusSchema
+        );
+        const coreSchemaId = router.metadata.schemas.core.$id;
+        router.metadata.schemas.updateStatus.$id = coreSchemaId.replace(
+            '.json',
+            `-${schemaName}.json`
+        );
+        return validator.addSchema(router.metadata.schemas.updateStatus);
+    }
+    const numberOfStatusesWithASchema = router.metadata.schemas.core.statuses.filter(
+        status => status.schema
+    ).length;
+    if (numberOfStatusesWithASchema !== router.metadata.schemas.core.statuses.length) {
+        throw new Error('No update status schema set or not every status has a schema.');
+    }
+}
+
+function ensureRouterValid(router) {
+    assert(
+        router.metadata.schemas.core.statuses,
+        'No statuses defined in metadata.schemas.core.statuses'
+    );
+    assert(
+        _.isArray(router.metadata.schemas.core.statuses),
+        'metadata.schemas.core.statuses must be an array'
+    );
+    assert(
+        router.metadata.schemas.core.statuses.length > 0,
+        'metadata.schemas.core.statuses array must have at least one item in it.'
+    );
+    router.metadata.schemas.core.statuses.forEach(function(status) {
+        assert(
+            _.isObject(status),
+            'items in metadata.schemas.core.statuses array must be an object.'
+        );
+        assert(
+            status.name,
+            'items in metadata.schemas.core.statuses array must be an object which must have a property called "name"'
+        );
+        assert(
+            _.isString(status.name),
+            'items in metadata.schemas.core.statuses array must be an object which must have a property called "name" which must be a string'
+        );
+    });
+}
+
 function getSteps(router, crudMiddleware, maps) {
     const steps = {
-        validate: getValidateFunction(schemaName),
         ensureStatusAllowed: ensureStatusAllowed(router.metadata),
+        validate: validate(),
         getExistingMetadata: crudMiddleware.getExistingMetadata,
         checkPermissions: permissions.checkRoleAndOwner(
             router.metadata.namePlural,
@@ -120,16 +172,10 @@ function description(metadata) {
 
 function ensureStatusAllowed(metadata) {
     return function _ensureStatusAllowed(req, res, next) {
-        const statusNames = metadata.schemas.core.statuses.map(function(statusObj) {
-            return statusObj.name;
-        });
-        let foundStatus = statusNames.some(function(statusName) {
-            if (statusName.toLowerCase() === req.params.newStatusName.toLowerCase()) {
-                req.params.newStatusName = statusName;
-                return true;
-            }
-            return false;
-        });
+        const statusNames = metadata.schemas.core.statuses.map(status => status.name);
+        let foundStatus = metadata.schemas.core.statuses.find(
+            status => status.name.toLowerCase() === req.params.newStatusName.toLowerCase()
+        );
         if (!foundStatus) {
             return next(
                 boom.badRequest(
@@ -141,6 +187,22 @@ function ensureStatusAllowed(metadata) {
                 )
             );
         }
+        req.params.newStatusName = foundStatus.name;
+        req.process.newStatus = foundStatus;
         return next();
+    };
+}
+
+function validate() {
+    const defaultValidationFunction = getValidateFunction(schemaName);
+    return function(req, res, next) {
+        if (req.process.newStatus.schema) {
+            const result = validator.validate(req.process.newStatus.schema.$id, req.body);
+            if (!result.valid) {
+                return next(boom.badRequest(result.message, result.errors));
+            }
+            return next();
+        }
+        defaultValidationFunction(req, res, next);
     };
 }

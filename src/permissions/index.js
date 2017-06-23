@@ -77,7 +77,7 @@ function checkRoleAndOwner(resource, permissions, ownership) {
             if (isAllowed) {
                 return next();
             }
-            if (!ownership || ownership.doNotTrack || !ownership.permissions) {
+            if (!ownership || !ownership.permissions) {
                 return next(boom.forbidden(missingPermissionsErrorMessage));
             }
             //check if ownership confers the permission:
@@ -123,7 +123,7 @@ function checkRoleAndOwnerToSetQuery(resource, permissions, ownership) {
             if (isAllowed) {
                 return next();
             }
-            if (!ownership || ownership.doNotTrack || !ownership.permissions) {
+            if (!ownership || !ownership.permissions) {
                 return next(boom.forbidden(message));
             }
             permissions.forEach(function(permission) {
