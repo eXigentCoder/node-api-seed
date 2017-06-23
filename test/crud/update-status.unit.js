@@ -1,7 +1,6 @@
 require('../@util/init.js');
 const updateStatusFunctions = require('../../src/crud/update-status');
-const mockRequest = require('../@util/request-mocking').mockRequest;
-const moment = require('moment');
+const requestMocking = require('../@util/request-mocking');
 const sinon = require('sinon');
 const validator = require('../../src/validate/validator');
 
@@ -106,30 +105,97 @@ describe('Crud - updateStatus', function() {
             }).to.throw(/No update status schema set./i);
         });
     });
+
+    describe('ensureStatusAllowed', function() {
+        it('Should throw an error if the newStatusName was not found in the allowed status list', function(done) {
+            const statuses = [
+                {
+                    name: 'test'
+                }
+            ];
+            const metadata = fakeMetadata(statuses);
+            const middleware = updateStatusFunctions.ensureStatusAllowed(metadata);
+            const reqOptions = {
+                body: {},
+                params: {
+                    newStatusName: 'notTest'
+                }
+            };
+            requestMocking.mockRequest(middleware, reqOptions, null, requestMocking.shouldCallNextWithError(done));
+        });
+
+        it('Should not throw an error if the newStatusName was found in the allowed status list', function(done) {
+            const statuses = [
+                {
+                    name: 'test'
+                }
+            ];
+            const metadata = fakeMetadata(statuses);
+            const middleware = updateStatusFunctions.ensureStatusAllowed(metadata);
+            const reqOptions = {
+                body: {},
+                params: {
+                    newStatusName: 'test'
+                }
+            };
+            requestMocking.mockRequest(middleware, reqOptions, null, requestMocking.shouldCallNext(done));
+        });
+
+        it('Should set the newStatus on the req.process', function(done) {
+            const statuses = [
+                {
+                    name: 'test',
+                    bob: true
+                }
+            ];
+            const metadata = fakeMetadata(statuses);
+            const middleware = updateStatusFunctions.ensureStatusAllowed(metadata);
+            const reqOptions = {
+                body: {},
+                params: {
+                    newStatusName: 'test'
+                }
+            };
+            requestMocking.mockRequest(middleware, reqOptions, null, next);
+            function next(err, req) {
+                if (err) {
+                    return done(err);
+                }
+                expect(req.process.newStatus).to.deep.equal(statuses[0]);
+                done();
+            }
+        });
+    });
 });
 
 function fakeRouter(statuses, updateStatusSchema) {
     const router = {
-        metadata: {
-            schemas: {
-                core: {
-                    $id: 'fake-core-schema-id'
-                }
-            },
-            updateStatusDescription: 'Fake'
-        },
+        metadata: fakeMetadata(statuses, updateStatusSchema),
         put: function() {
             return router;
         },
         describe: sinon.stub()
     };
+
+    return router;
+}
+
+function fakeMetadata(statuses, updateStatusSchema) {
+    const metadata = {
+        schemas: {
+            core: {
+                $id: 'fake-core-schema-id'
+            }
+        },
+        updateStatusDescription: 'Fake'
+    };
     if (statuses) {
-        router.metadata.schemas.core.statuses = statuses;
+        metadata.schemas.core.statuses = statuses;
     }
     if (updateStatusSchema) {
-        router.metadata.schemas.updateStatus = updateStatusSchema;
+        metadata.schemas.updateStatus = updateStatusSchema;
     }
-    return router;
+    return metadata;
 }
 
 function fakeCrudMiddleware() {

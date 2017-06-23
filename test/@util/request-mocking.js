@@ -5,10 +5,15 @@ module.exports = {
     mockRequest,
     shouldNotCallNext,
     shouldCallNext,
+    shouldCallNextWithError,
     shouldNotReturnResponse
 };
 
 function mockRequest(middlewareOrRouter, reqOptions, responseCallback, nextCallback) {
+    reqOptions = reqOptions || {};
+    if (!reqOptions.process) {
+        reqOptions.process = {};
+    }
     const req = httpMocks.createRequest(reqOptions);
     const res = httpMocks.createResponse({
         eventEmitter: events.EventEmitter
@@ -27,7 +32,10 @@ function mockRequest(middlewareOrRouter, reqOptions, responseCallback, nextCallb
         }
         responseCallback(null, resToReturn);
     });
-    middlewareOrRouter(req, res, nextCallback);
+    middlewareOrRouter(req, res, next);
+    function next(err) {
+        nextCallback(err, req, res);
+    }
 }
 
 function shouldNotCallNext(done) {
@@ -43,6 +51,15 @@ function shouldCallNext(done) {
     return function next(err) {
         if (err) {
             return done(err);
+        }
+        return done();
+    };
+}
+
+function shouldCallNextWithError(done) {
+    return function next(err) {
+        if (!err) {
+            return done(new Error('Should have called next with an error'));
         }
         return done();
     };

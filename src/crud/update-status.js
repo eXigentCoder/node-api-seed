@@ -147,16 +147,10 @@ function description(metadata) {
 
 function ensureStatusAllowed(metadata) {
     return function _ensureStatusAllowed(req, res, next) {
-        const statusNames = metadata.schemas.core.statuses.map(function(statusObj) {
-            return statusObj.name;
-        });
-        let foundStatus = statusNames.some(function(statusName) {
-            if (statusName.toLowerCase() === req.params.newStatusName.toLowerCase()) {
-                req.params.newStatusName = statusName;
-                return true;
-            }
-            return false;
-        });
+        const statusNames = metadata.schemas.core.statuses.map(status => status.name);
+        let foundStatus = metadata.schemas.core.statuses.find(
+            status => status.name.toLowerCase() === req.params.newStatusName.toLowerCase()
+        );
         if (!foundStatus) {
             return next(
                 boom.badRequest(
@@ -168,6 +162,8 @@ function ensureStatusAllowed(metadata) {
                 )
             );
         }
+        req.params.newStatusName = foundStatus.name;
+        req.process.newStatus = foundStatus;
         return next();
     };
 }
