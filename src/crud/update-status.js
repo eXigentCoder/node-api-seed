@@ -35,6 +35,7 @@ function addIndividualStatusSchemas(router) {
         if (status.schema) {
             const coreSchemaId = router.metadata.schemas.core.$id;
             setStatusSchemaId(status, coreSchemaId);
+            validator.addSchema(status.schema);
         }
     });
 }

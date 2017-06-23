@@ -76,7 +76,7 @@ describe('Crud - updateStatus', function() {
         });
 
         it('Should use the specific status schema if one was specified', function() {
-            const fakeUpdateSchema = { $id: 'test-update-schema', bob: true };
+            const fakeUpdateSchema = { $id: 'test-specific-update-schema', bob: false };
             const statuses = [
                 {
                     name: 'test',
@@ -166,6 +166,7 @@ describe('Crud - updateStatus', function() {
             }
         });
     });
+
     describe('validate', function() {
         let validateSchemaStub;
         beforeEach(function() {
